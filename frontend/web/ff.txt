@@ -1,0 +1,1 @@
+SELECT `ticket`.* FROM `ticket` LEFT JOIN `hotel` ON `ticket`.`hotel_id` = `hotel`.`id` LEFT JOIN `location` ON `hotel`.`location_id` = `location`.`id` LEFT JOIN `country` ON `location`.`country_id` = `country`.`id` WHERE (`hot`='1') AND (`location`.`country_id`='2')
