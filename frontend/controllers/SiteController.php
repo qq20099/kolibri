@@ -105,6 +105,7 @@ class SiteController extends Controller
             $hot_sort_country = 0;
         }
 
+        return $this->render('close');
         return $this->render('index', compact('dataProvider', 'searchModel', 'hot_sort_country'));
     }
 
