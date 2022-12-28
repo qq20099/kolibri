@@ -23,7 +23,15 @@
         "kartik-v/yii2-widget-rating": "*",
         "webtoucher/yii2-js-cookie": "*",
         "evgeniyrru/yii2-slick": "*",
-        "2amigos/yii2-multi-select-widget": "*"
+        "2amigos/yii2-multi-select-widget": "*",
+        "yiisoft/yii2-httpclient": "^2.0",
+        "dejurin/php-google-translate-for-free": "^1.0",
+        "dmstr/yii2-adminlte-asset": "^2.1",
+        "kartik-v/yii2-widget-select2": "dev-master",
+        "conquer/momentjs": "*",
+        "vova07/yii2-imperavi-widget": "*",
+        "guzzlehttp/guzzle": "^7.5",
+        "electrolinux/phpquery": "^0.9.6"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

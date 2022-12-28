@@ -8,13 +8,15 @@ use frontend\widgets\searchform\SearchFormWidget;
 use evgeniyrru\yii2slick\Slick;
 use yii\web\JsExpression;
 
+use yii\widgets\ListView;
+
 /** @var yii\web\View $this */
 
 $this->title = 'My Yii Application';
 ?>
 
 <?php $this->beginBlock('banner'); ?>
-<section class="banners">
+<section class="banners" style="opacity:0;height:0">
 <?php  /*
 OwlCarouselWidget::begin([
     'container' => 'div',
@@ -149,32 +151,46 @@ OwlCarouselWidget::begin([
     <div class="body-content">
         <?Pjax::begin(['id' => 'hot-items', 'enablePushState' => false])?>
         <section class="exclusive tours tours--tiles tours--lite-bg">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h2>Эксклюзивные отели</h2>
-                    </div>
-                    <div class="col-md-4">
-                        <?=$this->render('_buttons', compact('searchModel', 'dataProvider', 'hot_sort_country'))?>
-                    </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Ekskluzīvas viesnīcas</h2>
                 </div>
-
-                <div class="row" id="tour-cards">
-                    <?foreach($dataProvider->getModels() as $model):?>
-                    <div class="col-md-4 mb-5" data-item="<?if(isset($_COOKIE['item']) && $_COOKIE['item'] == 'list'):?>list<?else:?>grid<?endif?>">
-                        <?=$this->render('/hotel/_tour_card', compact('model'))?>
-                    </div>
-                    <?endforeach?>
+                <div class="col-md-4">
+                    <?=$this->render('_buttons', compact('searchModel', 'dataProvider', 'hot_sort_country', 'countryFilter'))?>
                 </div>
+            </div>
+            <?php
+            $d = '<div class="row" id="tour-cards"> ';
+            echo ListView::widget([
+                'dataProvider' => $dataProvider,
+                'itemView' => '/tours/_tour_card',
+                'layout' => $d."{items}</div>\n{pager}",
+                'emptyText' => 'Nekas nav atrasts',
+                'itemOptions' => [
+                    'class' => 'col-md-4 mb-5',
+                    'data-item' => ((isset($_COOKIE['item']) && $_COOKIE['item'] == 'list') ? 'list' : 'grid'),
+                ],
+            ]);
+            ?>
+            <?php
+            if (\Yii::$app->request->isAjax) {
+                $this->registerJs("
+                    var bl = $('.body-content');
+                    setTimeout(function(){
+                      $('html, body').animate({scrollTop: bl.offset().top - 75}, 'slow', 'linear');
+                    }, 200);");
+            }
+            ?>
         </section>
         <?Pjax::end()?>
-        <section class="about">
-        <div class="row">
-            <div class="col-md-12">
-                <p>Lorem ipsum dolor sit amet. Et quis aperiamAut quibusdam vel galisum adipisci eum blanditiis dignissimos qui temporibus facere non voluptas dolore sed accusantium harum. Est voluptatem repellendus ut quaerat nobis <strong>At quisquam aut doloremque odit ex dolore tempore</strong>. Ea provident dolorem <em>Aut voluptas qui asperiores beatae qui repellendus enim</em> aut modi fuga. At consequatur mollitia qui nihil enimid accusantium ea maiores natus.</p>
-                <p>Est voluptatibus repudiandaeet atque et ratione veniam. Et sapiente perspiciatis in dolorem quiaSed enim qui reiciendis voluptatem est galisum culpa est impedit enim qui autem illo. Ut corrupti maiores non dolorem facilis <em>Ut sint sit ipsa minima ut harum aperiam non perferendis dolores</em>.</p>
+        <section class="about mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Lorem ipsum dolor sit amet. Et quis aperiamAut quibusdam vel galisum adipisci eum blanditiis dignissimos qui temporibus facere non voluptas dolore sed accusantium harum. Est voluptatem repellendus ut quaerat nobis <strong>At quisquam aut doloremque odit ex dolore tempore</strong>. Ea provident dolorem <em>Aut voluptas qui asperiores beatae qui repellendus enim</em> aut modi fuga. At consequatur mollitia qui nihil enimid accusantium ea maiores natus.</p>
+                    <p>Est voluptatibus repudiandaeet atque et ratione veniam. Et sapiente perspiciatis in dolorem quiaSed enim qui reiciendis voluptatem est galisum culpa est impedit enim qui autem illo. Ut corrupti maiores non dolorem facilis <em>Ut sint sit ipsa minima ut harum aperiam non perferendis dolores</em>.</p>
+                </div>
             </div>
-    </div>
-</section>
+        </section>
     </div>
 </div>
 <?php

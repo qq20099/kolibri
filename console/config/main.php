@@ -31,6 +31,22 @@ return [
                 ],
             ],
         ],
+        'api' => [
+            'class' => 'common\components\Api',
+            'baseUrl' => 'https://product.coraltravel.lv/EEService.svc/json/ProcessMessage',
+            'login' => 'info@kolibritravel.lv',
+            'password' => 'zCExW45UeNTfX3d',
+        ],
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'useMemcached' => true,
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211
+                ],
+            ],
+        ],        
     ],
     'params' => $params,
 ];

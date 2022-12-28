@@ -5,6 +5,8 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
 use common\helpers\DataHelper;
+$countryFilter = $searchModel->getCountry();
+
 ?>
 <div data-v-bcb48e5a="" class="tours__nav">
     <div data-v-bcb48e5a="" class="tours__nav-item">
@@ -23,16 +25,13 @@ use common\helpers\DataHelper;
             </span>
         </button>
     </div>
+    <?if($countryFilter):?>
     <div class="tours__nav-item tours__nav-item--country input-field">
         <!--<label data-v-bcb48e5a="" class="input-field__label">
             <span data-v-bcb48e5a="" class="input-field__title">To</span>
         </label>-->
-        <form action="<?=Url::current()?>" method="get" id="find-by-country" data-pjax="true">
+        <form action="<?=Url::current(['page' => 1])?>" method="get" id="find-by-country" data-pjax="true">
 <?php
-$data = ArrayHelper::map(ArrayHelper::getColumn(DataHelper::getCountry(1), 'hotel.location0.country'), 'id', 'title');
-
-array_unshift($data, 'All');
-
 echo MultiSelect::widget([
     'id' => 'chuse-country',
     'options' => [
@@ -41,17 +40,19 @@ echo MultiSelect::widget([
         'data-url' => Url::current(),
     ], // for the actual multiselect
     //'data' => \yii\helpers\ArrayHelper::map($dataProvider->getModels(), 'hotel.location0.country.id', 'hotel.location0.country.title'),
-    'data' => $data,
+    'data' => $countryFilter,
     'value' => $hot_sort_country,
-    'name' => 'SearchHotel[country_id]', // name for the form
-
+    'name' => 'SearchTours[country_id]', // name for the form
     'clientOptions' => [
-            'includeSelectAllOption' => true,
-            'numberDisplayed' => 1
+        'includeSelectAllOption' => true,
+        'numberDisplayed' => 1,
     ],
 ]);
 ?>
-<input type="hidden" name="SearchHotel[hot]" value="1" />
+<?if(Yii::$app->controller->id == 'site'):?>
+<input type="hidden" name="SearchTours[main]" value="1" />
+<?endif?>
+<input type="hidden" name="SearchTours[from_area]" value="3345" />
         <!--<div data-v-bcb48e5a="" class="input-field__inner">
             <div data-v-bcb48e5a="" tabindex="0" class="multiselect">
                 <div class="multiselect__select"></div>
@@ -65,4 +66,5 @@ echo MultiSelect::widget([
         </div>-->
       </form>
     </div>
+    <?endif?>
 </div>

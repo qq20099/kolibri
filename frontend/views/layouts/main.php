@@ -7,10 +7,9 @@ use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use yii\bootstrap4\Breadcrumbs;
 use yii\bootstrap4\Html;
-use yii\bootstrap4\Nav;
-use yii\bootstrap4\NavBar;
 use yii\helpers\Url;
 use frontend\widgets\orderform\OrderFormWidget;
+use frontend\widgets\mainmenu\MainMenuWidget;
 
 AppAsset::register($this);
 ?>
@@ -47,50 +46,7 @@ AppAsset::register($this);
     </div>
     </div>
     </div>
-    <?php
-    NavBar::begin([
-        'brandLabel' => false,// Html::img('https://joinup.lv/_nuxt/img/joinup.ed36062.svg'), //Yii::$app->name,
-        //'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-light bg-light fixed-top1',
-        ],
-    ]);
-    $menuItems = [
-//['label' => 'Meklēt', 'url' => ['/site/index']],
-['label' => 'Lidojumi', 'url' => ['/hotel/']],
-/*['label' => 'Valstīm', 'url' => ['/site/index']],
-['label' => 'Ēģipte', 'url' => ['/site/index']],
-['label' => 'Grieķija', 'url' => ['/site/index']],
-['label' => 'Turcija', 'url' => ['/site/index']],
-['label' => 'Maldīvu salas', 'url' => ['/site/index']],
-['label' => 'Tanzānija', 'url' => ['/site/index']],
-['label' => 'UAE', 'url' => ['/site/index']],
-['label' => 'Ceļo droši', 'url' => ['/site/index']],
-['label' => 'Informācija', 'url' => ['/site/index']],*/
-['label' => 'Par mums', 'url' => ['site/page']],
-//['label' => 'AĢENTIEM', 'url' => ['/site/index']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        //$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        //$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        /*$menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';*/
-    }
-?>
-<?php
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ml-0'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
-    ?>
+    <?=MainMenuWidget::widget()?>
 </header>
 
 <main role="main" class="main flex-shrink-0">

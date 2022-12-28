@@ -25,7 +25,7 @@ yii\bootstrap4\Modal::begin([
 ]);
 ?>
       <?php $form = ActiveForm::begin([
-        'action' => Url::to(['add-order']),
+        'action' => Url::to(['site/add-order']),
         'enableClientValidation' => true,
 //        'enableAjaxValidation' => true,
         'validateOnChange' => false,
@@ -36,29 +36,28 @@ yii\bootstrap4\Modal::begin([
         ]
       ]);
    ?>
-       <?=$form->field($model, 'name')->textInput()?>
-       <?//=$form->field($model, 'phone')->textInput()?>
-       <?/*=$form->field($model, 'phone')->label(false)->widget(\yii\widgets\MaskedInput::className(), [
+       <?=$form->field($client, 'name')->textInput()?>
+       <?=$form->field($model, 'email')->textInput()?>
+       <?=$form->field($client, 'phone')->textInput(['placeholder' => $client->getAttributeLabel('phone')])->label(false)?>
+       <?/*=$form->field($client, 'phone')->label(false)->widget(\yii\widgets\MaskedInput::className(), [
   'mask' => '+38 (099) 999-99-99',
-])->textInput(['placeholder' => $model->getAttributeLabel('phone')]);*/?>
+])->textInput(['placeholder' => $client->getAttributeLabel('phone')]);*/?>
+       <?=$form->field($model, 'tour_id')->hiddenInput(['label' => null])->label(false);?>
+       <?=$form->field($model, 'comment')->textArea();?>
+       <?=$form->field($model, 'politic')->checkbox(['value' => 1])->label('Piekrītu privātuma politikai un personas datu apstrādes principiem');?>
+       <?=$form->field($model, 'link')->hiddenInput(['value' => Url::current(), 'label' => null])->label(false);?>
 
-
-
-     <span id="course-id" hidden></span>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-result">
+       <div class="row">
+           <div class="col-md-9">
+               <div class="form-result">
                     <span class="error" style="display:none;"><?=Yii::t('app', 'Error')?></span>
                     <span class="success" style="display:none;"><?=Yii::t('app', 'Danke')?></span>
-                </div>
-            </div>
-            <div class="col-md-4 text-md-right">
-                <div class="form-group">
-                    <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-info']) ?>
-                </div>
+               </div>
+           </div>
+           <div class="col-md-3 text-md-right">
+               <?= Html::submitButton('Pasūtīt', ['class' => 'btn btn-info']) ?>
            </div>
        </div>
-
   <?php ActiveForm::end()?>
 <?php
 yii\bootstrap4\Modal::end();

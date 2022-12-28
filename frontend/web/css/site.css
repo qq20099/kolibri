@@ -199,3 +199,31 @@ section.banner {padding: 2rem 0;overflow: hidden;background: url(/images/index-c
 .field-searchform-date_from {
     display: none;
 }
+
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #ff9800;
+    text-decoration: none;
+    background-color: #fff;
+     border: 1px solid transparent;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #f3701e;
+    border-color: #f3701e;
+}
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+    color: #777777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: transparent;
+}
+.pagination {
+    justify-content: center;
+}

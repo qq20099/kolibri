@@ -88,3 +88,14 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+.red {color: red}
+.green {color: green}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
+    font-size: 13px;
+}
+.main-header .navbar {
+    justify-content: flex-start;
+}
+.in-menu {
+    
+}

@@ -37,13 +37,43 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        /*'mcache' => [
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => 'server1',
+                    'port' => 11211,
+                    'weight' => 100,
+                ],
+                [
+                    'host' => 'server2',
+                    'port' => 11211,
+                    'weight' => 50,
+                ],
+            ],
+        ],*/
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'useMemcached' => true,
+            'servers' => [
+                [
+                    'host' => 'localhost',
+                    'port' => 11211
+                ],
+            ],
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
+                'api' => 'site/api',
+                'parser' => 'site/parser',
+                'add-order' => 'site/add-order',
                 'page' => 'site/page',
-                'hotel/<id:[\d]+>' => 'hotel/view',
+                'tours' => 'tours/index',
+                'tours/specification' => 'tours/specification',
+                'tours/<id:[\d]+>' => 'tours/view',
             ],
         ],
     ],

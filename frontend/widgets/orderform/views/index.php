@@ -1,1 +1,1 @@
-<?=$this->render('_form', compact('model', 'class'))?>
+<?=$this->render('_form', compact('model', 'client', 'class'))?>                     

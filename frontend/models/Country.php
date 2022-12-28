@@ -9,8 +9,10 @@ use Yii;
  *
  * @property int $id
  * @property string $title
+ * @property string $iso_code
  * @property int $activity
  *
+ * @property CountryCountry[] $countryCountries
  * @property Location[] $locations
  */
 class Country extends \yii\db\ActiveRecord
@@ -32,6 +34,7 @@ class Country extends \yii\db\ActiveRecord
             [['title'], 'required'],
             [['activity'], 'integer'],
             [['title'], 'string', 'max' => 255],
+            [['iso_code'], 'string', 'max' => 10],
         ];
     }
 
@@ -41,10 +44,21 @@ class Country extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('frontend', 'ID'),
-            'title' => Yii::t('frontend', 'Title'),
-            'activity' => Yii::t('frontend', 'Activity'),
+            'id' => Yii::t('app', 'ID'),
+            'title' => Yii::t('app', 'Title'),
+            'iso_code' => Yii::t('app', 'Iso Code'),
+            'activity' => Yii::t('app', 'Activity'),
         ];
+    }
+
+    /**
+     * Gets query for [[CountryCountries]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCountryCountries()
+    {
+        return $this->hasMany(CountryCountry::class, ['country_id' => 'id']);
     }
 
     /**
