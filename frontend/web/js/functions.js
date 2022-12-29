@@ -94,6 +94,14 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
         $('.banners').css('height', '');
     });
 
+    $(document).on('click', '#show-filters-tab', function(e){
+        $('#filters-tab').toggle();
+    });
+
+    $(document).on('change', '#search-filter-form', function(e){
+        $(this).submit();
+    });
+
     $(document).on('change', '#searchtours-country_id, #choice-nights, #chuse-country', function(e){
         let p = $(this).parent();
         let c = p.find('.multiselect-container.dropdown-menu');

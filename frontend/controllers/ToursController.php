@@ -92,6 +92,80 @@ die();*/
         return $this->render('index', compact('dataProvider', 'searchModel', 'hot_sort_country'));
     }
 
+    public function actionFilter()
+    {
+        $countryFilter = [];
+
+        $model = \frontend\models\Tours::find()
+        ->with(['hotel', 'toCountry', 'meal', 'area', 'hotelCategory'])
+        ->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
+        ->joinWith('toCountry')
+        ->orderBy(['{{%coraltravel_country}}.Name' => SORT_ASC])
+        ->groupBy('ToCountryID')
+        ->asArray()
+        ->all();
+
+        $searchModel = new \frontend\models\SearchTours();
+
+        if (Yii::$app->request->isAjax)
+          $searchModel->scenario = $searchModel::SCENARIO_FIND_BY_FILTER;
+
+        $params = Yii::$app->request->queryParams;
+
+        /*$cookies = Yii::$app->request->cookies;
+        $hot_sort_country = $cookies->getValue('hot_sort_country', 0);
+
+        if (!isset($params['SearchTours']['country_id']) && $hot_sort_country) {
+            $params['SearchTours']['country_id'] = $hot_sort_country;
+        }*/
+
+        $dataProvider = $searchModel->search($params);
+
+        /*if (isset($searchModel->country_id) && isset($searchModel->region_id) && $searchModel->region_id) {
+            $c = \frontend\models\CoraltravelGeography::find()->where(['CountryID' => $searchModel->country_id])
+            //->with(['area'])
+            ->groupBy('AreaID')
+            ->asArray()
+            ->all();
+
+            $r = ArrayHelper::getColumn($c, 'AreaID');
+
+            if (array_diff($searchModel->region_id, $r)) {
+                throw new NotFoundHttpException(Yii::t(
+                    'app', 'Page not found'
+                ));
+            }
+        }*/
+
+        $cookies = Yii::$app->response->cookies;
+
+        /*if (isset($params['SearchTours']['country_id']) && $params['SearchTours']['country_id'] > 0) {
+            $cookies->add(new \yii\web\Cookie([
+                'name' => 'hot_sort_country',
+                'value' => (int)$searchModel->country_id
+            ]));
+            $hot_sort_country = $searchModel->country_id;
+        } else {
+            $cookies->remove('hot_sort_country');
+            $hot_sort_country = 0;
+        }*/
+
+        /*if ($model) {
+            $t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
+            $countryFilter = \yii\helpers\ArrayHelper::map($t, 'ID', 'Name');
+
+            if (count($countryFilter) > 1) {
+                $countryFilter[0] = 'All';
+                asort($countryFilter);
+                //array_unshift($countryFilter, 'All');
+            } else {
+                $countryFilter = [];
+            }
+        }*/
+
+        return $this->render('index', compact('dataProvider', 'searchModel', 'hot_sort_country'));
+    }
+
     public function actionView($id)
     {
         /*$model = Ticket::find()

@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
 /**
  * SearchTicket represents the model behind the search form of `frontend\models\Ticket`.
@@ -13,6 +14,7 @@ class SearchTours extends Tours
 {
     const SCENARIO_FIND_BY_COUNTRY = 'find_by_country';
     const SCENARIO_FIND_BY_FORM = 'find_by_form';
+    const SCENARIO_FIND_BY_FILTER = 'find_by_filter';
 
     public $country_id;
     public $area_id;
@@ -25,6 +27,9 @@ class SearchTours extends Tours
     public $adult;
     public $child;
     public $ages;
+    public $rating;
+    public $service;
+    public $hotels;
 
     /**
      * {@inheritdoc}
@@ -36,7 +41,8 @@ class SearchTours extends Tours
             [['country_id',], 'required', 'on' => self::SCENARIO_FIND_BY_COUNTRY],
             [['date_from', 'nights'], 'required', 'on' => self::SCENARIO_FIND_BY_FORM],
             [['date_from', 'nights', 'id', 'main', 'adult', 'from_area', 'child'], 'integer'],
-            ['region_id', 'each', 'rule' => ['integer']],
+            [['region_id', 'rating', 'service', 'hotels'], 'each', 'rule' => ['integer']],
+            //['region_id', 'each', 'rule' => ['integer']],
             [['country_id', 'area_id'], 'integer', 'min' => 1],
             ['country_id', 'default', 'value' => 12],
             ['from_area', 'default', 'value' => 3345],
@@ -73,7 +79,7 @@ class SearchTours extends Tours
      */
     public function search($params)
     {
-        $query = self::find()->with(['hotel', 'hotel.images', 'hotel.raitings']);//, 'hotel.location0.country']);
+        //$query = self::find()->with(['hotel', 'hotel.images', 'hotel.raitings']);//, 'hotel.location0.country']);
         $query = self::find()
         ->with(['hotel', 'toCountry', 'meal', 'area', 'hotelCategory'])
         //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
@@ -131,6 +137,7 @@ class SearchTours extends Tours
             'Child' => $this->child
         ]);
         $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
+        $query->andFilterWhere(['IN', 'HotelID', $this->hotels]);
         // grid filtering conditions
         /*$query->andFilterWhere([
             'id' => $this->id,
@@ -146,6 +153,8 @@ class SearchTours extends Tours
         ]);*/
 
         //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+        //Yii::$app->cache->set('query', $query);
+
         return $dataProvider;
     }
 
@@ -391,6 +400,109 @@ class SearchTours extends Tours
 
         return $date;*/
         return $model;
+    }
+
+    public function getHotelRatingForFilter()
+    {
+        $query = self::find()
+        ->select('FLOOR(tripAdvisorPoint) AS tripAdvisorPoint')
+        ->where(['>', 'FLOOR(tripAdvisorPoint)', 0])
+        ->joinWith(['hotel'])
+        ->orderBy(['tripAdvisorPoint' => SORT_DESC]);
+
+        if ($this->date_from)
+          $this->date_from = $this->date_from + Yii::$app->params['h'];
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'main' => $this->main,
+            'ToCountryID' => $this->country_id,
+            //'AreaID' => $this->area_id,
+            'HotelNight' => $this->nights,
+            'FlightDate' => $this->date_from,
+            'Adult' => $this->adult,
+            'Child' => $this->child
+        ]);
+        $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
+        $query->groupBy('FLOOR({{%coraltravel_hotel}}.tripAdvisorPoint)');
+        if ($query->count()) {
+            $data = $query->asArray()->all();
+            $r = ArrayHelper::getColumn($data, 'tripAdvisorPoint');
+            return $r;
+        }
+        return false;
+    }
+
+    public function getHotelForFilter()
+    {
+        $query = self::find()
+        ->select('{{%coraltravel_hotel}}.ID, {{%coraltravel_hotel}}.Name')
+        ->joinWith(['hotel'])
+        ->orderBy(['Name' => SORT_ASC]);
+
+        if ($this->date_from)
+          $this->date_from = $this->date_from + Yii::$app->params['h'];
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'main' => $this->main,
+            'ToCountryID' => $this->country_id,
+            //'AreaID' => $this->area_id,
+            'HotelNight' => $this->nights,
+            'FlightDate' => $this->date_from,
+            'Adult' => $this->adult,
+            'Child' => $this->child
+        ]);
+        $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
+        $query->groupBy('{{%coraltravel_hotel}}.ID');
+
+        if ($query->count()) {
+            $data = $query->asArray()->all();
+            $r = ArrayHelper::map($data, 'ID', 'Name');
+            /*echo "----<pre>";
+            print_r($query->count());
+            print_r($data);
+            echo "</pre>";
+            die();*/
+            return $r;
+        }
+        return false;
+    }
+
+    public function getServiceForFilter()
+    {
+        $query = self::find()
+        ->where(['NOT', ['{{%coraltravel_meal}}.SName' => NULL]])
+        ->joinWith(['meal']);
+
+        if ($this->date_from)
+          $this->date_from = $this->date_from + Yii::$app->params['h'];
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'main' => $this->main,
+            'ToCountryID' => $this->country_id,
+            //'AreaID' => $this->area_id,
+            'HotelNight' => $this->nights,
+            'FlightDate' => $this->date_from,
+            'Adult' => $this->adult,
+            'Child' => $this->child
+        ]);
+        $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
+        $query->groupBy('{{%coraltravel_meal}}.Name');
+
+        if ($query->count()) {
+            $data = $query->asArray()->all();
+            $r = ArrayHelper::getColumn($data, 'meal');
+            $r0 = ArrayHelper::map($r, 'ID', 'SName');
+            $r = ArrayHelper::map($r, 'ID', 'Name');
+            $data = [];
+            foreach ($r0 as $key => $val) {
+                $data[$key] = $val.' - '.$r[$key];
+            }
+            return $data;
+        }
+        return false;
     }
 
     public function getToursAvailableDate1()

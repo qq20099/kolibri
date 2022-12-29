@@ -1046,56 +1046,20 @@ background: #fff;
     border-radius: 0;
 }
 
-/*.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-2022-12-28:after {
-    content: "635.69 €";
+.field-searchtours-rating {}
+.checkbox {width:0;height:0;opacity: 0;}
+.checkbox+label {position:relative;}
+.checkbox+label:after {content:'';display:block;width:18px;height:18px;position:absolute;left:0;top:2px;border:1px solid #DDD;}
+.checkbox:checked+label:after {background: url(/images/checkmark.png) center no-repeat;background-size: cover;}
+.wra {display: inline-block;margin-left:1.75rem;}
+.hotel-filter-wrapper {
+    height: 270px;
+    overflow: hidden;
+    overflow-y: scroll;
 }
-
-
-.calendar-min-price.calendar-min-price-2022-12-31:after {
-    content: "503.45";
+.hotel-filter-wrapper .wra {
+    max-width: 91%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
-
-
-.calendar-min-price.calendar-min-price-2023-01-01:after {
-    content: "545.21";
-}
-
-
-.calendar-min-price.calendar-min-price-2022-12-28:after {
-    content: "725.01";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-07:after {
-    content: "430.83";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-08:after {
-    content: "503.45";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-14:after {
-    content: "431.99";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-15:after {
-    content: "433.85";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-21:after {
-    content: "420.39";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-22:after {
-    content: "468.65";
-}
-
-
-.calendar-min-price.calendar-min-price-2023-01-28:after {
-    content: "484.19";
-}*/

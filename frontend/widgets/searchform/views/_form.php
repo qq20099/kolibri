@@ -13,8 +13,8 @@ $this->registerCss("
 <div class="index-page__search-form<?=$class?>" style="opacity:0;">
       <?php $form = ActiveForm::begin([
         'id' => 'search-form',
-        'action' => Url::to(['tours/index']),
-        'method' => 'get',
+        'action' => Url::to(['tours/filter']),
+        'method' => 'post',
         'enableClientValidation' => true,
 //        'enableAjaxValidation' => true,
         'validateOnChange' => false,

@@ -1,6 +1,7 @@
 <?php
 /** @var yii\web\View $this */
 use frontend\widgets\searchform\SearchFormWidget;
+use frontend\widgets\filtersform\FiltersFormWidget;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -21,9 +22,17 @@ use yii\widgets\ListView;
                 <div class="col-md-8">
                     <h2><?=Yii::t('app', 'Hotels')?></h2>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <a href="javascript:;" id="show-filters-tab"><?=Yii::t('app', 'Filters')?></a>
+                </div>
                 <div class="col-md-4">
                     <?=$this->render('/site/_buttons', compact('searchModel', 'dataProvider', 'hot_sort_country'))?>
                 </div>
+            </div>
+            <div class="filters-tab" id="filters-tab">
+                <?=FiltersFormWidget::widget()?>
             </div>
             <?php
             $d = '<div class="row" id="tour-cards"> ';
