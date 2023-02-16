@@ -5,7 +5,7 @@
         <span class="data-name">IZLIDOŠANA:</span>
     </td>
     <td>
-        <span class="data-val"><?=Yii::$app->formatter->asDate($related[0]->FlightDate, 'php:d M Y');?></span>     <?=date('d.m.Y', $related[0]->FlightDate)?><br><?=date_default_timezone_get()?>
+        <span class="data-val"><?=Yii::$app->formatter->asDate($related[0]->FlightDate, 'php:d M Y');?></span>
     </td>
 </tr>
 
