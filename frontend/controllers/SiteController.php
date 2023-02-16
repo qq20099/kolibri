@@ -17,6 +17,7 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Pages;
 use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
 
 use GuzzleHttp\Client; // подключаем Guzzle
 //use electrolinux\phpquery\phpQuery; // подключаем Guzzle
@@ -109,14 +110,6 @@ class SiteController extends AppController
 
         $dataProvider = $searchModel->search($params);
 
-/*echo "<pre>";
-print_r($model);
-print_r($d);
-//print_r($countryId);
-//print_r($countryTitle);
-//print_r($dataProvider->getModels());
-echo "</pre>";
-die();*/
         $cookies = Yii::$app->response->cookies;
 
         if (isset($params['SearchTours']['country_id']) && $params['SearchTours']['country_id'] > 0) {
@@ -163,91 +156,8 @@ die();*/
           $page->meta_description
         );
 
-        if (!in_array(Yii::$app->request->userIP, ['127.0.0.1', '188.163.16.161']))
-          ;//return $this->render('close');
-
         return $this->render('index',
           compact('dataProvider', 'searchModel', 'hot_sort_country', 'page'));
-    }
-
-    public function actionParser11()
-    {
-        $h = 'https://coraltravel.lv';
-        require('../../vendor/electrolinux/phpquery/phpQuery/phpQuery.php');
-        $cache = Yii::$app->cache;
-        $client = new Client();
-        // отправляем запрос к странице Яндекса
-        $url = $h.'/lv/results?flightDateFrom=27/12/2022&flightDateTo=25/02/2023&tripDurationFrom=7&tripDurationTo=21&adults=2&children=0';
-            //$body1 = file_get_contents($url);
-            //$res = $client->request('GET', $url);
-            //return $res->getStatusCode();
-            //print_r($res);
-        //$body1 = $res->getBody();
-        $key = '_body_'.$url;
-        $body1 = $cache->getOrSet($key, function() use ($client, $url){
-            return file_get_contents($url);
-        });
-
-//print_r($body1);die();
-        $document = \phpQuery::newDocumentHTML($body1);
-        //Смотрим html страницы Яндекса, определяем внешний класс списка и считываем его командой find
-        $row_result = $document->find(".row.result");
-        $links = $document->find(".resultHotelName a");
-
-        if ($row_result->length) {
-            foreach ($row_result as $row){
-                $r = pq($row);
-                $a_wrp = $r->find('.resultHotelName');
-                $resultTitle = $a_wrp->find('.resultTitle')->text();
-                $resultRoom = $r->find('.resultRoom span')->text();
-
-                $l = $a_wrp->find('a')->attr('href');
-
-                $dd = explode('?', $l);
-                $d = explode('/', $dd[0]);
-                $new_link = $h.'/lv/hotel/d/'.end($d).'?'.$dd[1];
-                //echo $l.' ::::: '.$new_link."<br>";
-                $key = '_l'.md5($new_link);
-                $page = $cache->getOrSet($key, function() use ($new_link){
-                    return file_get_contents($new_link);
-                });
-                echo $page;die();
-            }
-        }
-        die();
-        if ($links->length) {
-            foreach ($links as $link){
-                $l = pq($link)->attr('href');
-                $dd = explode('?', $l);
-                $d = explode('/', $dd[0]);
-                $new_link = $h.'/lv/hotel/d/'.end($d).'?'.$dd[1];
-                //echo $l.' ::::: '.$new_link."<br>";
-                $key = '_l'.md5($new_link);
-                //$l = $h.urlencode($l);
-                /*$l = $h.$l;
-                $l = 'https://coraltravel.lv/lv/hotel/d/9117?tripId=e16ce0574b8faefb25ada63938744597&amp;adults=2&amp;children=0';    */
-                $page = $cache->getOrSet($key, function() use ($new_link){
-                    return file_get_contents($new_link);
-                });
-                echo $page;die();
-            }
-        }
-
-        die();
-        // вывод списка новостей Яндекса с главной страницы в представление
-
-
-        // получаем данные между открывающим и закрывающим тегами body
-        /*$body = Yii::$app->cache->get($key);
-
-        if (!$body) {
-            $res = $client->request('GET', $url);
-            $body = $res->getBody();
-            Yii::$app->cache->set($key, $body);
-        }*/
-
-        // вывод страницы Яндекса в представление
-        return $this->render('coraltravel', ['body' => $body1]);
     }
 
     public function actionApi()
@@ -395,6 +305,9 @@ die();*/
         ->where('url = :url', [':url' => $url])
         ->andWhere(['activity' => 1])
         ->one();
+
+        if (empty($model))
+          throw new NotFoundHttpException();
 
         $this->setMetaTags(
           $model->meta_title,

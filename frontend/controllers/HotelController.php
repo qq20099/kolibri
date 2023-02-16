@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\CoraltravelHotel;
+use yii\web\NotFoundHttpException;
 
 class HotelController extends AppController
 {
@@ -140,10 +141,14 @@ die();*/
           ->where('ID = :id', [':id' => $id])
           ->one();
 
+        if (empty($model))
+          throw new NotFoundHttpException();
+
         $searchModel = new \frontend\models\SearchTours();
 
         $params = Yii::$app->request->queryParams;
         $params['SearchTours']['hotel_id'][] = $id;
+        $params['SearchTours']['country_id'][] = $model->place->area->region->country->ID;
 
         $dataProvider = $searchModel->search($params);
 

@@ -264,3 +264,6 @@ section.banner {padding: 2rem 0;overflow: hidden;background-image: url('/images/
         margin-top: 1rem;
     }
 }
+.modal {
+    z-index: 1075;
+}

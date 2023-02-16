@@ -85,12 +85,12 @@ return [
                 'tours/specification' => 'tours/specification',
                 'tours/<id:[\d]+>' => 'tours/view',
                 'hotel/<id:[\d]+>' => 'hotel/view',
-                [
+                /*[
                     'pattern' => 'posts',
                     'route' => 'post/index',
                     'suffix' => '/',
                     'normalizer' => false, // отключаем нормализатор для этого правила
-                ],
+                ],*/
                 '<url:[A-Za-z0-9 -_.]+>' => 'site/page',
             ],
         ],

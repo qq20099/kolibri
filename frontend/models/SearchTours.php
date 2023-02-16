@@ -150,7 +150,7 @@ class SearchTours extends Tours
             '{{%location}}.id' => $this->location_id,
         ]);*/
 
-        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+        echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
         return $dataProvider;
     }
 
