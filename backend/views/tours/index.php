@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Вылет',
                 'attribute' => 'FlightDate',
-                'format' => ['date', 'php:d.m.Y H:i'],
+                'format' => ['date', 'php:d.m.Y'],
                 /*'value' => function($model){
                     return Yii::$app->formatter->asDate($model->FlightDate, 'php:d M Y');
                 }*/
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Заезд',
                 'attribute' => 'HotelCheckInDate',
-                'format' => ['date', 'php:d.m.Y H:i'],
+                'format' => ['date', 'php:d.m.Y'],
                 /*'value' => function($model){
                     return Yii::$app->formatter->asDate($model->HotelCheckInDate, 'php:d M Y');
                 }*/
@@ -76,16 +76,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Район',
                 'attribute' => 'area.Name',
             ],
-            [
+            /*[
                 'label' => 'Размещение',
                 'attribute' => 'place.Name',
-            ],
+            ],*/
             'HotelNight',
             [
                 'attribute' => 'meal.Name',
             ],
             [
                 'attribute' => 'PackagePrice',
+                //'format' => 'currency',
             ],
 
             //'HotelID',

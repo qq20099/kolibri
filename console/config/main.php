@@ -38,6 +38,9 @@ return [
             'password' => 'zCExW45UeNTfX3d',
         ],
         'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],        
+        /*'cache' => [
             'class' => 'yii\caching\MemCache',
             'useMemcached' => true,
             'servers' => [
@@ -46,7 +49,7 @@ return [
                     'port' => 11211
                 ],
             ],
-        ],        
+        ],*/
     ],
     'params' => $params,
 ];

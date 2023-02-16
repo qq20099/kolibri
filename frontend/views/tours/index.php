@@ -7,9 +7,7 @@ use yii\widgets\Pjax;
 use yii\widgets\ListView;
 ?>
 <?php $this->beginBlock('banner'); ?>
-<section class="banner">
-
-</section>
+<?=$this->render('/common/_banners', compact('page'))?>
 <?=SearchFormWidget::widget(['index' => false])?>
 <?php $this->endBlock(); ?>
 
@@ -18,13 +16,19 @@ use yii\widgets\ListView;
         <?Pjax::begin(['id' => 'hot-items', 'enablePushState' => true])?>
         <section class="tours tours--tiles tours--lite-bg">
             <div class="row">
-                <div class="col-md-8">
-                    <h2><?=Yii::t('app', 'Hotels')?></h2>
+                <div class="col-md-7">
+                    <?if($page->title):?>
+                    <h2><?=$page->title?></h2>
+                    <?endif?>
                 </div>
-                <div class="col-md-4">
-                    <?=$this->render('/site/_buttons', compact('searchModel', 'dataProvider', 'hot_sort_country'))?>
+                <div class="col-md-5">
+                    <?=$this->render('/site/_buttons', compact('searchModel', 'dataProvider', 'hot_sort_country', 'countryFilter'))?>
                 </div>
             </div>
+            <div class="row">
+            <div class="col-md-0">
+            </div>
+            <div class="col-md-12">
             <?php
             $d = '<div class="row" id="tour-cards"> ';
             echo ListView::widget([
@@ -35,8 +39,13 @@ use yii\widgets\ListView;
                     'class' => 'col-md-4 mb-5',
                     'data-item' => ((isset($_COOKIE['item']) && $_COOKIE['item'] == 'list') ? 'list' : 'grid'),
                 ],
+                'pager' => [
+                    'maxButtonCount' => 5,
+                ],
             ]);
             ?>
+            </div>
+            </div>
             <?php
             if (\Yii::$app->request->isAjax) {
                 $this->registerJs("
@@ -51,19 +60,18 @@ use yii\widgets\ListView;
         <section class="about mt-5">
             <div class="row">
                 <div class="col-md-12">
-                    <p>Lorem ipsum dolor sit amet. Et quis aperiamAut quibusdam vel galisum adipisci eum blanditiis dignissimos qui temporibus facere non voluptas dolore sed accusantium harum. Est voluptatem repellendus ut quaerat nobis <strong>At quisquam aut doloremque odit ex dolore tempore</strong>. Ea provident dolorem <em>Aut voluptas qui asperiores beatae qui repellendus enim</em> aut modi fuga. At consequatur mollitia qui nihil enimid accusantium ea maiores natus.</p>
-                    <p>Est voluptatibus repudiandaeet atque et ratione veniam. Et sapiente perspiciatis in dolorem quiaSed enim qui reiciendis voluptatem est galisum culpa est impedit enim qui autem illo. Ut corrupti maiores non dolorem facilis <em>Ut sint sit ipsa minima ut harum aperiam non perferendis dolores</em>.</p>
+                    <?=$page->content?>
                 </div>
             </div>
         </section>
     </div>
 </div>
 <?php
-$this->registerJs("
+/*$this->registerJs("
 let c = $('#searchtours-country_id').val();
 console.log(c);
 $.ajax({
-    url: '/tours/get-prices/',
+    url: '/tours/prices/',
     type: 'post',
     dataType: 'html',
     data: {
@@ -74,7 +82,7 @@ $.ajax({
     },
 });
 
-", \yii\web\View::POS_READY);
+", \yii\web\View::POS_READY);*/
 /*$this->registerCss("
 .ui-datepicker.ui-cb-datepicker td.ui-state-price-available a.datepicker-content-862::after {
     content: "862€";

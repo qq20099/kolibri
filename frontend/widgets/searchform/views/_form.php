@@ -10,8 +10,8 @@ $this->registerCss("
     display: none;
 }");
 ?>
-<div class="index-page__search-form<?=$class?>" style="opacity:0;">
-      <?php $form = ActiveForm::begin([
+<div class="index-page__search-form" style="opacity:0;">
+    <?php $form = ActiveForm::begin([
         'id' => 'search-form',
         'action' => Url::to(['tours/index']),
         'method' => 'get',
@@ -55,20 +55,25 @@ $this->registerCss("
 <?=$this->render('_region_select', compact('form', 'model'))?>
 </div>
 <div class="search-form__content-second">
+    <?=$this->render('_passengers_select', compact('model', 'form'))?>
     <div class="search-form__date-nights">
         <?=$this->render('_date_select', compact('model'))?>
         <?=$this->render('_nights_select', compact('form', 'model'))?>
     </div>
-    <?=$this->render('_passengers_select', compact('model', 'form'))?>
+
 </div>
 </div>
 <div class="search-form__btns" >
+    <button type="button" class="search-form__close-btn fi btn-3">Back</button>
     <button type="submit" class="search-form__search-btn btn-1" >
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 25 25" aria-labelledby="search" fill="#ffffff" role="presentation" class="icon icon-search" data-v-631c8bed ><title id="search" lang="en" data-v-631c8bed>search icon</title> <path clip-rule="evenodd" d="m15.9139 14.5294c2.4134-3.3864 2.101-8.11815-.9371-11.15631-3.3864-3.3863301-8.8767-3.3863298-12.26304 0-3.386332 3.38634-3.386332 8.87671 0 12.26301 3.03816 3.0381 7.76994 3.3505 11.15634.9371l8.2601 8.2601 2.0438-2.0438-8.2601-8.2601c1.6089-2.2576 1.6089-2.2576 0 0zm-2.981-9.11247c2.2576 2.25755 2.2576 5.91777 0 8.17537-2.2575 2.2575-5.91775 2.2575-8.1753 0-2.25756-2.2576-2.25756-5.91782 0-8.17537 2.25755-2.25756 5.9178-2.25756 8.1753 0 1.5051 1.50503 1.5051 1.50503 0 0z" fill-rule="evenodd" ></path></svg>
         <span class="search-form__search-btn-text" >
-            Meklēt ceļojumus
+            Meklēt
         </span>
-    </button></div></div></div>
+    </button>
+</div>
+</div>
+</div>
           <?php ActiveForm::end()?>
         </div>
 <?//if(!isset($model->date_from)):?>

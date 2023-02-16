@@ -15,7 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
-use frontend\models\Ticket;
+use frontend\models\Pages;
 use yii\data\ActiveDataProvider;
 
 use GuzzleHttp\Client; // подключаем Guzzle
@@ -25,7 +25,7 @@ use yii\helpers\Url;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends AppController
 {
     /**
      * {@inheritdoc}
@@ -62,7 +62,7 @@ class SiteController extends Controller
      * {@inheritdoc}
      */
     public function actions()
-    {
+    {     
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -81,32 +81,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $countryFilter = [];
+        //$countryFilter = [];
         $regionFilter = [];
-        /*$data = Yii::$app->api->getPackageSearch(self::hotDeal());
 
-        echo (($data['data']) ? count($data['data']) : 0);
-
-        echo "<pre>";
-        print_r($data);
-        echo "</pre>";
-
-        die();*/
-
-        $model = \frontend\models\Tours::find()->all();
-        //$model = \frontend\models\CoraltravelPackageAvailableDate::find()->all();
-
-/*foreach ($model as $value) {
-    //echo $value->PackageDate."<br>";
-    //$value->PackageDate = strtotime(date('Y-m-d', $value->PackageDate).' 00:00:00');
-    $value->HotelCheckInDate = strtotime(date('Y-m-d', $value->HotelCheckInDate).' 00:00:00');
-    //echo $value->PackageDate."<br>";
-    $value->FlightDate = strtotime(date('Y-m-d', $value->FlightDate).' 00:00:00');
-    $value->save();
-    //die();
-}
-die();*/
-        $model = \frontend\models\Tours::find()
+        /*$model = \frontend\models\Tours::find()
         ->with(['hotel', 'toCountry', 'meal', 'area', 'hotelCategory'])
         ->where(['>=', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
         ->andWhere(['main' => 1])
@@ -114,7 +92,7 @@ die();*/
         ->orderBy(['{{%coraltravel_country}}.Name' => SORT_ASC])
         ->groupBy('ToCountryID')
         ->asArray()
-        ->all();
+        ->all();*/
 
         $searchModel = new \frontend\models\SearchTours();
 
@@ -152,8 +130,8 @@ die();*/
             $hot_sort_country = 0;
         }
 
-        if ($model) {
-            $t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
+        ///if ($model) {
+            /*$t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
             $countryFilter = \yii\helpers\ArrayHelper::map($t, 'ID', 'Name');
 
             if (count($countryFilter) > 1) {
@@ -162,7 +140,7 @@ die();*/
                 //array_unshift($countryFilter, 'All');
             } else {
                 $countryFilter = [];
-            }
+            }*/
 
             /*$t = \yii\helpers\ArrayHelper::getColumn($model, 'are');
             $regionFilter = \yii\helpers\ArrayHelper::map($t, 'ID', 'Name');
@@ -174,16 +152,25 @@ die();*/
             } else {
                 $regionFilter = [];
             }*/
-        }
+        ///}
+
+        $pages = new Pages();
+        $page = $pages->getMainPage();
+
+        $this->setMetaTags(
+          $page->meta_title,
+          $page->meta_keywords,
+          $page->meta_description
+        );
 
         if (!in_array(Yii::$app->request->userIP, ['127.0.0.1', '188.163.16.161']))
           ;//return $this->render('close');
 
         return $this->render('index',
-          compact('dataProvider', 'searchModel', 'hot_sort_country', 'countryFilter', 'regionFilter'));
+          compact('dataProvider', 'searchModel', 'hot_sort_country', 'page'));
     }
 
-    public function actionParser()
+    public function actionParser11()
     {
         $h = 'https://coraltravel.lv';
         require('../../vendor/electrolinux/phpquery/phpQuery/phpQuery.php');
@@ -287,9 +274,9 @@ die();*/
         //$data = Yii::$app->api->getListSeatClass();
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->getListPackageAvailableDate();
-        //$data = Yii::$app->api->getPackageSearch();
+        $data = Yii::$app->api->getPackageSearch();
         //$data = Yii::$app->api->getListFlightSupplier();
-        $data = Yii::$app->api->getListToCountry();
+        //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->test();
 
         echo (($data['data']) ? count($data['data']) : 0);
@@ -298,6 +285,12 @@ die();*/
         print_r($data);
         echo "</pre>";
 
+    }
+
+    public function actionMaintenance()
+    {
+        $this->layout = 'maintenance';
+        return $this->render('maintenance');
     }
 
     /**
@@ -366,11 +359,12 @@ die();*/
             $model = new \frontend\models\OrderForm();
 
             if ($model->load($this->request->post())) {
-                $client = \frontend\models\Client::find()->where('email = :email', [':email' => $model->email])->one();
-
+                $client = \frontend\models\Client::find()
+                 ->where('email = :email', [':email' => $model->email])
+                 ->one();
 
                 if (!$client) {
-                   $client = new \frontend\models\Client();         
+                   $client = new \frontend\models\Client();
                    $client->email = $model->email;
                 }
 
@@ -381,9 +375,11 @@ die();*/
 
                 if ($model->save()) {
                     $status = "success";
+                    $model->clientMail($client);
+                    $model->adminMail($client);
                 } else {
                     $status = "error";
-                    print_r($model->getErrors());
+                    //print_r($model->getErrors());
                 }
             } else {
                 $status = "error";
@@ -393,9 +389,20 @@ die();*/
 
     }
 
-    public function actionPage()
+    public function actionPage($url)
     {
-        return $this->render('page');
+        $model = Pages::find()
+        ->where('url = :url', [':url' => $url])
+        ->andWhere(['activity' => 1])
+        ->one();
+
+        $this->setMetaTags(
+          $model->meta_title,
+          $model->meta_keywords,
+          $model->meta_description
+        );
+
+        return $this->render('page', compact('model'));
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace backend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+//use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 
 /**
  * This is the model class for table "coraltravel_hotel".
@@ -37,6 +39,14 @@ use Yii;
  */
 class CoraltravelHotel extends \yii\db\ActiveRecord
 {
+    public $path_img;
+    public $path_img_t;
+    public $path_img_thumbs;
+    public $path_img_big;
+    public $delimg;
+    public $m_img;
+    public $HotelImages;
+
     /**
      * {@inheritdoc}
      */
@@ -45,6 +55,35 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
         return 'coraltravel_hotel';
     }
 
+    public function init()
+    {
+        parent::init();
+        //$this->path_img = '/uploads/hotel/{ID}/t/thumb_';
+        $this->path_img = '/uploads/hotel/{ID}/';
+        $this->path_img_thumbs = $this->path_img.'t/';
+        $this->path_img_big = $this->path_img.'b/';
+        $this->path_img_t = $this->path_img_thumbs.'thumb_';
+    }
+
+/*public function behaviors()
+{
+    return [
+        TimestampBehavior::className(),
+        'saveRelations' => [
+            'class'     => SaveRelationsBehavior::className(),
+            'relations' => [
+                'images',
+            ],
+        ],
+    ];
+}
+
+public function transactions()
+{
+    return [
+        self::SCENARIO_DEFAULT => self::OP_ALL,
+    ];
+}*/
     /**
      * {@inheritdoc}
      */
@@ -54,9 +93,11 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
             [['ID', 'Name', 'Place', 'HotelCategory'], 'required'],
             [['ID', 'Place', 'HotelCategory', 'GiataCode', 'OperatorSaleCategory', 'tripAdvisorCommentCount', 'disableOnB2C', 'dontShowTripAdvisorComments', 'CountryID'], 'integer'],
             [['Latitude', 'Longitude', 'tripAdvisorPoint'], 'number'],
-            [['Name', 'Address', 'Web', 'CommercialName', 'TaxOffice', 'invoiceAddress', 'tripAdvisorImage', 'TripAdvisorCode', 'cancelStatusWeb'], 'string', 'max' => 255],
+            [['Name', 'Address', 'Web', 'CommercialName', 'TaxOffice', 'invoiceAddress', 'tripAdvisorImage', 'TripAdvisorCode', 'cancelStatusWeb', 'maplink'], 'string', 'max' => 255],
+            [['description'], 'string'],
             [['Phone1', 'Phone2', 'Fax1', 'Fax2', 'TaxNumber', 'email'], 'string', 'max' => 150],
             [['ID'], 'unique'],
+            [['delimg', 'm_img', 'HotelImages'], 'safe'],
         ];
     }
 
@@ -68,16 +109,18 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
         return [
             'ID' => Yii::t('app', 'ID'),
             'Name' => Yii::t('app', 'Отель'),
+            'description' => Yii::t('app', 'Описание'),
+            'maplink' => Yii::t('app', 'Ссылка на карту'),
             'Place' => Yii::t('app', 'Place'),
-            'HotelCategory' => Yii::t('app', 'Hotel Category'),
-            'Address' => Yii::t('app', 'Address'),
+            'HotelCategory' => Yii::t('app', 'Категория отеля'),
+            'Address' => Yii::t('app', 'Адрес'),
             'Web' => Yii::t('app', 'Web'),
             'Latitude' => Yii::t('app', 'Latitude'),
             'Longitude' => Yii::t('app', 'Longitude'),
             'TripAdvisorCode' => Yii::t('app', 'Trip Advisor Code'),
             'GiataCode' => Yii::t('app', 'Giata Code'),
-            'Phone1' => Yii::t('app', 'Phone1'),
-            'Phone2' => Yii::t('app', 'Phone2'),
+            'Phone1' => Yii::t('app', 'Телефон'),
+            'Phone2' => Yii::t('app', 'Телефон'),
             'Fax1' => Yii::t('app', 'Fax1'),
             'Fax2' => Yii::t('app', 'Fax2'),
             'OperatorSaleCategory' => Yii::t('app', 'Operator Sale Category'),
@@ -106,9 +149,14 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
         return $this->hasOne(CoraltravelHotelCategory::class, ['ID' => 'HotelCategory']);
     }
 
+    public function getMainImg()
+    {
+        return $this->hasOne(Images::class, ['hotel_id' => 'ID'])->where(['main' => 1]);
+    }
+
     public function getImages()
     {
-        return $this->hasMany(Images::class, ['hotel_id' => 'id']);
+        return $this->hasMany(Images::class, ['hotel_id' => 'ID']);
     }
 
     public function getMainImage()

@@ -37,10 +37,11 @@ class Pages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'url', 'created_at', 'updated_at'], 'required'],
+            [['title', 'menu_title', 'url', 'created_at', 'updated_at'], 'required'],
             [['anons', 'content', 'meta_description'], 'string'],
             [['activity', 'menu', 'sort', 'created_at', 'updated_at'], 'integer'],
             [['title', 'url', 'meta_title', 'meta_keywords'], 'string', 'max' => 255],
+            ['main', 'safe'],
         ];
     }
 
@@ -65,4 +66,20 @@ class Pages extends \yii\db\ActiveRecord
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
+
+    public function getBanners()
+    {
+        return $this->hasMany(Banners::class, ['page_id' => 'id']);
+    }
+
+    public static function getMainPage()
+    {
+        return self::find()->where(['main' => 1])->with('banners')->one();
+    }
+
+    public static function getPageByUrl($url)
+    {
+        return self::find()->where('url = :url', [':url' => $url])->with('banners')->one();
+    }
+
 }

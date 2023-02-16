@@ -18,6 +18,13 @@ use vova07\imperavi\Widget;
             <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
         </div>
     </div>
+    <?if(!$model->main && $model->url != 'tours'):?>
+    <div class="row">
+        <div class="col-md-8">
+            <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
+    <?endif?>
     <div class="row">
         <div class="col-md-12">
             <?php
@@ -47,6 +54,21 @@ use vova07\imperavi\Widget;
         </div>
     </div>
     <div class="row">
+        <div class="col-md-12">
+            <?= $form->field($model, 'meta_title')->textInput() ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $form->field($model, 'meta_keywords')->textInput() ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <?= $form->field($model, 'meta_description')->textArea() ?>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-2">
             <?= $form->field($model, 'activity')->checkbox() ?>
         </div>
@@ -60,6 +82,18 @@ use vova07\imperavi\Widget;
             <?= $form->field($model, 'sort')
               ->textInput([
                   'type' => 'number',
+                  'label' => null,
+                  'class' => 'in-menu',
+                  'style' => ((!$model->menu) ? 'display:none' : ''),
+              ])
+              ->label(false) ?>
+        </div>
+        <div class="col-md-1">
+            <label class="in-menu"<?if(!$model->menu):?> style="display:none"<?endif?>>Название</label>
+        </div>
+        <div class="col-md-5">
+            <?= $form->field($model, 'menu_title')
+              ->textInput([
                   'label' => null,
                   'class' => 'in-menu',
                   'style' => ((!$model->menu) ? 'display:none' : ''),

@@ -17,6 +17,7 @@ class OrderForm extends Orders
     public $email;
    // public $tour_id;
     public $politic;
+    public $ages;
 
 
     /**
@@ -38,10 +39,10 @@ class OrderForm extends Orders
             //['phone', 'required'],
             ['phone', 'string', 'max' => 150],*/
             ['email', 'email'],
-            [['tour_id', 'politic'], 'required'],
+            [['tour_id', 'politic', 'email'], 'required'],
             [['tour_id'], 'integer'],
             [['politic'], 'compare', 'compareValue' => 1, 'message' => 'Jums ir jāpiekrīt noteikumiem'],
-            [['comment', 'link'], 'string'],
+            [['comment', 'link', 'ages'], 'string'],
         ];
     }
 
@@ -55,6 +56,7 @@ class OrderForm extends Orders
             $tours->id = null;
             OrderItems::populateRecord($model, $tours);
             $model->order_id = $this->id;
+            $model->ChildAges = $this->ages;
             $model->trigger(OrderItems::EVENT_AFTER_FIND);
             $model->setIsNewRecord(true);
             $model->save(false);
@@ -70,8 +72,28 @@ class OrderForm extends Orders
         ];
     }
 
-    public function add()
+    public function adminMail($client)
     {
-        return true;
+        $r = Yii::$app->mailer->compose('new_order_admin', ['data' => $client, 'order' => $this]);
+        $r->setTo(Yii::$app->params['adminEmail'])
+        ->setFrom(Yii::$app->params['senderEmail']);
+        $r->setSubject('Jauns pasūtījums Admin');
+        return $r->send();
+    }
+
+    public function clientMail($client)
+    {
+        $r = Yii::$app->mailer->compose('new_order_client', ['data' => $client, 'order' => $this]);
+        $r->setTo($client->email)
+        ->setFrom(Yii::$app->params['senderEmail']);
+        $r->setSubject('Jauns pasūtījums');
+        return $r->send();
+    }
+
+    public function getTour22()
+    {
+
+        /*$model = \frontend\models\Tours::findOne($this->tour_id);
+        return $model;*/
     }
 }

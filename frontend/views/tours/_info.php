@@ -1,9 +1,9 @@
             <div class="catCard__data">
                 <div class="tour-card__meta-item" tabindex="0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" aria-labelledby="plane-departure" fill="#000000" role="presentation" class="icon icon-plane-departure">
+                <!--<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" aria-labelledby="plane-departure" fill="#000000" role="presentation" class="icon icon-plane-departure">
                     <title id="plane-departure" lang="en">plane-departure icon</title>
                     <path d="m15.8385 10.3847h-14.73176c-.214191 0-.387677.1785-.387677.3988v.7975c0 .2203.173486.3988.387677.3988h14.73176c.2142 0 .3877-.1785.3877-.3988v-.7975c0-.2203-.1735-.3988-.3877-.3988zm-13.16772-2.65989c.15216.17047.36587.26717.58951.26692l3.16296-.00449c.24962-.00034.49564-.06113.71817-.17744l7.04988-3.67975c.6479-.3382 1.2287-.82094 1.6239-1.45321.4437-.70978.4919-1.22343.3167-1.5863-.1747-.363111-.5994-.629778-1.4114-.684108-.7232-.048349-1.4426.147539-2.0905.485483l-2.3869 1.245855-5.29908-2.0451076c-.12974-.08989972-.29664-.10048587-.43614-.0276636l-1.59311.8316512c-.25853.13483-.32104.48972-.12527.71103l3.78519 2.44486-2.50076 1.30542-1.75303-.90891c-.12249-.06352-.26704-.06333-.38938.0005l-.972339.50766c-.25296.13209-.319592.47651-.13496.69981z" ></path>
-                </svg><span class="capitalize"><?=Yii::$app->formatter->asDate($model->HotelCheckInDate, 'php:d M Y');?></span>
+                </svg>--><span class="capitalize"><?=Yii::$app->formatter->asDate($model->FlightDate, 'php:d M Y');?></span>
             </div>
             <div class="tour-card__meta-item" tabindex="0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" aria-labelledby="nights" fill="#000000" role="presentation" class="icon icon-nights">

@@ -109,7 +109,7 @@ class OrdersController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete11($id)
+    public function actionDelete($id)
     {
         $this->findModel($id)->delete();
 

@@ -19,7 +19,7 @@ class AppAsset extends AssetBundle
     public $js = [
         '//cdn.jsdelivr.net/npm/flatpickr',
         '//npmcdn.com/flatpickr/dist/l10n/lv.js',
-        'js/moment-with-locales.js',
+        //'js/moment-with-locales.js',
         'js/functions.js',
     ];
     public $depends = [

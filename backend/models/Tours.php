@@ -122,7 +122,7 @@ class Tours extends \yii\db\ActiveRecord
             'EarlyBookingText' => 'Early Booking Text',
             'BusinessFlightAllotmentStatus' => 'Business Flight Allotment Status',
             'BusinessBackFlightAllotmentStatus' => 'Business Back Flight Allotment Status',
-            'HotelNight' => 'Hotel Night',
+            'HotelNight' => 'К-во ночей',
             'FlightLeftAllotmentText' => 'Flight Left Allotment Text',
             'BackFlightLeftAllotmentText' => 'Back Flight Left Allotment Text',
             'B2BUrl' => 'B2b Url',
@@ -222,4 +222,5 @@ class Tours extends \yii\db\ActiveRecord
     {
         return $this->hasOne(CoraltravelCountry::class, ['ID' => 'ToCountryID']);
     }
+
 }

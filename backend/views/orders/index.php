@@ -30,13 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'client.name',
             'client.phone',
-            'tour.toCountry.Name',
-            'tour.area.Name',
-            'tour.hotel.Name',
-            'tour.acc.Name',
-            'tour.PackagePrice',
+            'orderItems.toCountry.Name',
+            'orderItems.area.Name',
+            'orderItems.hotel.Name',
+            'orderItems.acc.Name',
+            'orderItems.PackagePrice',
 
-            //'tour.Child',
+            //orderItemsChild',
             [
                 'attribute' => 'created_at',
                 'format' => ['date', 'php:d.m.Y H:i:s'],
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, Orders $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  },
-                'template' => '{view}',
+                'template' => '{view} {delete}',
             ],
         ],
     ]); ?>

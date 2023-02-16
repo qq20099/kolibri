@@ -7,12 +7,12 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\ConfigSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Налаштування';
+$this->title = 'Настройки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="config-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+   <!-- <h1><?//= Html::encode($this->title) ?></h1> -->
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

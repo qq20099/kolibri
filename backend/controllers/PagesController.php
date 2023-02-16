@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use backend\models\Pages;
 use backend\models\PagesSearch;
 //use yii\web\Controller;
@@ -70,12 +71,12 @@ class PagesController extends AppController
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    /*public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
+    }*/
 
     /**
      * Creates a new Pages model.
@@ -88,7 +89,7 @@ class PagesController extends AppController
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
@@ -111,7 +112,7 @@ class PagesController extends AppController
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -129,6 +130,13 @@ class PagesController extends AppController
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+
+        \backend\models\Banners::deleteAll(['page_id' => $ID]);
+
+        $path = Yii::getAlias('@bannersDir');
+        $path = $path.$ID;
+
+        \yii\helpers\FileHelper::removeDirectory($path);
 
         return $this->redirect(['index']);
     }

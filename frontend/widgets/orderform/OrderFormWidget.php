@@ -14,7 +14,6 @@ class OrderFormWidget extends Widget {
 
     public function run()
     {
-        $courses = [];
         $model = new OrderForm();
         $client = new Client();
 

@@ -1,18 +1,16 @@
-$(document).ready(function(){
-    moment.locale();
-//    moment().format('L');
-    var fp;
-    var $fl_dat;
+const objDate = new Date();
     var $fp_options = {
             //static: true,
             wrap: true,
             altInput: true,
             altFormat: 'j M',
             dateFormat: 'U',
-            minDate: 'today',
+            minDate: (new Date(objDate.getTime() + (24 * 60 * 60 * 1000))),
             locale: 'lv',
             //ariaDateFormat:	"F j, Y",
             calendarContainer: '.search-form__datepicker',
+            disableMobile: true,
+            //appendTo: 'search-form__datepicker',
             /*wrap: true,
             calendarContainer: '.search-form__datepicker',
             altInput: true,
@@ -38,7 +36,14 @@ $(document).ready(function(){
         }
     ],*/
             onDayCreate: function(dObj, dStr, fp, dayElem){
-                dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD')+"'></span>";
+                //var date = new Date($(dayElem).attr('aria-label'));
+                var date = new Date(dayElem.dateObj);
+                dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+date.toLocaleDateString('en-CA')+"'></span>";
+
+                //console.log(date.toLocaleDateString('en-CA'));
+                //dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD')+"'></span>";
+
+
                 //console.log(fp.currentYear+'-'+(fp.currentMonth)+'-'+$(dayElem).text());
                 //var birthday = new Date($(dayElem).attr('aria-label'));
 /*console.log(fp);
@@ -87,11 +92,60 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
 //                  dayElem.innerHTML += "<span class='event busy'></span>";
             },
         };
+
+$(document).ready(function(){
+    //moment.locale();
+//    moment().format('L');
+    var fp;
+    var $fl_dat;
+
     //alert(date_from);
+
     $(function(){
         $('.index-page__search-form').css('opacity', '1');
         $('.banners').css('opacity', '1');
         $('.banners').css('height', '');
+        $('.tour-line__link').removeClass('hide');
+
+        if ($('#search-form').length) {
+            fp = $(".flatpickr").flatpickr($fp_options);
+
+            if (!date_from)
+              getSpecification($('#search-form'), fp);
+            //else
+              getDate($('#search-form'), fp);
+        }
+    });
+
+    if ($('.copy-link').length) {
+        document.querySelector('.copy-link').addEventListener('click', e => {
+            navigator.clipboard.writeText(window.location.href)
+            .then(() => {
+                setTimeout(function(){
+                    $('[data-toggle="tooltip"]').tooltip('hide');
+                }, 2000);
+                console.log("Done!");})
+            .catch(err => console.error(err))
+        });
+    }
+
+    $(document).on('click', '.search-btn-form-mobile .search-form__search-btn', function(e){
+        let bl = $('#search-form');
+        bl.addClass('show');
+        $(this).parent().fadeOut(function(){
+            $('body').addClass('show-form-mobile');
+        });
+
+        $('html, body').animate({scrollTop: bl.offset().top}, 'slow', 'linear');
+    });
+
+    $(document).on('change', '#choice-region', function(e){
+        getDate($('#search-form'), fp);
+    });
+
+    $(document).on('click', '.u-over-slide', function(e){
+        let url = $(this).closest('.tour-card__img').find('a').attr('href');
+        window.location.href = url;
     });
 
     $(document).on('change', '#searchtours-country_id, #choice-nights, #chuse-country', function(e){
@@ -116,7 +170,11 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
 
     $(document).on('change', '#searchtours-country_id', function(e){
         let form = $(this).closest('form');
+        $('.input-field.search-form__regions .open').removeClass('open');
+        $('.input-field.search-form__regions .show').removeClass('show');
         $('#searchtours-region_id').val(0);
+        $('#choice-region').val(0);
+        $('#choice-region').multiselect('refresh');
         getSpecification(form, fp);
         return false;
     });
@@ -365,12 +423,49 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
         }
     });
 
-    $(document).mousedown(function(e) {
+    $(document).on('click', '.search-form__close-btn', function(e){
+        $('.passengers-selection__dropdown').hide();
+    });
+
+    $(document).on('click', '.passengers-selection__mob-apply', function(e){
+        $('.passengers-selection__dropdown').hide();
+    });
+
+    $(document).mousedown(function(e){
+        console.log('ggggg');
+
         if ($(e.target).attr('id') == 'show-tab')
           return false;
 
-        let container = $(".passengers-selection__dropdown");
-        if (container.has(e.target).length === 0 && $(".passengers-selection__dropdown").has(e.target).length === 0) {$('.passengers-selection__dropdown').hide();}
+        /*if (!$(e.target).hasClass('se'))
+          return false;*/
+
+        console.log('ssss');
+        let container = $(".passengers-selection");
+
+        if (container.has(e.target).length === 0) {
+            $('.passengers-selection__dropdown').hide();
+            console.log(e.target);
+            console.log(container.has(e.target));
+        }
+
+        /*if (container.has(e.target).length === 0
+         && $(".passengers-selection__dropdown-inner").has(e.target).length === 0) {
+             $('.passengers-selection__dropdown').hide();
+        console.log(container.has(e.target).length);
+        console.log($(".passengers-selection__dropdown-inner").has(e.target).length);
+        console.log($(e.target).attr('class'));
+        }*/
+    });
+
+    $(document).on('click', '#search-form .search-form__close-btn.fi', function(e){
+        $('#search-form').slideUp(function(){
+            $('#search-form').removeClass('show');
+            $('.search-btn-form-mobile').fadeIn(function(){
+                //$('.search-btn-form-mobile').addClass('show');
+            });
+        });
+        console.log('gggggggggggggggggggggggggggg');
     });
 
     $(document).on('click', '.tour-card__img', function(e){
@@ -394,9 +489,7 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
     });*/
 
     //$(function(){
-        fp = $(".flatpickr").flatpickr($fp_options);
-        if (!date_from)
-          getSpecification($('#search-form'), fp);
+
         //fp.set('dateFormat', "Y-m-d");
         //fp.set('formatDate', 'Y-m-d');
         //fp.set('dateFormat', 'U');
@@ -447,8 +540,10 @@ console.log(moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD'));*/
 
     $(document).on('click', '.tour-line__link', function(){
         let id = $(this).data('id');
+        let ages = $('#searchtours-ages').val();
         $('#orderform-tour_id').val(id);
-        $('#modal-order').modal('show');
+        $('#orderform-ages').val(ages);
+        //$('#modal-order').modal('show');
         return false;
     });
 
@@ -496,7 +591,8 @@ function addOrder(form)
             form.find('.form-result .'+response.status).fadeIn();
             if (response.status == 'success') {
                 setTimeout(function(){
-                    form.closest('.modal').modal('hide');
+                    $('#modal-order').modal('hide');
+                    //form.closest('.modal').modal('hide');
                 }, 4000);
             } else {
             }
@@ -513,15 +609,25 @@ function getNights(form)
         data: form.serialize(),
         error: function(response){console.log(response);},
         success: function(response){
+            let ni = $(response);
+            let n = ni.find('.input-field');
+
+            console.log(ni);
+            console.log(ni.find('.input-field').length);
             $('.search-form__nights').replaceWith(response);
+            //$('.search-form__nights .input-field').replaceWith(n);
             $('.search-form__nights .input-field--disabled').removeClass('.input-field--disabled');
         },
     });
 }
 
-function getSpecification(form, fp)
+function getDate(form, fp)
 {
-    fp.clear();
+
+    //fp.clear();
+
+    $('#searchform-date_from').val(date_from);
+
     $.ajax({
         url: form.data('url'),
         type: 'post',
@@ -532,34 +638,95 @@ function getSpecification(form, fp)
             let err = 0;
             $('.calendar-min-price-css').remove();
 
-            if (response.date) {
+            if (response.date.length > 0) {
+                for (var key in response.price) {
+                    $('.event-'+key).text(response.price[key]);
+        document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
+                }
+
+                $('.search-form__datepicker').removeClass('input-field--disabled');
+                $('.search-form__date-nights').removeClass('input-field--disabled');
+                fp.set('dateFormat', "Y-m-d");
+                fp.set('enable', response.date);
+                if (date_from) {
+                    var date = new Date(date_from * 1000);
+                    fp.setDate(date.toLocaleDateString('en-CA'));
+                    fp.set('dateFormat', 'U');
+                    getNights(form);
+                } else {
+                    fp.jumpToDate();
+                }
+                fp.set('dateFormat', 'U');
+            } else {
+                $('.search-form__date-nights').addClass('input-field--disabled');
+                $('.search-form__datepicker').addClass('input-field--disabled');
+                console.log('.search-form__datepicker');
+                /*$('#searchform-date_from').attr('disabled', true);
+                $('#searchform-date_from').attr('data-input', false);
+                $('#searchform-date_from').removeAttr('data-input');
+                $('.datepicker__input').addClass('disabled');*/
+
+            }
+
+            if (response.people) {
+                let p = $('#show-tab').text().split(' + ');
+
+                let fi = $('.passengers-input__inner:first .passengers-input__val');
+                let la = $('.passengers-input__inner:last .passengers-input__val');
+                let aMi = fi.data('min');
+                let cMi = la.data('min');
+                let pErr = 0;
+
+                fi.data('max', response.people.Adult).attr('data-max', response.people.Adult);
+                la.data('max', response.people.Child).attr('data-max', response.people.Child);
+
+                if (p[0] && p[0] > response.people.Adult) {
+                    pErr = 1;
+                }
+                if (p[1] && p[1] > response.people.Child) {
+                    pErr = 1;
+                }
+                if (pErr == 0)
+                  $('.passengers-selection .input-field').removeClass('has-error');
+
+                /*console.log(aMi);
+                console.log(cMi);
+                if (aMi == response.people.Adult) {
+                    fi.parent().find('.passengers-input__btn').prop('disabled', true);
+                }
+                if (cMi == response.people.Child) {
+                    la.parent().find('.passengers-input__btn').prop('disabled', true);
+                }*/
+            }
+        },
+    });
+}
+
+function getSpecification(form, fp)
+{
+    fp.clear();
+    $('.search-form__regions').addClass('input-field--disabled');
+
+    $.ajax({
+        url: form.data('url'),
+        type: 'post',
+        dataType: 'json',
+        data: form.serialize(),
+        error: function(response){console.log(response);},
+        success: function(response){
+            let err = 0;
+            $('.calendar-min-price-css').remove();
+
+            if (response.date.length > 0) {
                 for (var key in response.price) {
                     $('.event-'+key).text(response.price[key]);
                     console.log('.event-'+key);
                     console.log(response.price[key]);
-                    /*console.log(key);
-                    console.log(response.price[key]);*/
-                    //st += '<span class="ffpp" id="fld-'+key+'">'+response.price[key]+'</span>';
         document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
-        //let div = document.getElementById('id');
-        //div.classList.add('calendar-min-price');
                 }
-               /* let st = '';
-                console.log($(response.price));
-                window.dSearchData = response.price;
-                for (var key in response.price) {
-                    /*console.log(key);
-                    console.log(response.price[key]);* /
-                    st += '<span class="ffpp" id="fld-'+key+'">'+response.price[key]+'</span>';
-                }
-                /*response.price.forEach(function(i, k){
-                    console.log(i);
-                    console.log(k);
-
-
-                });* /
-                $('#flat-dat').html(st);*/
-
+                $('.search-form__date-nights').removeClass('input-field--disabled');
+                //$('.search-form__datepicker.input-field').removeClass('input-field--disabled');
+                $('.search-form__datepicker.input-field').removeClass('has-error').removeClass('input-field--disabled');
                 $('.search-form__datepicker').removeClass('.input-field--disabled');
                 //setTimeout(function(){
                 //fp.set('disabled', true);
@@ -581,14 +748,21 @@ function getSpecification(form, fp)
                 //fp.set('dateFormat', 'U');
 
             } else {
-                $('.search-form__datepicker').addClass('.input-field--disabled');
+                $('.search-form__date-nights').addClass('input-field--disabled');
+                $('.search-form__datepicker').addClass('input-field--disabled');
+                console.log('.search-form__datepicker0');
                 fp.set('disabled', true);
             }
 
             if (response.people) {
                 let p = $('#show-tab').text().split(' + ');
-                $('.passengers-input__inner:first .passengers-input__val').data('max', response.people.Adult).attr('data-max', response.people.Adult);
-                $('.passengers-input__inner:last .passengers-input__val').data('max', response.people.Child).attr('data-max', response.people.Child);
+                let fi = $('.passengers-input__inner:first .passengers-input__val');
+                let la = $('.passengers-input__inner:last .passengers-input__val');
+                let aMi = fi.data('min');
+                let cMi = la.data('min');
+
+                fi.data('max', response.people.Adult).attr('data-max', response.people.Adult);
+                la.data('max', response.people.Child).attr('data-max', response.people.Child);
 
                 if (p[0] && p[0] > response.people.Adult) {
                     err = 1;
@@ -602,9 +776,13 @@ function getSpecification(form, fp)
                   $('#show-tab').closest('.input-field').removeClass('has-error');
             }
 
-            if (response.regions)
-              $('.input-field.search-form__regions').replaceWith(response.regions);
-
+            if (response.regions) {
+                $('.input-field.search-form__regions').replaceWith(response.regions);
+                $('.search-form__regions').removeClass('input-field--disabled');
+            }
+            if (response.show_region) {
+                $('.search-form__regions').removeClass('input-field--disabled');
+            }
 
         },
     });

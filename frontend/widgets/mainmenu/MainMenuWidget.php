@@ -5,6 +5,7 @@ use yii\base\Widget;
 use frontend\models\Pages;
 use yii\helpers\ArrayHelper;
 use common\helpers\DataHelper;
+use yii\helpers\Url;
 use Yii;
 
 class MainMenuWidget extends Widget {
@@ -14,7 +15,11 @@ class MainMenuWidget extends Widget {
     public function run()
     {
         $courses = [];
-        $model = Pages::find()->where(['menu' => 1])->orderBy(['sort' => SORT_ASC])->all();
+        $model = Pages::find()
+        ->select('title, menu_title, url')
+        ->where(['menu' => 1])
+        ->orderBy(['sort' => SORT_ASC])
+        ->all();
 
     $menuItems = [
 //['label' => 'Meklēt', 'url' => ['/site/index']],
@@ -34,9 +39,11 @@ class MainMenuWidget extends Widget {
 
         if ($model) {
             foreach ($model as $value) {
-                $url = ($value['url'] == 'index') ? '/' : $value['url'];
-                $menuItems[] = ['label' => $value['title'], 'url' => $url];
-
+                $url = ($value['main'] || $value['url'] == 'index') ? '/' : Url::to(['/'.$value['url']]);
+                $menuItems[] = [
+                    'label' => ($value['menu_title']) ? $value['menu_title'] : $value['title'],
+                    'url' => $url
+                ];
             }
         }
         $html = $this->render('index', compact('menuItems'));

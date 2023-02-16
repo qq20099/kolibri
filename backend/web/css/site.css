@@ -1,3 +1,7 @@
+img {
+    max-width: 100%;
+}
+
 main > .container {
     padding: 70px 15px 20px;
 }
@@ -99,3 +103,274 @@ a.desc:after {
 .in-menu {
     
 }
+.img-wrapper.banners {margin-bottom: 2rem;}
+.img-wrapper.banners img {max-height: 588px;}
+.banner-tmb {
+    max-width:100%;
+    height:70px;
+}
+.field-pages-sort input {
+    width: 50px;
+}
+.field-pages-menu_title input {
+    width: 100%;
+}
+.opacity0 {
+    opacity: 0;
+}
+.gallery-btn {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.gallery-count-wrapper {
+    color: #a7a7a7;
+}
+.gallery{
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+/*.gallery.active {
+    display: flex!important;
+}
+.gallery:not(.active) {
+    display: none;
+}*/
+.img-wrapper.coraltravelhotel {
+    /*height: 143px;
+    width: 200px;
+    position: relative;*/
+
+    height: 143px;
+    width: 196px;
+    position: relative;
+    /*flex: 1 1 auto;*/
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-right: 4px;
+}
+.img-wrapper.coraltravelhotel img {
+    border: 1px solid transparent;
+}
+.img-wrapper.coraltravelhotel.main--img img {
+    border-color: red;
+}
+.img-wrapper.coraltravelhotel img {height: 100%;}
+.mainimg-wrapper .overlay,
+.img-wrapper.coraltravelhotel .overlay {position: absolute;top:0;left:0;width:100%;height:100%;z-index:10;background:rgba(0, 0, 0, .7);text-align:center;display: flex;flex-direction: column;justify-content: center;transform: rotate3d(1, 0, 0, 90deg);}
+.mainimg-wrapper.selected:hover .overlay,
+.img-wrapper.coraltravelhotel:hover .overlay {
+  transform-origin: 50% 100%;
+  -webkit-animation: in-bottom 300ms ease 0ms 1 forwards;
+          animation: in-bottom 300ms ease 0ms 1 forwards;
+}
+.mainimg-wrapper .overlay .btn,
+.img-wrapper.coraltravelhotel .overlay .btn {font-size: 2.5em;padding:0;text-shadow: 0 0 13px #000;}
+.mainimg-wrapper .overlay .btn:focus,
+.mainimg-wrapper .overlay .btn:active,
+.img-wrapper.coraltravelhotel .overlay .btn:focus,
+.img-wrapper.coraltravelhotel .overlay .btn:active {box-shadow:none;outline:none;border-color:transparent;}
+.mainimg-wrapper .overlay .btn:active,
+.img-wrapper.coraltravelhotel .overlay .btn:active {text-shadow: none;}
+.img-wrapper.coraltravelhotel .overlay .check-btn {color: #1dd525;}
+.mainimg-wrapper .overlay .uncheck-btn,
+.img-wrapper.coraltravelhotel .overlay .delete-btn {color: #FF0000;}
+.img-wrapper.coraltravelhotel .overlay .btn:disabled {text-shadow: none;color:#FFF;opacity:.3;}
+/*.img-wrapper.coraltravelhotel img:after{content:'';position: absolute;top:0;left:0;width:100%;height:100%;z-index:10;background:rgba(0, 0, 0, .52)}*/
+@-webkit-keyframes in-bottom {
+  from {
+    transform: rotate3d(1, 0, 0, 90deg);
+  }
+  to {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+}
+@keyframes in-bottom {
+  from {
+    transform: rotate3d(1, 0, 0, 90deg);
+  }
+  to {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+}
+@-webkit-keyframes out-bottom {
+  from {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+  to {
+    transform: rotate3d(1, 0, 0, 104deg);
+  }
+}
+@keyframes out-bottom {
+  from {
+    transform: rotate3d(0, 0, 0, 0deg);
+  }
+  to {
+    transform: rotate3d(1, 0, 0, 104deg);
+  }
+}
+
+.wpv-splash-screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #ffffff;
+  background: rgba(255, 255, 255, .27);
+  z-index: 99999;
+  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wpv-splash-screen .wpv-splash-screen-logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  -webkit-animation: breathe 1s alternate infinite cubic-bezier(.5522847498,0,.44771525,1);
+  animation: breathe 1s alternate infinite cubic-bezier(.5522847498,0,.44771525,1);
+}
+
+@-webkit-keyframes breathe {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: .4;
+  }
+}
+@keyframes breathe {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: .4;
+  }
+}
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  /*background: #033788;*/
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.wpv-splash-screen.showw {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mainimg--wrapper {
+    display: flex;
+    height: 100%;
+    align-content: center;
+    flex-wrap: wrap;
+}
+.mainimg-wrapper {
+    flex: auto;
+    position: relative;
+}
+.mainimg-wrapper img {
+    max-height:295px;
+}
+.img-wrapper.main--img:after {
+/*    content:'';
+    display:block;
+    position: absolute;
+    top: 0;
+    left:100%;*/
+}
+a:not(.active) .show-notactive,
+a.active .show-active {display: inline;}
+a:not(.active) .show-active,
+a.active .show-notactive {display: none;}
+.add-images-label:hover {cursor: pointer;}
+.hotel-name {
+    margin-left:1.5rem;
+    display:inline-block;
+}
+.img-wrapper.logo img {width: 150px;}

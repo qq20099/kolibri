@@ -1,12 +1,12 @@
 <?php
-
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var backend\models\Orders $model */
 
-$this->title = $model->id;
+$this->title = 'Order #'.$model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -17,6 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?//= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>        
         <?/*= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -52,7 +59,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'orderItems.hotel.Name',
             'orderItems.hotel.Address',
             'orderItems.hotel.Phone1',
-            'orderItems.hotel.Web',
+            [
+                'attribute' => 'orderItems.hotel.Web',
+                'format' => 'raw',
+                'value' => function($data){
+                    $url = '';
+                    if ($data->orderItems->hotel->Web) {
+                        if (!parse_url($data->orderItems->hotel->Web, PHP_URL_SCHEME))
+                          $u = '//'.$data->orderItems->hotel->Web;
+                        else
+                          $u = $data->orderItems->hotel->Web;
+                        $url = Html::a($data->orderItems->hotel->Web, $u, ['target' => '_blank']);
+                    }
+                    return $url;
+                },
+            ],
             'orderItems.hotel.hotelCategory.Name',
             'orderItems.room.Name',
             'orderItems.ChildAges',
@@ -68,6 +89,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'client_id',
             //'tour_id',
+            [
+                'label' => 'Страница заказа',
+                'attribute' => 'link',
+                'format' => 'raw',
+                'value' => function($data){
+                    $url = \Yii::$app->request->hostInfo.''.$data->link;
+                    if ($data->link) {
+                        $url = Html::a('Посмотреть', $url, ['target' => '_blank']);
+                    }
+                    return $url;
+                },
+            ],
             [
                 'attribute' => 'created_at',
                 'format' => ['date', 'php:d.m.Y H:i:s'],

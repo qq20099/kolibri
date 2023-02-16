@@ -32,7 +32,7 @@ class Images extends \yii\db\ActiveRecord
             [['title', 'hotel_id'], 'required'],
             [['hotel_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['hotel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hotel::class, 'targetAttribute' => ['hotel_id' => 'id']],
+            [['hotel_id'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelHotel::class, 'targetAttribute' => ['hotel_id' => 'ID']],
         ];
     }
 
@@ -42,9 +42,9 @@ class Images extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('frontend', 'ID'),
-            'title' => Yii::t('frontend', 'Title'),
-            'hotel_id' => Yii::t('frontend', 'Hotel ID'),
+            'id' => Yii::t('app', 'ID'),
+            'title' => Yii::t('app', 'Title'),
+            'hotel_id' => Yii::t('app', 'Hotel ID'),
         ];
     }
 

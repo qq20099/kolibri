@@ -17,7 +17,7 @@ class PagesSearch extends Pages
     public function rules()
     {
         return [
-            [['id', 'activity', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'activity', 'menu', 'created_at', 'updated_at'], 'integer'],
             [['title', 'content'], 'safe'],
         ];
     }

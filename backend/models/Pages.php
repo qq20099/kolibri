@@ -9,12 +9,19 @@ use Yii;
  *
  * @property int $id
  * @property string $title
+ * @property string $url
+ * @property string|null $anons
  * @property string|null $content
+ * @property string|null $meta_title
+ * @property string|null $meta_description
+ * @property string|null $meta_keywords
  * @property int $activity
+ * @property int $menu
+ * @property int $sort
  * @property int $created_at
  * @property int $updated_at
  *
- * @property Gallery[] $galleries
+ * @property Banners[] $banners
  */
 class Pages extends \yii\db\ActiveRecord
 {
@@ -33,9 +40,10 @@ class Pages extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['anons', 'content'], 'string'],
-            [['activity', 'created_at', 'updated_at', 'menu', 'sort'], 'integer'],
-            [['title'], 'string', 'max' => 255],
+            [['anons', 'content', 'meta_description'], 'string'],
+            [['activity', 'menu', 'sort', 'created_at', 'updated_at'], 'integer'],
+            [['title', 'menu_title', 'url', 'meta_title', 'meta_keywords'], 'string', 'max' => 255],
+            ['main', 'safe'],
         ];
     }
 
@@ -51,6 +59,20 @@ class Pages extends \yii\db\ActiveRecord
             ],
         ];
     }
+    
+    public function beforeSave($insert)
+    {
+        if (!$this->menu_title) {
+            $this->menu_title = $this->title;
+        }
+
+        if ($insert || !$this->url) {
+            $t = str_replace('.', '. ', $this->title);
+            $url = \yii\helpers\Inflector::slug($t);
+            $this->url = $url;
+        }
+        return parent::beforeSave($insert);
+    }
 
     /**
      * {@inheritdoc}
@@ -59,23 +81,28 @@ class Pages extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Назва',
-            'content' => 'Контент',
+            'title' => 'Страница',
+            'url' => 'Url',
+            'anons' => 'Anons',
+            'content' => 'Content',
+            'meta_title' => 'Meta Title',
+            'meta_description' => 'Meta Description',
+            'meta_keywords' => 'Meta Keywords',
             'activity' => 'На сайте',
-            'created_at' => 'Создано',
-            'updated_at' => 'Изменено',
-            'menu' => 'Добавить в меню',
-            'sort' => 'Порядок',
+            'menu' => 'В меню',
+            'sort' => 'Sort',
+            'created_at' => 'Добавлена',
+            'updated_at' => 'Изменена',
         ];
     }
 
     /**
-     * Gets query for [[Galleries]].
+     * Gets query for [[Banners]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getGalleries()
+    public function getBanners()
     {
-        return $this->hasMany(Gallery::class, ['page_id' => 'id']);
+        return $this->hasMany(Banners::class, ['page_id' => 'id']);
     }
 }

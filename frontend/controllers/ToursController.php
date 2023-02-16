@@ -3,14 +3,19 @@
 namespace frontend\controllers;
 
 use frontend\models\SearchTours;
+use frontend\models\Pages;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use Yii;
 
-class ToursController extends \yii\web\Controller
+class ToursController extends AppController
 {
     public function actionIndex()
     {
+        /*echo "<pre>";
+        print_r($_GET['SearchTours']);
+        echo "</pre>";
+        die();*/
         $countryFilter = [];
 
         $model = \frontend\models\Tours::find()
@@ -22,16 +27,17 @@ class ToursController extends \yii\web\Controller
         ->asArray()
         ->all();
 
-        $searchModel = new \frontend\models\SearchTours();
+        $searchModel = new SearchTours();
 
         if (Yii::$app->request->isAjax)
           $searchModel->scenario = $searchModel::SCENARIO_FIND_BY_COUNTRY;
 
+        if ($searchModel->scenario == $searchModel::SCENARIO_FIND_BY_FORM && !isset($searchModel->adult)) {
+            $searchModel->adult = 2;
+        }
+
         $params = Yii::$app->request->queryParams;
-        /*echo "<pre>";
-        print_r($params);
-        echo "</pre>";*/
-//        die();
+
 
         $cookies = Yii::$app->request->cookies;
         $hot_sort_country = $cookies->getValue('hot_sort_country', 0);
@@ -50,12 +56,7 @@ class ToursController extends \yii\web\Controller
             ->all();
 
             $r = ArrayHelper::getColumn($c, 'AreaID');
-/*echo "<pre>";
-print_r($r);
-//print_r($c);
-print_r($searchModel->region_id);
-echo "<pre>";
-die();*/
+
             if (array_diff($searchModel->region_id, $r)) {
                 throw new NotFoundHttpException(Yii::t(
                     'app', 'Page not found'
@@ -76,8 +77,14 @@ die();*/
             $hot_sort_country = 0;
         }
 
+        /*echo "<pre>";
+        //print_r($dataProvider->getModels());
+        print_r($params);
+        echo "</pre>";
+        die();*/
         if ($model) {
-            $t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
+
+            /*$t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
             $countryFilter = \yii\helpers\ArrayHelper::map($t, 'ID', 'Name');
 
             if (count($countryFilter) > 1) {
@@ -86,10 +93,40 @@ die();*/
                 //array_unshift($countryFilter, 'All');
             } else {
                 $countryFilter = [];
-            }
+            }*/
         }
-//print_r($countryFilter);die();
-        return $this->render('index', compact('dataProvider', 'searchModel', 'hot_sort_country'));
+
+        $countryFilter = $searchModel->getCountryForFilter();
+
+            if (isset($countryFilter) && count($countryFilter) > 1) {
+                $countryFilter[0] = 'All';
+                asort($countryFilter);
+                //array_unshift($countryFilter, 'All');
+            } else {
+               // $countryFilter = [];
+            }
+
+        $pages = new Pages();
+        $page = $pages->getPageByUrl('tours');
+/*echo "<pre>";
+print_r($countryFilter);
+//print_r($page);
+echo "</pre>";
+die();*/
+        $this->setMetaTags(
+          $page->meta_title,
+          $page->meta_keywords,
+          $page->meta_description
+        );
+
+        return $this->render('index', compact(
+            'dataProvider',
+            'searchModel',
+            'hot_sort_country',
+            'page',
+            'countryFilter',
+            'params'
+        ));
     }
 
     public function actionView($id)
@@ -104,11 +141,33 @@ die();*/
            ->where('id = :id', [':id' => $id])
            ->one();*/
         $model = \frontend\models\Tours::find()
-          ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'room', 'hotelCategory'])
+          ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'room', 'hotel.category'])
           ->where('id = :id', [':id' => $id])
           ->one();
 
-        return $this->render('view', compact('model'));
+        //print_r($model->hotel->getI());
+        /*foreach ($model->hotel->getI() as $value) {
+            $im = new \frontend\models\Images();
+            $im->hotel_id = $model->HotelID;
+            $im->title = basename($value);
+            $im->save();
+            //print_r($im->getErrors());die();
+        }
+        die();*/
+
+        $pages = new Pages();
+        $page = $pages->getPageByUrl('tours');
+
+        $this->setMetaTags(
+          $model->hotel->Name.' '.$model->hotel->category->ShortName,
+          $page->meta_keywords,
+          $page->meta_description
+        );
+
+        return $this->render('view', [
+          'model' => $model,
+          'related' => $model->getRelatedTours(),
+        ]);
     }
 
     public function actionNov()
@@ -126,9 +185,9 @@ die();*/
     }
 
     public function actionNights()
-    {
-        if (\Yii::$app->request->isAjax) {
-            $model = new \frontend\models\SearchTours();
+    {       
+        if (Yii::$app->request->isAjax) {
+            $model = new SearchTours();
             if ($model->load($this->request->post())) {
                $data = (!$model->date_from) ? [] : $model->getNights();
             } else {
@@ -237,11 +296,12 @@ die();*/
              ->joinWith('package.tours');
             $dateItems = $q->all();
 
-//print_r($dateItems);
-//print_r($data);
+//print_r($dateItems);*/
+/*print_r($data);
+print_r($searchTours);*/
 //print_r($model);
 //die();
-
+/*
             $date = ArrayHelper::getColumn($dateItems, 'PackDate');
             $date = ($date) ? array_unique($date) : [];
 
@@ -254,15 +314,16 @@ die();*/
             $result = $searchTours->getToursAvailableDate();
 
             return $this->asJson([
-                'regions' => ($data) ? $this->renderAjax('spec_country', compact('searchTours', 'data')) : '',
+                'regions' => ($data) ? $this->renderAjax('spec_region', compact('searchTours', 'data')) : '',
                 'date' => $result['date'],
                 'price' => $result['price'],
                 'people' => $searchTours->getPeople(),
+                'show_region' => ($searchTours->region_id) ? true : false,
             ]);
         }
     }
 
-    public function actionGetPrices()
+    public function actionPrices()
     {
         if (Yii::$app->request->isAjax) {
             $country_id = $_POST['country'];

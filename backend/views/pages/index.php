@@ -15,10 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pages-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!--<h1><?//= Html::encode($this->title) ?></h1>-->
 
     <p>
-        <?= Html::a('Create Pages', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Page', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -28,13 +28,31 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'title',
-            'content:ntext',
-            'activity',
-            'created_at',
+            //'content:ntext',
+            [
+                'attribute' => 'activity',
+                'filter' => ['Нет', 'Да'],
+                'value' => function($data){
+                    return ($data->activity) ? 'Да' : 'Нет';
+                }
+            ],
+            [
+                'attribute' => 'menu',
+                'label' => 'В меню',
+                'filter' => ['Нет', 'Да'],
+                'value' => function($data){
+                    return ($data->menu) ? 'Да' : 'Нет';
+                }
+            ],
+            [
+                'attribute' => 'created_at',
+                'filter' => false,
+                'format' => ['date', 'php:d.m.Y H:i'],
+            ],
             //'updated_at',
             [
                 'class' => ActionColumn::className(),

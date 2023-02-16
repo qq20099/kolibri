@@ -52,7 +52,7 @@ return [
                 ],
             ],
         ],*/
-        'cache' => [
+        /*'cache' => [
             'class' => 'yii\caching\MemCache',
             'useMemcached' => true,
             'servers' => [
@@ -61,21 +61,62 @@ return [
                     'port' => 11211
                 ],
             ],
+        ],*/
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            /*'normalizer' => [
+                'class' => 'yii\web\UrlNormalizer',
+                'action' => \yii\web\UrlNormalizer::ACTION_REDIRECT_TEMPORARY, // используем временный редирект вместо постоянного
+            ],*/
             'rules' => [
                 '' => 'site/index',
                 'api' => 'site/api',
-                'parser' => 'site/parser',
+                //'parser' => 'site/parser',
                 'add-order' => 'site/add-order',
-                'page' => 'site/page',
+                //'page' => 'site/page',
+                //'defaultRoute' => 'site/page',
                 'tours' => 'tours/index',
+                'tours/nights' => 'tours/nights',
+                'tours/get-prices' => 'tours/prices',
                 'tours/specification' => 'tours/specification',
                 'tours/<id:[\d]+>' => 'tours/view',
+                'hotel/<id:[\d]+>' => 'hotel/view',
+                [
+                    'pattern' => 'posts',
+                    'route' => 'post/index',
+                    'suffix' => '/',
+                    'normalizer' => false, // отключаем нормализатор для этого правила
+                ],
+                '<url:[A-Za-z0-9 -_.]+>' => 'site/page',
             ],
         ],
+        'config' => [
+            'class' => 'common\components\Config',
+        ],
     ],
+    'on beforeRequest' => function () {
+        Yii::$app->params['siteSettings'] = \frontend\models\SiteSettings::findOne(1)->value;
+        if (Yii::$app->params['siteSettings']->in_maintenance == 1) {
+            Yii::$app->catchAll = [
+              'site/maintenance',
+              //'message' => Yii::$app->params['siteSettings']->maintenance_message
+            ];
+        }
+    },
+    /*'on beforeRequest' => function () {
+        $pathInfo = Yii::$app->request->pathInfo;
+        $query = Yii::$app->request->queryString;
+        if (!empty($pathInfo) && substr($pathInfo, -1) === '/') {
+            $url = '/' . substr($pathInfo, 0, -1);
+            if ($query) {
+                $url .= '?' . $query;
+            }
+            Yii::$app->response->redirect($url, 301)->send();
+        }
+    },*/
     'params' => $params,
 ];

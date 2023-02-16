@@ -83,20 +83,20 @@ class Tours extends \yii\db\ActiveRecord
     {
         return [
             [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'PackagePrice', 'ToCountryID', 'SeatClassID'], 'required'],
-            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'Child', 'FlightAllotmentStatus', 'BackFlightAllotmentStatus', 'HotelAllotmentStatus', 'HotelStopSaleStatus', 'ToCountryID', 'SeatClassID', 'SaleStatus', 'EarlyBookingEndDate', 'BusinessFlightAllotmentStatus', 'BusinessBackFlightAllotmentStatus', 'HotelNight', 'PromotionStatus', 'main', 'created_at'], 'integer'],
+            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'Child', 'FlightAllotmentStatus', 'BackFlightAllotmentStatus', 'HotelAllotmentStatus', 'HotelStopSaleStatus', 'ToCountryID', 'SeatClassID', 'SaleStatus', 'EarlyBookingEndDate', 'BusinessFlightAllotmentStatus', 'BusinessBackFlightAllotmentStatus', 'HotelNight', 'PromotionStatus', 'main', 'created_at', 'activity'], 'integer'],
             [['PackagePrice', 'PackagePriceOld'], 'number'],
             [['FlightDateSource', 'HotelCheckInDateSource'], 'string', 'max' => 20],
             [['ChildAges', 'AirportRoute'], 'string', 'max' => 150],
             [['EarlyBookingText', 'FlightLeftAllotmentText', 'BackFlightLeftAllotmentText', 'B2BUrl', 'B2CUrl'], 'string', 'max' => 255],
-            [['AccID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelAcc::class, 'targetAttribute' => ['AccID' => 'ID']],
-            [['AreaID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelArea::class, 'targetAttribute' => ['AreaID' => 'ID']],
+            //[['AccID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelAcc::class, 'targetAttribute' => ['AccID' => 'ID']],
+            //[['AreaID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelArea::class, 'targetAttribute' => ['AreaID' => 'ID']],
             //[['HotelCategoryID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelHotelCategory::class, 'targetAttribute' => ['HotelCategoryID' => 'ID']],
             //[['HotelID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelHotel::class, 'targetAttribute' => ['HotelID' => 'ID']],
-            [['MealID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelMeal::class, 'targetAttribute' => ['MealID' => 'ID']],
+            //[['MealID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelMeal::class, 'targetAttribute' => ['MealID' => 'ID']],
             //[['PlaceID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelPlace::class, 'targetAttribute' => ['PlaceID' => 'ID']],
-            [['RoomID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelRoom::class, 'targetAttribute' => ['RoomID' => 'ID']],
-            [['SeatClassID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelSeatClass::class, 'targetAttribute' => ['SeatClassID' => 'ID']],
-            [['ToCountryID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelCountry::class, 'targetAttribute' => ['ToCountryID' => 'ID']],
+            //[['RoomID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelRoom::class, 'targetAttribute' => ['RoomID' => 'ID']],
+            //[['SeatClassID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelSeatClass::class, 'targetAttribute' => ['SeatClassID' => 'ID']],
+            //[['ToCountryID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelCountry::class, 'targetAttribute' => ['ToCountryID' => 'ID']],
         ];
     }
 
@@ -111,15 +111,15 @@ class Tours extends \yii\db\ActiveRecord
             'HotelCheckInDate' => Yii::t('app', 'Дата заселения'),
             'AreaID' => Yii::t('app', 'Area ID'),
             'PlaceID' => Yii::t('app', 'Place ID'),
-            'PackageNight' => Yii::t('app', 'Package Night'),
+            'PackageNight' => Yii::t('app', 'Ночей'),
             'HotelID' => Yii::t('app', 'Hotel ID'),
             'HotelCategoryID' => Yii::t('app', 'Hotel Category ID'),
             'MealID' => Yii::t('app', 'Meal ID'),
             'RoomID' => Yii::t('app', 'Room ID'),
             'AccID' => Yii::t('app', 'Acc ID'),
-            'Adult' => Yii::t('app', 'Adult'),
-            'Child' => Yii::t('app', 'Child'),
-            'PackagePrice' => Yii::t('app', 'Package Price'),
+            'Adult' => Yii::t('app', 'Количество взрослых'),
+            'Child' => Yii::t('app', 'Количество детей'),
+            'PackagePrice' => Yii::t('app', 'Стоимость'),
             'FlightAllotmentStatus' => Yii::t('app', 'Flight Allotment Status'),
             'BackFlightAllotmentStatus' => Yii::t('app', 'Back Flight Allotment Status'),
             'HotelAllotmentStatus' => Yii::t('app', 'Hotel Allotment Status'),
@@ -127,14 +127,14 @@ class Tours extends \yii\db\ActiveRecord
             'ToCountryID' => Yii::t('app', 'To Country ID'),
             'SeatClassID' => Yii::t('app', 'Seat Class ID'),
             'SaleStatus' => Yii::t('app', 'Sale Status'),
-            'ChildAges' => Yii::t('app', 'Child Ages'),
+            'ChildAges' => Yii::t('app', 'Возраст детей'),
             'AirportRoute' => Yii::t('app', 'Airport Route'),
-            'PackagePriceOld' => Yii::t('app', 'Package Price Old'),
+            'PackagePriceOld' => Yii::t('app', 'Стоимость без скидки'),
             'EarlyBookingEndDate' => Yii::t('app', 'Early Booking End Date'),
             'EarlyBookingText' => Yii::t('app', 'Early Booking Text'),
             'BusinessFlightAllotmentStatus' => Yii::t('app', 'Business Flight Allotment Status'),
             'BusinessBackFlightAllotmentStatus' => Yii::t('app', 'Business Back Flight Allotment Status'),
-            'HotelNight' => Yii::t('app', 'Hotel Night'),
+            'HotelNight' => Yii::t('app', 'Ночей в отеле'),
             'FlightLeftAllotmentText' => Yii::t('app', 'Flight Left Allotment Text'),
             'BackFlightLeftAllotmentText' => Yii::t('app', 'Back Flight Left Allotment Text'),
             'B2BUrl' => Yii::t('app', 'B2b Url'),
@@ -235,10 +235,56 @@ class Tours extends \yii\db\ActiveRecord
         return $this->hasOne(CoraltravelCountry::class, ['ID' => 'ToCountryID']);
     }
 
+    public function getGeography()
+    {
+        return $this->hasOne(CoraltravelGeography::class, ['AreaID' => 'AreaID']);
+    }
+
     public function getMainImage()
     {
         $path = '/uploads/hotel/';
         return ($this->images[0]->title) ? $path.$this->images[0]->title : '/images/_panorama-52.jpg';
+    }
+
+    public function getRelatedTours($t = false)
+    {
+        $q = self::find()
+        ->where(['HotelID' => $this->HotelID])
+        ->andWhere(['!=', 'id', $this->id])
+        ->andWhere(['=', 'FlightDate', $this->FlightDate]);
+        $q->andFilterWhere(['Adult' => $this->Adult]);
+        $q->andFilterWhere(['Child' => $this->Child]);
+        //$q->with(['room']);
+        //$q->groupBy(['Child', 'Adult']);
+        //$q->groupBy(['RoomID', 'MealID', 'Adult']);
+        $q->groupBy(['RoomID', 'MealID']);
+        $q->orderBy('PackagePrice');
+
+        if (!$t) {
+            return $q->all();
+        }
+
+        $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $q,
+            'sort'=> [
+                'defaultOrder' => [
+                    //'FlightDate' => SORT_DESC
+                    'PackagePrice' => SORT_ASC
+                ]
+            ],
+            'pagination' => [
+                'pageSize' => 18,
+            ],
+        ]);
+
+        return $dataProvider;
+        /*echo "<br>-------------<br>";
+        echo "<pre>";
+        print_r($q->count());
+        print_r($q->all());
+        echo "</pre>";
+        echo "<br>-------------<br>";*/
+
     }
 
 }

@@ -31,13 +31,17 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu', 'options' => ['class' => 'header']],
-                    ['label' => 'Offers', 'icon' => 'file-code-o', 'url' => ['/tours']],
-                    ['label' => 'Orders', 'icon' => 'file-code-o', 'url' => ['/orders']],
-                    ['label' => 'Content', 'icon' => 'file-code-o', 'url' => ['/pages']],
+                    ['label' => 'Offers', 'icon' => 'plane', 'url' => ['/tours']],
+                    ['label' => 'Hotels', 'icon' => 'bed', 'url' => ['/hotel']],
+                    ['label' => 'Orders', 'icon' => 'ticket', 'url' => ['/orders']],
+                    ['label' => 'Content', 'icon' => 'file-text-o', 'url' => ['/pages']],
+                    ['label' => 'Banners', 'icon' => 'picture-o', 'url' => ['/banners']],
+                    ['label' => 'Configuration', 'icon' => 'cogs', 'url' => ['/config']],
+                    ['label' => 'Settings', 'icon' => 'wrench', 'url' => ['/site-settings']],
                     /*['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
-                        'label' => 'Some tools',
+                        'label' => 'Some tools',  fa fa-users
                         'icon' => 'share',
                         'url' => '#',
                         'items' => [

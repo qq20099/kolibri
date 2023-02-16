@@ -1,5 +1,7 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
+    'defaultTitle' => 'defaultTitle',
+    'defaultKeywords' => 'defaultKeywords',
+    'defaultDescription' => 'defaultDescription',
     'bsVersion' => '4.x'
 ];

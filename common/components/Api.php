@@ -116,6 +116,12 @@ class Api extends Component
           ->setData([
               'Command' => 'General.Geography.ListArea',
               'Token' => $this->getToken(),
+              'Parameters' => Json::encode([
+                  [
+                      'Name' => 'FromArea',
+                      'Value' => 3345,
+                  ]
+              ]),
           ])
           ->send();
         return $this->parseResult($response, __FUNCTION__);
@@ -176,6 +182,7 @@ class Api extends Component
     //Получает список пакетов, соответствующий критериям поиска.
     public function getPackageSearch($p = [])
     {
+        //print_r($p);die();
         //echo 'ToCountry = '.$p['ToCountry']."\r\n";
         $response = $this->createRequest()
           ->setData([
@@ -262,12 +269,12 @@ class Api extends Component
           ->setData([
               'Command' => 'Product.Package.ListToCountry',
               'Token' => $this->getToken(),
-              /*'Parameters' => Json::encode([
+              'Parameters' => Json::encode([
                   [
-                      'Name' => 'FromArea', //[ToArea], [ToCountry]
-                      'Value' => 2671,
-                  ],
-              ]),*/
+                      'Name' => 'FromArea',
+                      'Value' => 3345,
+                  ]
+              ]),
           ])
           ->send();
         return $this->parseResult($response, __FUNCTION__);
@@ -477,7 +484,13 @@ class Api extends Component
         $response = $this->createRequest()
           ->setData([
               'Command' => 'General.Geography.ListPlace',
-              'Token' => $this->getToken(), //'a1581c62-a5b0-40aa-9785-233b3f5b27e5', //$this->getToken(),
+              'Token' => $this->getToken(),
+              'Parameters' => Json::encode([
+                  [
+                      'Name' => 'FromArea',
+                      'Value' => 3345,
+                  ]
+              ]),
           ])
           ->send();
         return $this->parseResult($response, __FUNCTION__);
@@ -559,6 +572,53 @@ echo "</pre>";*/
           ->setUrl($this->baseUrl);
     }
 
+    public static function testParams()
+    {
+        $oldDate = date('Y-m-d');
+        $BeginDate = date("Y-m-d", strtotime($oldDate));
+        $EndDate = date("Y-m-d", strtotime($oldDate.'+ 60 days'));
+        $p = [
+            'BeginDate' => $BeginDate.'T00:00:00', //'2022-12-18T00:00:00',
+            'EndDate' => $EndDate.'T00:00:00',
+        /*$p = [
+            'BeginDate' => '2023-04-16T00:00:00',
+            'EndDate' => '2023-05-01T00:00:00',*/
+            'FromArea' => 3345,
+            'ToCountry' => "80",
+            //'ToCountry' => 42,
+            //'ToCountry' => 12,
+            'ToPlace' => 9962,
+            //'ToRegion' => 14866,
+            //'ToPlace' => '79, 106',
+            //'HotelCategoryGroup' => '4, 5',
+            'HotelCategoryGroup' => '',
+            //'RoomCategoryGroup' => '1, 2',
+            'RoomCategoryGroup' => '',
+            //'MealCategory' => '5, 6',
+            'MealCategory' => '',
+            //'Hotel' => '10726, 300',
+            'Hotel' => '',
+            'MinPrice' => 100,
+            'MaxPrice' => 5000,
+            'BeginNight' => 7,
+            'EndNight' => 15,
+            'Adult' => 2,
+            'Child' => 0,
+            /*'Child1Age' => 0,
+            'Child2Age' => 0,
+            'Child3Age' => 0,*/
+            'OnlyAvailableFlight' => false,
+            'NotShowStopSale' => false,
+            'ShowOnlyConfirm' => false,
+            'StartIndex' => 3,
+            'PageSize' => 100,
+            'Currency' => '3',
+            'RoomFilterGroup' => 0,
+            ///'HotelConcept' => '',
+            'Recommended' => false
+        ];
+        return $p;
+    }
 
     private static function defDeal()
     {

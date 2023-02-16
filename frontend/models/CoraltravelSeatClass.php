@@ -43,7 +43,7 @@ class CoraltravelSeatClass extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Name'),
+            'Name' => Yii::t('app', 'Класс отеля'),
             'LName' => Yii::t('app', 'L Name'),
             'IsDefault' => Yii::t('app', 'Is Default'),
             'IsUsed' => Yii::t('app', 'Is Used'),

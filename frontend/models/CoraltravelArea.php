@@ -46,7 +46,7 @@ class CoraltravelArea extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Name'),
+            'Name' => Yii::t('app', 'Город'),
             'LName' => Yii::t('app', 'L Name'),
             'RegionID' => Yii::t('app', 'Region ID'),
         ];

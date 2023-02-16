@@ -67,11 +67,11 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Name'),
+            'Name' => Yii::t('app', 'Отель'),
             'Place' => Yii::t('app', 'Place'),
-            'HotelCategory' => Yii::t('app', 'Hotel Category'),
-            'Address' => Yii::t('app', 'Address'),
-            'Web' => Yii::t('app', 'Web'),
+            'HotelCategory' => Yii::t('app', 'Категория отеля'),
+            'Address' => Yii::t('app', 'Адрес'),
+            'Web' => Yii::t('app', 'Сайт'),
             'Latitude' => Yii::t('app', 'Latitude'),
             'Longitude' => Yii::t('app', 'Longitude'),
             'TripAdvisorCode' => Yii::t('app', 'Trip Advisor Code'),
@@ -96,14 +96,69 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getTours()
+    {
+        return $this->hasMany(Tours::class, ['HotelID' => 'ID']);
+    }
+
+    public function getPlace()
+    {
+        return $this->hasOne(CoraltravelPlace::class, ['ID' => 'Place']);
+    }
+
     public function getImages()
     {
-        return $this->hasMany(Images::class, ['hotel_id' => 'id']);
+        return $this->hasMany(Images::class, ['hotel_id' => 'ID'])->asArray();
     }
-    
-    public function getMainImage()
+
+    public function getCategory()
     {
-        $path = '/uploads/hotel/';
-        return ($this->images[0]->title) ? $path.$this->images[0]->title : '/images/_panorama-52.jpg';
+        return $this->hasOne(CoraltravelHotelCategory::class, ['ID' => 'HotelCategory']);//->asArray();
+        return $this->hasOne(CoraltravelHotelCategory::class, ['HotelCategory' => 'ID']);//->asArray();
     }
+
+    public function getParser()
+    {
+        return $this->hasOne(Parser::class, ['hotel_id' => 'ID']);//->asArray();
+    }
+
+    public function getI($size = 'b')
+    {
+        $dir = '/uploads/hotel/'.$this->ID.'/'.$size.'/';
+        $d = Yii::getAlias('@frontend/web').$dir;
+
+        if (!is_dir($d))
+          return [];
+
+        $files = \yii\helpers\FileHelper::findFiles($d);
+
+        return $files;
+    }
+
+    public function getMainImage($size = 'b', $f = 0)
+    {
+        $dir = '/uploads/hotel/'.$this->ID.'/'.$size.'/';
+        $d = Yii::getAlias('@frontend/web').$dir;
+
+        $d = Yii::getAlias('@frontend/web').$dir;
+
+        if (!is_dir($d) && !$f)
+          return '/images/_panorama-52.jpg';
+        elseif (!is_dir($d) && $f)
+          return '/images/637729191606480038.jpg';
+
+        $files = \yii\helpers\FileHelper::findFiles($d);
+
+        if ($f)
+          return ($files && count($files) > 2) ? $dir.basename($files[1]) : '/images/637729191606480038.jpg';
+
+        return ($files && count($files) > 0) ? $dir.basename($files[0]) : '/images/_panorama-52.jpg';
+    }
+
+    public function getMainImage11()
+    {
+        $dir = '/uploads/hotel/';
+        return ($this->images[0]->title) ? $dir.$this->images[0]->title : '/images/_panorama-52.jpg';
+    }
+
 }

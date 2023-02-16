@@ -39,12 +39,18 @@ class SearchOrders extends Orders
      */
     public function search($params)
     {
-        $query = Orders::find()->with(['client', 'tour']);
+        $query = Orders::find()->with(['client', 'orderItems']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC
+                    //'PackagePrice' => SORT_ASC
+                ]
+            ],
         ]);
 
         $this->load($params);

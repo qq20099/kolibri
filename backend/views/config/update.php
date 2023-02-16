@@ -9,12 +9,14 @@ $this->title = 'Update Config: '.$model->label;
 $this->params['breadcrumbs'][] = ['label' => 'Configs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
+
+$f = ($model->name == 'logo') ? '_logo' : '';
 ?>
 <div class="config-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!--<h1><?//= Html::encode($this->title) ?></h1>-->
 
-    <?= $this->render('_form_update', [
+    <?= $this->render('_form'.$f, [
         'model' => $model,
     ]) ?>
 
