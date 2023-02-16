@@ -27,6 +27,7 @@ return [
                 NumberFormatter::FRACTION_DIGITS => 0,
             ],*/
             'nullDisplay' => '',
+            'timeZone' => 'Europe/Riga',
         ],
     ],
 ];
