@@ -148,7 +148,7 @@ die();*/
 
         $params = Yii::$app->request->queryParams;
         $params['SearchTours']['hotel_id'][] = $id;
-        $params['SearchTours']['country_id'][] = $model->place->area->region->country->ID;
+        $params['SearchTours']['country_id'] = $model->place->area->region->country->ID;
 
         $dataProvider = $searchModel->search($params);
 

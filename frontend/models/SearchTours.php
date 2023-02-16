@@ -95,8 +95,8 @@ class SearchTours extends Tours
 
         $this->load($params);
 
-
-        /*echo "\r\nL = ".$this->load($params);
+        /*
+        echo "\r\nL = ".$this->load($params);
         echo "\r\nV = ".$this->validate();
         echo "\r\n";
         echo "<pre>";
@@ -109,6 +109,7 @@ class SearchTours extends Tours
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
+            //print_r($this->errors);die();
             return $dataProvider;
         }
 
@@ -150,7 +151,7 @@ class SearchTours extends Tours
             '{{%location}}.id' => $this->location_id,
         ]);*/
 
-        echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
         return $dataProvider;
     }
 
