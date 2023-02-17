@@ -56,6 +56,58 @@ class CoraltravelController extends \yii\console\Controller
         return (int)$model->id;
     }
 
+    public function actionAllGeography()
+    {
+        echo "Start ".date('d.m.Y H:i:s');
+        echo "\r\n";
+        self::setCountry();
+        self::setRegion();
+        self::setArea();
+        sleep(1);
+        self::setPlace();
+        sleep(1);
+        self::setGeography();
+        self::setToCountry();
+        echo "End ".date('d.m.Y H:i:s');
+        echo "\r\n";
+    }
+
+    public function actionAllHotel()
+    {
+        echo "Start ".date('d.m.Y H:i:s');
+        echo "\r\n";
+        self::setHotelCategory();
+        self::setHotelCategoryGroup();
+        self::setHotelConcept();
+        sleep(1);
+        self::setHotel();
+        echo "End ".date('d.m.Y H:i:s');
+        echo "\r\n";
+    }
+
+    public function actionAllRoom()
+    {
+        echo "Start ".date('d.m.Y H:i:s');
+        echo "\r\n";
+        self::setRoomCategory();
+        self::setRoomCategoryGroup();
+        self::setRoomFilterGroup();
+        sleep(1);
+        self::setRoom();
+        echo "End ".date('d.m.Y H:i:s');
+        echo "\r\n";
+    }
+
+    public function actionAllMeal()
+    {
+        echo "Start ".date('d.m.Y H:i:s');
+        echo "\r\n";
+        self::setMealCategory();
+        self::setMeal();
+        echo "End ".date('d.m.Y H:i:s');
+        echo "\r\n";
+    }
+
     public function actionCountry()
     {
         self::setCountry();
@@ -124,12 +176,6 @@ class CoraltravelController extends \yii\console\Controller
     public function actionHotel()
     {
         self::setHotel();
-    }
-
-    public function actionAllMeal()
-    {
-        self::setMealCategory();
-        self::setMeal();
     }
 
     public function actionMealCategory()
