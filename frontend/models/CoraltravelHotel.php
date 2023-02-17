@@ -108,7 +108,7 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
 
     public function getImages()
     {
-        return $this->hasMany(Images::class, ['hotel_id' => 'ID'])->asArray();
+        return $this->hasMany(Images::class, ['hotel_id' => 'ID'])->asArray()->orderBy(['main' => SORT_DESC]);
     }
 
     public function getCategory()
@@ -138,27 +138,21 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
     public function getMainImage($size = 'b', $f = 0)
     {
         $dir = '/uploads/hotel/'.$this->ID.'/'.$size.'/';
-        $d = Yii::getAlias('@frontend/web').$dir;
 
-        $d = Yii::getAlias('@frontend/web').$dir;
+        if ($f) {
+            $m = $this->getImages()->limit(2)->all();
+            $img = (isset($m[1])) ? $dir.$m[1]['title'] : '';
+        } else {
+            $m = $this->getImages()->one();
+            $img = ($m) ? $dir.$m['title'] : '/images/_panorama-52.jpg';
+        }
 
-        if (!is_dir($d) && !$f)
-          return '/images/_panorama-52.jpg';
-        elseif (!is_dir($d) && $f)
-          return '/images/637729191606480038.jpg';
-
-        $files = \yii\helpers\FileHelper::findFiles($d);
-
-        if ($f)
-          return ($files && count($files) > 2) ? $dir.basename($files[1]) : '/images/637729191606480038.jpg';
-
-        return ($files && count($files) > 0) ? $dir.basename($files[0]) : '/images/_panorama-52.jpg';
+        return $img;
     }
 
-    public function getMainImage11()
+    public function getMainImg()
     {
-        $dir = '/uploads/hotel/';
-        return ($this->images[0]->title) ? $dir.$this->images[0]->title : '/images/_panorama-52.jpg';
+        return $this->hasOne(Images::class, ['hotel_id' => 'ID'])->where(['main' => 1]);
     }
 
 }

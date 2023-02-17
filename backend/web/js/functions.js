@@ -20,6 +20,11 @@ $(document).ready(function(){
             formData.append('files[]', files[i]);
         }
 
+        $('.uploads-error').fadeOut(function(){
+            this.remove();
+
+        });
+
         $.ajax({
             type: 'post',
             url: 'uploads',

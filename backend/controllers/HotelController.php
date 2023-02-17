@@ -55,11 +55,16 @@ class HotelController extends Controller
         if (Yii::$app->request->isPost) {
             $model->files = \yii\web\UploadedFile::getInstancesByName('files');
             if ($model->upload()) {
+                return $this->renderAjax('images', ['model' => $model]);
             } else {
+                foreach ($model->errors as $value) {
+                    $er = implode("\r\n", $value);
+                }
+                echo '<div class="errors uploads-error">'.$er.'</div>';
+                die();
             }
         }
 
-        return $this->renderAjax('images', ['model' => $model]);
     }
 
     public function actionSetMain()

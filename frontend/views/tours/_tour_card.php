@@ -28,7 +28,10 @@ $raitin = $model->hotel->tripAdvisorPoint;
                 <a href="<?=$url?>" class="tour-card__link"><?=$model->hotel->Name?> <?=$model->hotel->category->ShortName?></a>
             </h4>
         </div>
-        <div class="u-over-slide u-shading-n" style="background-image: url('<?=$model->hotel->getMainImage('b', 1)?>')"></div>
+        <?php
+          $seimg = $model->hotel->getMainImage('b', 1);
+        ?>
+        <div class="u-over-slide u-shading-n"<?if($seimg):?> style="background-image: url('<?=$seimg?>')"<?endif?>></div>
         <div class="u-over-slide u-shading u-over-slide-1">
             <h3 class="u-gallery-heading"><?=$model->hotel->Name?> <?=$model->hotel->category->ShortName?></h3>
             <p class="u-gallery-text"><?=$model->toCountry->Name?>, <?=$model->area->Name?></p>

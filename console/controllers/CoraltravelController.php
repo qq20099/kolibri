@@ -94,6 +94,8 @@ class CoraltravelController extends \yii\console\Controller
         self::setRoomFilterGroup();
         sleep(1);
         self::setRoom();
+        echo "M = ".(memory_get_usage()/1024/1024);
+        echo "\r\n";
         echo "End ".date('d.m.Y H:i:s');
         echo "\r\n";
     }
