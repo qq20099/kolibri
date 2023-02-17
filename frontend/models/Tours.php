@@ -107,8 +107,8 @@ class Tours extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'FlightDate' => Yii::t('app', 'Дата вылета'),
-            'HotelCheckInDate' => Yii::t('app', 'Дата заселения'),
+            'FlightDate' => Yii::t('app', 'Izlidošanas datums'),
+            'HotelCheckInDate' => Yii::t('app', 'Reģistrēšanās datums'),
             'AreaID' => Yii::t('app', 'Area ID'),
             'PlaceID' => Yii::t('app', 'Place ID'),
             'PackageNight' => Yii::t('app', 'Ночей'),
@@ -117,9 +117,9 @@ class Tours extends \yii\db\ActiveRecord
             'MealID' => Yii::t('app', 'Meal ID'),
             'RoomID' => Yii::t('app', 'Room ID'),
             'AccID' => Yii::t('app', 'Acc ID'),
-            'Adult' => Yii::t('app', 'Количество взрослых'),
+            'Adult' => Yii::t('app', 'Pieaugušo skaits'),
             'Child' => Yii::t('app', 'Количество детей'),
-            'PackagePrice' => Yii::t('app', 'Стоимость'),
+            'PackagePrice' => Yii::t('app', 'Cena'),
             'FlightAllotmentStatus' => Yii::t('app', 'Flight Allotment Status'),
             'BackFlightAllotmentStatus' => Yii::t('app', 'Back Flight Allotment Status'),
             'HotelAllotmentStatus' => Yii::t('app', 'Hotel Allotment Status'),

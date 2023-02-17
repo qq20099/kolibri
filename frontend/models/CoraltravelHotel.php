@@ -67,7 +67,7 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Отель'),
+            'Name' => Yii::t('app', 'Viesnīca'),
             'Place' => Yii::t('app', 'Place'),
             'HotelCategory' => Yii::t('app', 'Категория отеля'),
             'Address' => Yii::t('app', 'Адрес'),

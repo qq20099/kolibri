@@ -22,7 +22,7 @@ use yii\helpers\Url;
             </tr>
         </table>
         <br>
-        <h4>Ваш заказ:</h4>
+        <h4>Jūsu pieprasījums:</h4>
         <table style="width: 100%;max-width: 900px;">
             <tr>
                 <td><?=$order->tour->getAttributeLabel('FlightDate')?>:</td>
@@ -90,28 +90,5 @@ use yii\helpers\Url;
             <?endif?>
         </table>
         <br>
-<!--        <h4>Параметры поиска:</h4>
-        <table style="width: 100%;max-width: 800px;">
-            <tr>
-                <td><?=$data->name?></td>
-            </tr>
-            <tr>
-                <td><?=$data->phone?></td>
-            </tr>
-            <tr>
-                <td><?=$data->email?></td>
-            </tr>
-            <tr>
-                <td><?=$order->comment?></td>
-            </tr>
-        </table>
-        <br>-->
     </body>
 </html>
-<!--<pre>
-    <?//print_r($data)?>
-</pre>
-<br>-->
-<!--<pre>
-<?//print_r($order->tour)?>
-</pre>-->

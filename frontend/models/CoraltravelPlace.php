@@ -38,7 +38,7 @@ class CoraltravelPlace extends \yii\db\ActiveRecord
             [['Latitude', 'Longitude'], 'number'],
             [['Name', 'LName'], 'string', 'max' => 150],
             [['ID'], 'unique'],
-            [['AreaID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelArea::class, 'targetAttribute' => ['AreaID' => 'ID']],
+            //[['AreaID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelArea::class, 'targetAttribute' => ['AreaID' => 'ID']],
         ];
     }
 
@@ -49,7 +49,7 @@ class CoraltravelPlace extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Name'),
+            'Name' => Yii::t('app', 'Novads'),
             'LName' => Yii::t('app', 'L Name'),
             'AreaID' => Yii::t('app', 'Area ID'),
             'Latitude' => Yii::t('app', 'Latitude'),

@@ -46,7 +46,7 @@ class CoraltravelRoom extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Номер'),
+            'Name' => Yii::t('app', 'Numurs'),
             'LName' => Yii::t('app', 'L Name'),
             'CategoryID' => Yii::t('app', 'Category ID'),
             'RoomCode' => Yii::t('app', 'Room Code'),

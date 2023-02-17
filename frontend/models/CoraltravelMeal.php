@@ -47,7 +47,7 @@ class CoraltravelMeal extends \yii\db\ActiveRecord
     {
         return [
             'ID' => Yii::t('app', 'ID'),
-            'Name' => Yii::t('app', 'Питание'),
+            'Name' => Yii::t('app', 'Uzturs'),
             'LName' => Yii::t('app', 'L Name'),
             'SName' => Yii::t('app', 'S Name'),
             'InfoSheetMeal' => Yii::t('app', 'Info Sheet Meal'),
