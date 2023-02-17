@@ -14,7 +14,7 @@ use yii\helpers\Html;
     <div class="row">
         <div class="col-md-12">
             <p class="card-coutry-title">
-                <a href="<?=Url::to(['/hotel', 'SearchHotel[country_id]' => $model->place->area->region->country->ID])?>"><?=$model->place->area->region->country->Name?></a>, <a href="<?=Url::to(['/hotel', 'SearchHotel[area_id]' => $model->place->area->ID])?>"><?=$model->place->area->region->Name?></a>, <?=$model->place->Name?>
+                <a href="<?=Url::to(['/tours', 'SearchHotel[country_id]' => $model->place->area->region->country->ID])?>"><?=$model->place->area->region->country->Name?></a>, <a href="<?=Url::to(['/tours', 'SearchHotel[area_id]' => $model->place->area->ID])?>"><?=$model->place->area->region->Name?></a>, <?=$model->place->Name?>
             </p>
             <h1><?=$model->Name?> <?=$model->category->ShortName?></h1>
             <?php

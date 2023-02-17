@@ -368,6 +368,7 @@ a:not(.active) .show-notactive,
 a.active .show-active {display: inline;}
 a:not(.active) .show-active,
 a.active .show-notactive {display: none;}
+.add-images-label {font-weight: 400;border-bottom: 1px dotted #82b0c5;color: #82b0c5;}
 .add-images-label:hover {cursor: pointer;}
 .hotel-name {
     margin-left:1.5rem;
