@@ -37,42 +37,6 @@ class AppController extends Controller {
         ];
     }
 
-    protected function sendMail($data) //$body, $from = '', $to = '', $attach = '')
-    {
-        if (!$data['from'])
-          $data['from'] = Yii::$app->config->noreply_email;
-
-        if (!$data['to'])
-          $data['to'] = Yii::$app->config->request_email;
-
-        if ($data['tpl'])
-          $r = Yii::$app->mailer->compose($data['tpl'], ['data' => $data]);
-        else
-          $r = Yii::$app->mailer->compose();
-
-        $r->setTo($data['to'])
-        ->setFrom($data['from']);
-        $r->setSubject($data['subject']);
-
-        if (!$data['tpl'] && $data['body'])
-          $r->setHtmlBody($data['body']);
-
-        if ($data['attach']){
-            foreach ($data['attach'] as $att){
-                $r->attach($att);
-            }
-        }
-        try {
-            $result = $r->send();
-            if ($result) {
-            }
-            return $result;
-        } catch(\Exception $e) {
-            print_r($e->getMessage());
-        }
-        return false;
-    }
-
     public function actionUploadImg()
     {      
         $result = [];

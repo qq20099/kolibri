@@ -10,7 +10,7 @@ use yii\helpers\Html;
 $this->title = $name;
 ?>
 <section class="content">
-
+              
     <div class="error-page">
         <h2 class="headline text-info"><i class="fa fa-warning text-yellow"></i></h2>
 

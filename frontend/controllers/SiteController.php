@@ -75,6 +75,12 @@ class SiteController extends AppController
         ];
     }
 
+    public function actionError()
+    {
+        die("gfg");
+        return $this->render('index');
+    }
+    
     /**
      * Displays homepage.
      *
