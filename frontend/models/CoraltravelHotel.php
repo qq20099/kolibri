@@ -113,8 +113,12 @@ class CoraltravelHotel extends \yii\db\ActiveRecord
 
     public function getCategory()
     {
-        return $this->hasOne(CoraltravelHotelCategory::class, ['ID' => 'HotelCategory']);//->asArray();
-        return $this->hasOne(CoraltravelHotelCategory::class, ['HotelCategory' => 'ID']);//->asArray();
+        return $this->hasOne(CoraltravelHotelCategory::class, ['ID' => 'HotelCategory']);
+    }
+
+    public function getGeography()
+    {
+        return $this->hasOne(CoraltravelGeography::class, ['PlaceID' => 'Place']);
     }
 
     public function getParser()

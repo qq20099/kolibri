@@ -137,7 +137,7 @@ die();*/
            ->where('id = :id', [':id' => $id])
            ->one();*/
         $model = CoraltravelHotel::find()
-          ->with(['tours', 'place.area.region.country']) //, 'toCountry', 'meal', 'place.area.region.country', 'room', 'hotel.category'])
+          ->with(['tours', 'geography', 'place.area.region.country']) //, 'toCountry', 'meal', 'place.area.region.country', 'room', 'hotel.category'])
           ->where('ID = :id', [':id' => $id])
           ->one();
 
@@ -177,12 +177,12 @@ die();*/
 
         /*$pages = new Pages();
         $page = $pages->getPageByUrl('tours');
-
+        */
         $this->setMetaTags(
-          $model->hotel->Name.' '.$model->hotel->category->ShortName,
-          $page->meta_keywords,
-          $page->meta_description
-        );*/
+          $model->Name.' '.$model->category->ShortName.' - '.$model->geography->CountryName.', '.$model->geography->AreaName,
+          implode(',', [$model->Name.' '.$model->category->ShortName, $model->geography->CountryName, $model->geography->RegionName, $model->geography->AreaName, $model->geography->PlaceName]),
+          implode(' ', [$model->Name.' '.$model->category->ShortName, $model->geography->CountryName, $model->geography->RegionName, $model->geography->AreaName, $model->geography->PlaceName])
+        );
    /*echo "<pre>";
    print_r($model);
    echo "</pre>";
