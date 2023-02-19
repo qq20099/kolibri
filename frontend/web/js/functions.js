@@ -214,6 +214,8 @@ $(document).ready(function(){
         let arr = [];
         let err = 0;
 
+        showLoader();
+
         re.each(function(){
             if (!$(this).val() || $(this).val() == 0) {
                 $(this).closest('.input-field').addClass('has-error');
@@ -881,4 +883,22 @@ function timeConverter(UNIX_timestamp){
   var sec = a.getSeconds();
   var time = year + '-' + month + '-' + date;
   return time;
+}
+
+function showLoader(el)
+{
+    var loader = '<div class="wpv-splash-screen"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
+    if (!el)
+      el = $('body');
+
+    el.find('.wpv-splash-screen').remove();
+    el.append(loader);
+}
+
+function hideLoader(el)
+{
+    if (el)
+      el.find('.wpv-splash-screen').remove();
+    else
+      $('.wpv-splash-screen').remove();
 }

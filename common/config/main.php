@@ -18,7 +18,7 @@ return [
         'formatter'=>[
             'class'=>\yii\i18n\Formatter::className(),
             'dateFormat' => 'long',
-            'currencyCode' => 'EURO',
+            'currencyCode' => 'EUR',
             'decimalSeparator' => '.',
             'thousandSeparator' => ' ',
             /*'numberFormatterOptions' => [

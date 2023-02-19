@@ -132,10 +132,10 @@ class SearchTours extends Tours
             'HotelNight' => $this->nights,
             'FlightDate' => $this->date_from,
             'Adult' => $this->adult,
-            'Child' => $this->child,
-            'HotelID' => $this->hotel_id
+            'Child' => $this->child
         ]);
         $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
+        $query->andFilterWhere(['IN', 'HotelID', $this->hotel_id]);
 
         // grid filtering conditions
         /*$query->andFilterWhere([
