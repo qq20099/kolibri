@@ -26,6 +26,7 @@ use vova07\imperavi\Widget;
             'settings' => [
                 'lang' => 'ru',
                 'minHeight' => 200,
+                'maxHeight' => 200,
                 'replaceDivs' => false,
                 'paragraphize' => false,
                 'uploadOnlyImage' => true,

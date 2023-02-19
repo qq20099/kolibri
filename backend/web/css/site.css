@@ -1,3 +1,9 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+}
+
 img {
     max-width: 100%;
 }
@@ -212,7 +218,6 @@ a.desc:after {
     transform: rotate3d(1, 0, 0, 104deg);
   }
 }
-
 .wpv-splash-screen {
   position: absolute;
   top: 0;
@@ -377,4 +382,22 @@ a.active .show-notactive {display: none;}
 .img-wrapper.logo img {width: 150px;}
 .uploads-error {
     color: red;
+}
+.nav-stacked > li + li {
+    margin-top: 0;
+}
+.btn,
+.form-control {
+    font-size: 14px;
+}
+table .btn.btn-block {
+    font-size: 1rem;
+}
+.grid-view .table > thead > tr > th,
+.grid-view .table > tbody > tr > th,
+.grid-view .table > tfoot > tr > th,
+.grid-view .table > thead > tr > td,
+.grid-view .table > tbody > tr > td,
+.grid-view .table > tfoot > tr > td {
+    vertical-align: middle;
 }

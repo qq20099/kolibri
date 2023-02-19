@@ -22,6 +22,11 @@ return [
             'namespace' => 'common\fixtures',
           ],
     ],
+    'modules' => [
+        'user' => [
+            'class' => 'dektrium\user\Module',
+        ],
+    ],    
     'components' => [
         'log' => [
             'targets' => [

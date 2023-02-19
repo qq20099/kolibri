@@ -608,6 +608,8 @@ class CoraltravelController extends \yii\console\Controller
 
             if (!$model)
               $model = new \console\models\CoraltravelHotel();
+            else
+              unset($value['Name']);
 
             $model->attributes = $value;
             $model->OperatorSaleCategory = (int)$value['OperatorSaleCategory'];

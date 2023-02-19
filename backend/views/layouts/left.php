@@ -8,7 +8,7 @@
                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p>Alexander Pierce</p>
+                <p><?=Yii::$app->user->identity->profile->name?></p>
 
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -38,6 +38,7 @@
                     ['label' => 'Banners', 'icon' => 'picture-o', 'url' => ['/banners']],
                     ['label' => 'Configuration', 'icon' => 'cogs', 'url' => ['/config']],
                     ['label' => 'Settings', 'icon' => 'wrench', 'url' => ['/site-settings']],
+                    ['label' => 'Users', 'icon' => 'users', 'url' => ['/user/admin']],
                     /*['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
