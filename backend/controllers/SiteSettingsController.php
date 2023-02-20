@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * SiteSettingsController implements the CRUD actions for SiteSettings model.
  */
-class SiteSettingsController extends Controller
+class SiteSettingsController extends AppController
 {
     /**
      * @inheritDoc

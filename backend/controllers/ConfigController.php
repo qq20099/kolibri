@@ -13,7 +13,7 @@ use yii\filters\AccessControl;
 /**
  * ConfigController implements the CRUD actions for Config model.
  */
-class ConfigController extends Controller
+class ConfigController extends AppController
 {
     /**
      * {@inheritdoc}

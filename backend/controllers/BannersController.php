@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * BannersController implements the CRUD actions for Banners model.
  */
-class BannersController extends Controller
+class BannersController extends AppController
 {
     /**
      * @inheritDoc

@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * ToursController implements the CRUD actions for Tours model.
  */
-class ToursController extends Controller
+class ToursController extends AppController
 {
     /**
      * @inheritDoc
