@@ -3,6 +3,7 @@ namespace backend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 
 class AppController extends Controller {
 
@@ -10,6 +11,25 @@ class AppController extends Controller {
     {
         parent::__construct();
     }*/
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
 
     /**
      * Метод устанавливает мета-теги для страницы сайта

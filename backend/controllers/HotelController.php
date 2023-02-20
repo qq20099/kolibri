@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * HotelController implements the CRUD actions for CoraltravelHotel model.
  */
-class HotelController extends Controller
+class HotelController extends AppController
 {
     /**
      * @inheritDoc
