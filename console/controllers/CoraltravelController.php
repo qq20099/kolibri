@@ -17,6 +17,11 @@ class CoraltravelController extends \yii\console\Controller
     private $attempts = 5;
     private $operator = 'coraltravel';
 
+    public function init()
+    {
+        ini_set('memory_limit', '-1');
+    }
+
     private static function getCountryId($name)
     {
         $tr = new GoogleTranslateForFree();
