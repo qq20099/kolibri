@@ -350,7 +350,8 @@ class CronController extends \yii\console\Controller
                 if ($countryID != 12)
                   ;//print_r($data['data']);
 
-
+print_r($data);
+die();
                 if (!empty($data['data'])) {
                 foreach ($data['data'] as $value) {
                     $update = true;
