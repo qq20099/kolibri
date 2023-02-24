@@ -231,14 +231,12 @@ class CronController extends \yii\console\Controller
         /*$connection->createCommand()->update('tours', ['activity' => 0], 'FlightDate <= '.$date)
         ->execute();*/
 
-        Tours::deleteAll(['<=', 'FlightDate', $date]);
-
         $country = self::getCountryForDate();
         
         if ($country) {
             $model = CronTours::find()->where(['status' => 0])->one();
 
-            if (!$model) {
+            if (empty($model)) {
                 $model = new CronTours();
                 $model->title = 'Tours';
                 if (!$model->save()) {
@@ -246,13 +244,15 @@ class CronController extends \yii\console\Controller
                     print_r($model);
                     die();
                 }
+                Tours::deleteAll(['<=', 'FlightDate', $date]);
+            } else {
+                //die("Cron already running");
             }
 
             $this->cron_id = $model->id;
 
-            if (!$this->cron_id)
-              die('exit');
 //print_r($country);die();
+
             foreach ($country as $areaID => $value) {
                 $post = [];
                 $post['PackageDate'] = date('Y-m-d', $value['PackageDate']);
@@ -272,7 +272,6 @@ class CronController extends \yii\console\Controller
                                 $post['Child'] = $i;
 
                                 $this->tour($post);
-                                //print_r($post);
                             }
                         }
                     }
@@ -305,6 +304,7 @@ class CronController extends \yii\console\Controller
         if (!empty($cronToursItems) && $cronToursItems->status == 9)
           return;
 
+        $count = 0;
         $page = 1;
 
         if (!$cronToursItems) {
@@ -334,8 +334,8 @@ class CronController extends \yii\console\Controller
             if (!$page)
               ;//Yii::$app->db->createCommand()->truncateTable('hot_deals')->execute();
 
-            /*echo "Status = ".$data['status']." Country = ".$post['ToCountry'];
-            echo " AreaID = ".$post['ToArea'];
+            //echo "Status = ".$data['status']." Country = ".$post['ToCountry'];
+            /*echo " AreaID = ".$post['ToArea'];
             echo " Adult = ".$post['Adult']." Child = ".$post['Child'];
             echo " Page = ".$post['StartIndex'];
             echo " COUNT = ".$count;
@@ -347,11 +347,12 @@ class CronController extends \yii\console\Controller
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
                 $count = (($data['data']) ? count($data['data']) : 0);
 
-                if ($countryID != 12)
-                  ;//print_r($data['data']);
+                //if ($countryID != 12)
+                  //print_r($data['data']);
 
-print_r($data);
-die();
+                //print_r($post);
+                //print_r($data);
+
                 if (!empty($data['data'])) {
                 foreach ($data['data'] as $value) {
                     $update = true;
@@ -437,7 +438,9 @@ die();
             } catch (\Exception $e) {
                 $cronToursItems->status = $cronToursItems::STATUS_ERROR;
                 $cronToursItems->Page = $post['StartIndex'];
-                //print_r($e->getMessage());
+                //echo "Error: ".$e->getMessage()."\r\n";
+                self::addLog($e, 'tours-error');
+                //print_r($e);
                 //break;
             } finally {
                 $cronToursItems->Page = $post['StartIndex'];
@@ -446,9 +449,11 @@ die();
                 $cronToursItems->update_rows = $this->upd;
 
                 if (!$cronToursItems->save()) {
-                    print_r($cronToursItems->getErrors());
+                    self::addLog($cronToursItems, 'cron-tours-items');
+                    /*print_r($cronToursItems->getErrors());
                     print_r($cronToursItems);
-                    die();
+                    die();*/
+
                 }
             }
             sleep(1);
@@ -468,7 +473,7 @@ die();
     {
         $data = [];
         $log = new CronLog();
-        $data['errors'] = \yii\helpers\Json::encode($model->getErrors());
+        $data['errors'] = ($t == 'tours-error') ? $model->getMessage() : \yii\helpers\Json::encode($model->getErrors());
         $data['data'] = \yii\helpers\Json::encode($model);
         $data['type'] = $t;
         $log::add($data);
@@ -557,7 +562,7 @@ die();
             //'FromArea' => '3, 8, 10',
             //'ToArea' => 3370,
             'FromArea' => 3345,
-            'ToCountry' => $countryID, //'1, 12, 35',
+            'ToCountry' => $data['ToCountry'], //'1, 12, 35',
             //'ToCountry' => 42, //'1, 12, 35',
             //'ToPlace' => '3370, 3371, 3372, 3373, 3374, 3376, 11788, 11789, 12097, 13328, 13679',
             //'ToPlace' => '79, 106',
