@@ -262,8 +262,8 @@ class CronController extends \yii\console\Controller
 
             foreach ($country as $areaID => $value) {
                 $post = [];
-                $post['PackageDate'] = date('Y-m-d', $value['PackageDate']);
-                //$post['PackageDate'] = Yii::$app->formatter->asDate($value['PackageDate']);
+                //$post['PackageDate'] = date('Y-m-d', $value['PackageDate']);
+                $post['PackageDate'] = Yii::$app->formatter->asDate($value['PackageDate']);
                 $post['StartDate'] = $value['PackageDate'];
                 $post['BeginDate'] = $post['PackageDate'];
                 $post['EndDate'] = $post['PackageDate'];
