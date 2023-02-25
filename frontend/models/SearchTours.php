@@ -625,6 +625,8 @@ echo "</pre>";*/
         //->where(['>', 'FlightDate', $d])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andFilterwhere(['Adult' => $this->adult])
+        ->andFilterwhere(['ToCountryID' => $this->country_id])
+        ->andFilterwhere(['IN', 'AreaID', $this->region_id])
         ->groupBy(['FlightDate']);
         $model = $query->asArray()->all();
         return $model;
