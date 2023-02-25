@@ -214,8 +214,6 @@ $(document).ready(function(){
         let arr = [];
         let err = 0;
 
-        showLoader();
-
         re.each(function(){
             if (!$(this).val() || $(this).val() == 0) {
                 $(this).closest('.input-field').addClass('has-error');
@@ -237,6 +235,8 @@ $(document).ready(function(){
         if (err) {
             return false;
         }
+
+        showLoader();
 
         if (ag.length) {
             $(ag).each(function(i, k){
@@ -654,7 +654,7 @@ function getDate(form, fp)
                     var date = new Date(date_from * 1000);
                     fp.setDate(date.toLocaleDateString('en-CA'));
                     fp.set('dateFormat', 'U');
-                    
+
                     if (!nights)
                       getNights(form);
                 } else {
@@ -710,6 +710,8 @@ function getSpecification(form, fp)
 {
     fp.clear();
     $('.search-form__regions').addClass('input-field--disabled');
+    $('.search-form__date-nights').addClass('input-field--disabled');
+
 
     $.ajax({
         url: form.data('url'),
