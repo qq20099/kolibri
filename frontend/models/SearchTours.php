@@ -154,7 +154,7 @@ class SearchTours extends Tours
 print_r($this);
 echo "</pre>";*/
 //die();
-        echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
         return $dataProvider;
     }
 
