@@ -226,7 +226,7 @@ class CronController extends \yii\console\Controller
 
     public function actionGetTours()
     {
-        $date = strtotime(date('Y-m-d').' 00:00:00');
+        $date = strtotime(date('Y-m-d 00:00:00'));
         $connection = Yii::$app->db;
         /*$connection->createCommand()->update('tours', ['activity' => 0], 'FlightDate <= '.$date)
         ->execute();*/
@@ -347,18 +347,16 @@ class CronController extends \yii\console\Controller
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
                 $count = (($data['data']) ? count($data['data']) : 0);
 
-                //if ($countryID != 12)
-                  //print_r($data['data']);
-
-                //print_r($post);
-                //print_r($data);
-
                 if (!empty($data['data'])) {
                 foreach ($data['data'] as $value) {
                     $update = true;
 
+                    $FlightDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['FlightDate'])));
+                    $HotelCheckInDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['HotelCheckInDate'])));
+                    $EarlyBookingEndDate = ($value['EarlyBookingEndDate']) ? strtotime(date('Y-m-d 00:00:00', strtotime($value['EarlyBookingEndDate']))) : 0;
+
                     $model = Tours::find()
-                    ->andWhere(['FlightDate' => strtotime(date('Y-m-d', strtotime($value['FlightDate']).' 00:00:00'))])
+                    ->andWhere(['FlightDate' => $FlightDate])
                     ->andWhere(['AreaID' => $value['AreaID']])
                     ->andWhere(['HotelNight' => $value['HotelNight']])
                     ->andWhere(['HotelID' => $value['HotelID']])
@@ -383,8 +381,8 @@ class CronController extends \yii\console\Controller
                     //$model->HotelCategoryID = ($HotelCategoryID) ? $HotelCategoryID : 0;
                     //$PlaceID = self::getPlaceByName($value['PlaceName'])->ID;
                     //$model->PlaceID = ($PlaceID) ? $PlaceID : 0;
-                    $model->FlightDate = strtotime(date('Y-m-d', strtotime($value['FlightDate']).' 00:00:00'));
-                    $model->HotelCheckInDate = strtotime(date('Y-m-d', strtotime($value['HotelCheckInDate']).' 00:00:00'));
+                    $model->FlightDate = $FlightDate;
+                    $model->HotelCheckInDate = $HotelCheckInDate;
                     $model->FlightDateSource = $value['FlightDate'];
                     $model->HotelCheckInDateSource = $value['HotelCheckInDate'];
 
@@ -393,7 +391,7 @@ class CronController extends \yii\console\Controller
                     /*$model->EarlyBookingEndDate = ($value['EarlyBookingEndDate'])
                               ? strtotime($value['EarlyBookingEndDate']) : 0;*/
 
-                    $model->EarlyBookingEndDate = ($value['EarlyBookingEndDate']) ? strtotime(date('Y-m-d', strtotime($value['EarlyBookingEndDate']).' 00:00:00')) : 0;
+                    $model->EarlyBookingEndDate = $EarlyBookingEndDate;
                     $model->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
                     $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                     $model->SaleStatus = (int)$value['SaleStatus'];
@@ -422,13 +420,10 @@ class CronController extends \yii\console\Controller
                             $errors = ($cronToursItems->errors) ? \yii\helpers\Json::decode($cronToursItems->errors) : [];
                             $cronToursItems->errors = \yii\helpers\Json::encode(
                               \yii\helpers\ArrayHelper::merge($errors, $model->getErrors()));
-                            //print_r($model->getErrors());
-                            //print_r($model);
-                            //die();
                             self::addLog($model, 'tours');
                         }
                     } catch (\Exception $e) {
-                        //print_r($e);
+                        self::addLog($e, 'tours-error');
                     }
                 }
                 }
@@ -438,10 +433,7 @@ class CronController extends \yii\console\Controller
             } catch (\Exception $e) {
                 $cronToursItems->status = $cronToursItems::STATUS_ERROR;
                 $cronToursItems->Page = $post['StartIndex'];
-                //echo "Error: ".$e->getMessage()."\r\n";
                 self::addLog($e, 'tours-error');
-                //print_r($e);
-                //break;
             } finally {
                 $cronToursItems->Page = $post['StartIndex'];
                 $cronToursItems->duplicates = $this->duplicates;
@@ -450,13 +442,8 @@ class CronController extends \yii\console\Controller
 
                 if (!$cronToursItems->save()) {
                     self::addLog($cronToursItems, 'cron-tours-items');
-                    /*print_r($cronToursItems->getErrors());
-                    print_r($cronToursItems);
-                    die();*/
-
                 }
             }
-            sleep(1);
             $post['StartIndex']++;
         }
 
