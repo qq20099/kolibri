@@ -242,7 +242,8 @@ echo "</pre>";*/
         $regionFilter = [];
         $d = strtotime(date('Y-m-d 00:00:00')) + Yii::$app->params['h'];
         $d = date('Y-m-d');
-        $df = (isset($this->date_from)) ? date('Y-m-d', $this->date_from) : '';
+        //$df = (isset($this->date_from)) ? date('Y-m-d', $this->date_from) : '';
+        $df = (isset($this->date_from)) ? Yii::$app->formatter->asDate($this->date_from) : '';
                                     //echo $this->date_from + Yii::$app->params['h'];
         $q = \frontend\models\Tours::find()
         ->select('HotelNight, HotelNight as nval')
@@ -253,7 +254,7 @@ echo "</pre>";*/
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andWhere(['activity' => 1])
         //->andFilterWhere([new \yii\db\Expression('from_unixtime(FlightDate, "%Y-%m-%d")') => $df])
-        ->andFilterWhere(["(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))"  => $df])
+        ->andFilterWhere(["(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))" => $df])
         ->andFilterWhere(['Adult' => $this->adult])
         ->andFilterWhere(['Child' => $this->child])
         ->andFilterWhere(['ToCountryID' => $this->country_id])

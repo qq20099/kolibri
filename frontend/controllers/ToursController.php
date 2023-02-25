@@ -12,10 +12,6 @@ class ToursController extends AppController
 {
     public function actionIndex()
     {
-        /*echo "<pre>";
-        print_r($_GET['SearchTours']);
-        echo "</pre>";
-        die();*/
         $countryFilter = [];
 
         $model = \frontend\models\Tours::find()
