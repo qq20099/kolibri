@@ -70,7 +70,7 @@ class CronController extends \yii\console\Controller
     {
         ini_set('memory_limit', '-1');
     }
-    
+
     private static function getCountryId($name)
     {
         $tr = new GoogleTranslateForFree();
@@ -263,11 +263,13 @@ class CronController extends \yii\console\Controller
             foreach ($country as $areaID => $value) {
                 $post = [];
                 $post['PackageDate'] = date('Y-m-d', $value['PackageDate']);
+                //$post['PackageDate'] = Yii::$app->formatter->asDate($value['PackageDate']);
                 $post['StartDate'] = $value['PackageDate'];
                 $post['BeginDate'] = $post['PackageDate'];
                 $post['EndDate'] = $post['PackageDate'];
                 //$post['cron_id'] = $model->id;
-
+print_r($post);
+die();
                 if ($value['coraltravelAvailableDateItems']) {
                     foreach ($value['coraltravelAvailableDateItems'] as $val) {
                         $post['ToCountry'] = $val['ToCountryID'];
