@@ -233,7 +233,9 @@ class CronController extends \yii\console\Controller
 
     public function actionGetTours()
     {
-        $date = strtotime(date('Y-m-d 00:00:00'));
+        $date = Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'));
+        //$date = Yii::$app->formatter->date();
+        //die($date);
         $connection = Yii::$app->db;
         /*$connection->createCommand()->update('tours', ['activity' => 0], 'FlightDate <= '.$date)
         ->execute();*/
@@ -246,20 +248,18 @@ class CronController extends \yii\console\Controller
             if (empty($model)) {
                 $model = new CronTours();
                 $model->title = 'Tours';
-                if (!$model->save()) {
-                    print_r($model->getErrors());
-                    print_r($model);
-                    die();
-                }
-                Tours::deleteAll(['<=', 'FlightDate', $date]);
+                $model->save();
+
             } else {
-                //die("Cron already running");
+                die("Cron already running");
             }
+
+            Tours::deleteAll(['<=', 'FlightDate', $date]);
 
             $this->cron_id = $model->id;
 
 //print_r($country);die();
-
+            try {
             foreach ($country as $areaID => $value) {
                 $post = [];
                 //$post['PackageDate'] = date('Y-m-d', $value['PackageDate']);
@@ -268,8 +268,7 @@ class CronController extends \yii\console\Controller
                 $post['BeginDate'] = $post['PackageDate'];
                 $post['EndDate'] = $post['PackageDate'];
                 //$post['cron_id'] = $model->id;
-print_r($post);
-die();
+
                 if ($value['coraltravelAvailableDateItems']) {
                     foreach ($value['coraltravelAvailableDateItems'] as $val) {
                         $post['ToCountry'] = $val['ToCountryID'];
@@ -288,6 +287,12 @@ die();
                     $model->save();
                 }
                 //$this->tours($post);
+            }
+            } catch (\Exception $e) {
+                $model->status = CronToursItems::STATUS_ERROR;
+                $model->save();
+                echo $e->getMessage();
+                echo "\r\n";
             }
         }
     }
@@ -354,7 +359,7 @@ die();
 
             try {
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
-                $count = (($data['data']) ? count($data['data']) : 0);
+                $count = ((isset($data['data']) && $data['data']) ? count($data['data']) : 0);
 
                 if (!empty($data['data'])) {
                     if ($post['StartIndex'] == 1)
@@ -432,7 +437,9 @@ die();
                             $errors = ($cronToursItems->errors) ? \yii\helpers\Json::decode($cronToursItems->errors) : [];
                             $cronToursItems->errors = \yii\helpers\Json::encode(
                               \yii\helpers\ArrayHelper::merge($errors, $model->getErrors()));
+
                             self::addLog($model, 'tours');
+                            file_put_contents(Yii::getAlias('@uploadsTmpDir').'/tours.txt', print_r($value, true)."\r\n\r\n", FILE_APPEND);
                         }
                     } catch (\Exception $e) {
                         self::addLog($e, 'tours-error');
@@ -472,10 +479,15 @@ die();
     {
         $data = [];
         $log = new CronLog();
-        $data['errors'] = ($t == 'tours-error') ? $model->getMessage() : \yii\helpers\Json::encode($model->getErrors());
-        $data['data'] = \yii\helpers\Json::encode($model);
-        $data['type'] = $t;
-        $log::add($data);
+        try {
+            $data['errors'] = ($t == 'tours-error') ? $model->getMessage() : \yii\helpers\Json::encode($model->getErrors());
+            $data['data'] = ($model) ? \yii\helpers\Json::encode($model) : '';
+            $data['type'] = $t;
+            $log::add($data);
+            } catch (\Exception $e) {
+                echo "Log: ".$e->getMessage()."\r\n";
+                print_r($e);
+            }
     }
 
     public function actionGetTours1()
