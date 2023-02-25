@@ -144,15 +144,17 @@ class CronController extends \yii\console\Controller
     //public function actionGetCountryForDate()
     private static function getCountryForDate()
     {
-        $date = strtotime(date('Y-m-d').' 00:00:00');
-        $data = \frontend\models\CoraltravelPackageAvailableDate::find()
+        $date = strtotime(date('Y-m-d 00:00:00'));
+        $q = \frontend\models\CoraltravelPackageAvailableDate::find()
         ->where(['FromArea' => 3345])
         ->andWhere(['>', 'PackageDate', $date])
         ->with('coraltravelAvailableDateItems')
-        ->asArray()
+        ->asArray();
         //->orderBy(['id' => SORT_DESC])
         //->limit(2)
-        ->all();
+        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+
+        $data = $q->all();
 
         return $data;
         $result = [];
@@ -348,6 +350,9 @@ class CronController extends \yii\console\Controller
                 $count = (($data['data']) ? count($data['data']) : 0);
 
                 if (!empty($data['data'])) {
+                    if ($post['StartIndex'] == 1)
+                      $cronToursItems->data = \yii\helpers\Json::encode(self::tourParams($post));
+
                 foreach ($data['data'] as $value) {
                     $update = true;
 
