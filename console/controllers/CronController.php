@@ -66,6 +66,11 @@ class CronController extends \yii\console\Controller
     private $upd;
     private $add;
 
+    public function init()
+    {
+        ini_set('memory_limit', '-1');
+    }
+    
     private static function getCountryId($name)
     {
         $tr = new GoogleTranslateForFree();
