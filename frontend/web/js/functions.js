@@ -654,7 +654,9 @@ function getDate(form, fp)
                     var date = new Date(date_from * 1000);
                     fp.setDate(date.toLocaleDateString('en-CA'));
                     fp.set('dateFormat', 'U');
-                    getNights(form);
+                    
+                    if (!nights)
+                      getNights(form);
                 } else {
                     fp.jumpToDate();
                 }

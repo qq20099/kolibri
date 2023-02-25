@@ -311,12 +311,16 @@ print_r($searchTours);*/
             //print_r($dateItems);
             //print_r($dat);
 
-            $result = $searchTours->getToursAvailableDate();
+            //$result = (!$searchTours->region_id) ? $searchTours->getToursAvailableDate(true) : $searchTours->getToursAvailableDate();
+            $result = $searchTours->getDate();
+
+            $d = ArrayHelper::getColumn($result, 'date');
+            $p = ArrayHelper::getColumn($result, 'PackagePrice');
 
             return $this->asJson([
                 'regions' => ($data) ? $this->renderAjax('spec_region', compact('searchTours', 'data')) : '',
-                'date' => $result['date'],
-                'price' => $result['price'],
+                'date' => $d, //$result['date'],
+                'price' => $p, //$result['price'],
                 'people' => $searchTours->getPeople(),
                 'show_region' => ($searchTours->region_id) ? true : false,
             ]);

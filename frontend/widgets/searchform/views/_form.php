@@ -78,7 +78,8 @@ $this->registerCss("
         </div>
 <?//if(!isset($model->date_from)):?>
 <?$this->registerJs("
-var date_from = '".$model->date_from."';
+var date_from = '".$model->date_from."';\n
+var nights = '".$model->nights."';\n
 /*var fp;
     var \$fp_options = {
             //static: true,
