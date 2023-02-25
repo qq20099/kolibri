@@ -273,6 +273,8 @@ echo "</pre>";*/
         echo "</pre>";
         die();*/
         //sort($model);
+        //die(Yii::getAlias('@uploadsTmpDir').'sql.txt');
+        file_put_contents(Yii::getAlias('@uploadsTmpDir').'/sql.txt', $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql."\r\n", FILE_APPEND);
         //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
         $data = ($model) ? \yii\helpers\ArrayHelper::map($model, 'HotelNight', 'nval') : [];
 

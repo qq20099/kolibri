@@ -205,6 +205,13 @@ $(document).ready(function(){
         console.log(a);
     });
 
+    $(document).on('click', 'h2', function(e){
+/*        let html = '<option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option>';
+        $('#choice-region').html(html);
+        $('#choice-region').multiselect('rebuild');
+        //$('#choice-nights').multiselect('rebuild');*/
+    });
+
     $(document).on('submit', '#search-form', function(e){
         //let $date = $('#searchform-date_from');
         let re = $(this).find('.required.input');
@@ -607,18 +614,37 @@ function getNights(form)
     $.ajax({
         url: '/tours/nights',
         type: 'post',
-        dataType: 'html',
+        dataType: 'json',
         data: form.serialize(),
         error: function(response){console.log(response);},
         success: function(response){
-            let ni = $(response);
+            let html = '';
+
+            if (response.nights.length) {
+                $(response.nights).each(function(i, k){
+                    html += '<option value="'+k+'">'+k+'</option>';
+                });
+                $('#choice-nights').html(html);
+                $('#searchtours-nights').multiselect('rebuild');
+                $('#searchtours-nights').multiselect('enable');
+                //$('.search-form__nights .multiselect').removeClass('disabled');
+                //$('.search-form__nights .multiselect').prop('disabled', false);
+                $('.search-form__nights .input-field--disabled').removeClass('input-field--disabled');
+            }
+
+        /*let html = '<option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option>';
+        $('#choice-region').html(html);*/
+
+        //$('#choice-nights').multiselect('rebuild');
+
+            /*let ni = $(response);
             let n = ni.find('.input-field');
 
             console.log(ni);
             console.log(ni.find('.input-field').length);
-            $('.search-form__nights').replaceWith(response);
+            $('.search-form__nights').replaceWith(response);*/
             //$('.search-form__nights .input-field').replaceWith(n);
-            $('.search-form__nights .input-field--disabled').removeClass('.input-field--disabled');
+
         },
     });
 }

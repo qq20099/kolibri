@@ -185,7 +185,25 @@ die();*/
     }
 
     public function actionNights()
-    {       
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $model = new SearchTours();
+            if ($model->load($this->request->post())) {
+               $data = (!$model->date_from) ? [] : $model->getNights();
+            } else {
+
+            }
+
+            return ['nights' => array_values($data)];
+              //$data = ArrayHelper::getColumn($data, 'HotelNight');
+
+            //return $this->renderAjax('spec_nights', compact('model', 'data'));
+        }
+    }
+
+    public function actionNights1()
+    {
         if (Yii::$app->request->isAjax) {
             $model = new SearchTours();
             if ($model->load($this->request->post())) {
