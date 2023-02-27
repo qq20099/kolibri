@@ -42,7 +42,7 @@ class SearchTours extends Tours
             [['region_id', 'hotel_id'], 'each', 'rule' => ['integer']],
             [['country_id', 'area_id'], 'integer', 'min' => 1],
             [['ages'], 'string', 'max' => 20],
-            //['country_id', 'default', 'value' => 12],
+            ['country_id', 'default', 'value' => 12],
             ['from_area', 'default', 'value' => 3345],
             ['adult', 'default', 'value' => 2, 'on' => self::SCENARIO_FIND_BY_FORM],
             [['all_rows'], 'safe'],
@@ -115,10 +115,11 @@ class SearchTours extends Tours
         }
 
         if (!$this->hotel_id) {
-            $query->groupBy('HotelID, FlightDate');
+            //$query->groupBy('HotelID, FlightDate');
+            $query->groupBy('HotelID');
         } else {
             $query->groupBy('HotelID');
-            $query->orderBy('PackagePrice, FlightDate');
+            $query->orderBy('tours.PackagePrice, tours.FlightDate');
         }
 
         if ($this->date_from)
@@ -169,8 +170,8 @@ echo "</pre>";*/
         //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression(new Expression('DATE(NOW())'))])
         ->andWhere(['activity' => 1])
-        ->groupBy('HotelID')
-        ->orderBy('FlightDate');
+        ->groupBy('HotelID');
+        //->orderBy('FlightDate, PackagePrice');
         $subQuery->andFilterWhere(['IN', 'AreaID', $this->region_id]);
 
         $query = self::find()->leftJoin('(' .
@@ -183,7 +184,7 @@ echo "</pre>";*/
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andWhere(['activity' => 1])
         ->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
-        ->orderBy('FlightDate');
+        ->orderBy('{{%tours}}.FlightDate, {{%tours}}.PackagePrice');
 
         return $query;
     }
@@ -193,15 +194,16 @@ echo "</pre>";*/
         $regionFilter = [];
 
         $q = \frontend\models\Tours::find()
-        ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory', 'geography'])
+        //->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory', 'geography'])
+        ->with(['geography'])
         //->with(['hotel', 'toCountry', 'meal', 'area.region.country', 'hotelCategory'])
         //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andWhere(['activity' => 1])
         ->andWhere(['main' => 1])
-        ->joinWith('toCountry')
+        ->joinWith('geography')
         //->joinWith('area.region.country')
-        ->orderBy(['{{%coraltravel_country}}.Name' => SORT_ASC])
+        ->orderBy(['{{%coraltravel_geography}}.AreaName' => SORT_ASC])
         //->groupBy('RegionID')
         //->groupBy('{{%coraltravel_region}}.ID')
         ->asArray();
@@ -217,8 +219,10 @@ echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("fff
             $data[$value['CountryName']][$value['AreaID']] = $value['AreaName'];
             //$data[$value['region']['country']['Name']][$value['ID']] = $value['Name'];
         }
-
-        asort($data);
+/*echo "<pre>";
+print_r($data);
+echo "</pre>";*/
+        //asort($data);
 
         /*echo "<pre>";
         print_r($data);
