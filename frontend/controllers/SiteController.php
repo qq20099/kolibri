@@ -110,7 +110,7 @@ class SiteController extends AppController
         $hot_sort_country = $cookies->getValue('hot_sort_country', 0);
 
         if (!isset($params['SearchTours']['country_id']) && $hot_sort_country) {
-            //$params['SearchTours']['country_id'] = $hot_sort_country;
+            $params['SearchTours']['country_id'] = $hot_sort_country;
         }
 
         $params['SearchTours']['main'] = 1;

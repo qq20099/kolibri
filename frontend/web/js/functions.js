@@ -110,10 +110,12 @@ $(document).ready(function(){
         if ($('#search-form').length) {
             fp = $(".flatpickr").flatpickr($fp_options);
 
-            if (!date_from)
-              getSpecification($('#search-form'), fp);
+            if (!date_from) {
+                getSpecification($('#search-form'), fp);
+                getRegions($('#search-form'));
+            }
             //else
-              getDate($('#search-form'), fp);
+              //getDate($('#search-form'), fp);
         }
     });
 
@@ -165,6 +167,7 @@ $(document).ready(function(){
     $(document).on('change', '#searchtours-adult', function(e){
         let form = $(this).closest('form');
         getSpecification(form, fp);
+        getRegions(form);
         return false;
     });
 
@@ -173,9 +176,10 @@ $(document).ready(function(){
         $('.input-field.search-form__regions .open').removeClass('open');
         $('.input-field.search-form__regions .show').removeClass('show');
         $('#searchtours-region_id').val(0);
-        $('#choice-region').val(0);
-        $('#choice-region').multiselect('refresh');
+        /*$('#choice-region').val(0);
+        $('#choice-region').multiselect('refresh'); searchtours-region_id*/
         getSpecification(form, fp);
+        getRegions(fotm);
         return false;
     });
 
@@ -228,9 +232,6 @@ $(document).ready(function(){
             } else {
                 //$(this).closest('.input-field').removeClass('has-error');
             }
-            console.log($(this).closest('.input-field').attr('class'));
-            console.log($(this).attr('class'));
-            console.log($(this).val());
         });
 
         err = $(this).find('.input-field.has-error').length;
@@ -441,21 +442,14 @@ $(document).ready(function(){
     });
 
     $(document).mousedown(function(e){
-        console.log('ggggg');
 
         if ($(e.target).attr('id') == 'show-tab')
           return false;
 
-        /*if (!$(e.target).hasClass('se'))
-          return false;*/
-
-        console.log('ssss');
         let container = $(".passengers-selection");
 
         if (container.has(e.target).length === 0) {
             $('.passengers-selection__dropdown').hide();
-            console.log(e.target);
-            console.log(container.has(e.target));
         }
 
         /*if (container.has(e.target).length === 0
@@ -474,13 +468,11 @@ $(document).ready(function(){
                 //$('.search-btn-form-mobile').addClass('show');
             });
         });
-        console.log('gggggggggggggggggggggggggggg');
     });
 
     $(document).on('click', '.tour-card__img', function(e){
         let u = $(this).closest('.tour-card').find('.tour-card__link:first').attr('href');
         //window.location.href = u;
-        console.log(u);
     });
 
     $(document).on('change', '#chuse-country', function(e){
@@ -620,11 +612,12 @@ function getNights(form)
         success: function(response){
             let html = '';
 
+            console.log(response.nights.length);
             if (response.nights.length) {
                 $(response.nights).each(function(i, k){
                     html += '<option value="'+k+'">'+k+'</option>';
                 });
-                $('#choice-nights').html(html);
+                $('#searchtours-nights').html(html);
                 $('#searchtours-nights').multiselect('rebuild');
                 $('#searchtours-nights').multiselect('enable');
                 //$('.search-form__nights .multiselect').removeClass('disabled');
@@ -732,6 +725,38 @@ function getDate(form, fp)
     });
 }
 
+function getRegions(form)
+{
+    $('.search-form__regions').addClass('input-field--disabled');
+    $.ajax({
+        url: form.data('url').replace('specification', 'get-regions'),
+        type: 'post',
+        dataType: 'json',
+        data: form.serialize(),
+        error: function(response){console.log(response);},
+        success: function(response){
+            let err = 0;
+            let html = 0;
+
+            if (response.regions) {
+                for (var key in response.regions) {
+                    html += '<option value="'+key+'">'+response.regions[key]+'</option>';
+                };
+                $('#searchtours-region_id').html(html);
+                $('#searchtours-region_id').multiselect('rebuild');
+                $('#searchtours-region_id').multiselect('enable');
+                $('.search-form__regions').removeClass('input-field--disabled');
+            } else {
+                $('.search-form__regions').addClass('input-field--disabled');
+            }
+
+            if (response.show_region) {
+                $('.search-form__regions').removeClass('input-field--disabled');
+            }
+        },
+    });
+}
+
 function getSpecification(form, fp)
 {
     fp.clear();
@@ -747,13 +772,12 @@ function getSpecification(form, fp)
         error: function(response){console.log(response);},
         success: function(response){
             let err = 0;
+            let html = 0;
             $('.calendar-min-price-css').remove();
 
             if (response.date.length > 0) {
                 for (var key in response.price) {
                     $('.event-'+key).text(response.price[key]);
-                    console.log('.event-'+key);
-                    console.log(response.price[key]);
         document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
                 }
                 $('.search-form__date-nights').removeClass('input-field--disabled');
@@ -808,13 +832,31 @@ function getSpecification(form, fp)
                   $('#show-tab').closest('.input-field').removeClass('has-error');
             }
 
-            if (response.regions) {
+            /*if (response.regions) {
                 $('.input-field.search-form__regions').replaceWith(response.regions);
                 $('.search-form__regions').removeClass('input-field--disabled');
+            }*/
+
+
+            /*console.log(response.regions);
+            if (response.regions) {
+                //$(response.regions).each(function(i, k){
+                for (var key in response.regions) {
+                    html += '<option value="'+key+'">'+response.regions[key]+'</option>';
+                };
+                $('#searchtours-region_id').html(html);
+                $('#searchtours-region_id').multiselect('rebuild');
+                $('#searchtours-region_id').multiselect('enable');
+                //$('.search-form__nights .multiselect').removeClass('disabled');
+                //$('.search-form__nights .multiselect').prop('disabled', false);
+                $('.search-form__regions').removeClass('input-field--disabled');
+            } else {
+                $('.search-form__regions').addClass('input-field--disabled');
             }
+
             if (response.show_region) {
                 $('.search-form__regions').removeClass('input-field--disabled');
-            }
+            }*/
 
         },
     });
@@ -918,8 +960,10 @@ function timeConverter(UNIX_timestamp){
 function showLoader(el)
 {
     var loader = '<div class="wpv-splash-screen"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
-    if (!el)
-      el = $('body');
+    if (!el) {
+        $('body').addClass('show-loader');
+        el = $('body');
+    }
 
     el.find('.wpv-splash-screen').remove();
     el.append(loader);
@@ -931,4 +975,5 @@ function hideLoader(el)
       el.find('.wpv-splash-screen').remove();
     else
       $('.wpv-splash-screen').remove();
+    $('body').removeClass('show-loader');
 }

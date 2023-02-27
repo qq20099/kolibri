@@ -274,6 +274,24 @@ die();*/
 
     }*/
 
+    public function actionGetRegions()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $searchTours = new \frontend\models\SearchTours();
+
+            if ($searchTours->load($this->request->post())) {
+               $data = (!$searchTours->region_id) ? $searchTours->getRegionsForCountry() : [];
+            } else {
+            }
+
+            return [
+                'regions' => ($data) ? $data : [],
+                'show_region' => ($searchTours->region_id) ? true : false,
+            ];
+        } die("GGG");
+    }
+
     public function actionSpecification()
     {
         if (Yii::$app->request->isAjax) {
@@ -283,7 +301,7 @@ die();*/
 
             if ($searchTours->load($this->request->post())) {
                 //print_r($searchTours->getToursAvailableDate());die();
-               $data = (!$searchTours->region_id) ? $searchTours->getRegionsForCountry() : [];
+               //$data = (!$searchTours->region_id) ? $searchTours->getRegionsForCountry() : [];
                $searchTours->getPeople();
             } else {
                 print_r($searchTours->getErrors());
@@ -333,13 +351,13 @@ print_r($searchTours);*/
 
             $price = ArrayHelper::map($result, 'date', 'PackagePrice');
 
-            return $this->asJson([
-                'regions' => ($data) ? $this->renderAjax('spec_region', compact('searchTours', 'data')) : '',
-                'date' => $d, //$result['date'],
+            return [
+                //'regions' => ($data) ? $data : [], //$this->renderAjax('spec_region', compact('searchTours', 'data')) : '',
+                'date' => ($d) ? array_unique($d) : [], //$result['date'],
                 'price' => $price, //$result['price'],
                 'people' => $searchTours->getPeople(),
                 'show_region' => ($searchTours->region_id) ? true : false,
-            ]);
+            ];
         }
     }
 

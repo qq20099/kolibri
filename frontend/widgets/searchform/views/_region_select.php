@@ -6,7 +6,8 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap4\Html;
 use common\helpers\DataHelper;
-$regions = ($model->country_id) ? $model->getRegionsForCountry() : $model->getRegions();
+//$regions = ($model->country_id) ? $model->getRegionsForCountry() : $model->getRegions();
+$regions = $model->getRegionsForCountry();
 ?>
 <div class="input-field search-form__regions<?if(!$regions):?> input-field--disabled<?endif?>">
     <div class="input-field__label">

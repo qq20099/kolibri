@@ -82,6 +82,7 @@ return [
                 'tours' => 'tours/index',
                 'tours/nights' => 'tours/nights',
                 'tours/get-prices' => 'tours/prices',
+                'tours/get-regions' => 'tours/get-regions',
                 'tours/specification' => 'tours/specification',
                 'tours/<id:[\d]+>' => 'tours/view',
                 'hotel/<id:[\d]+>' => 'hotel/view',

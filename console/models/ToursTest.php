@@ -81,7 +81,7 @@ class ToursTest extends \yii\db\ActiveRecord
             [['EarlyBookingText', 'FlightLeftAllotmentText', 'BackFlightLeftAllotmentText', 'B2BUrl', 'B2CUrl'], 'string', 'max' => 255],
             [['FlightDateSource', 'HotelCheckInDateSource'], 'string', 'max' => 20],
             [['params'], 'string'],
-            [['FlightDate', 'AreaID', 'HotelNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'ToCountryID', 'SeatClassID', 'PackagePrice', 'Adult', 'Child'], 'unique', 'targetAttribute' => ['FlightDate', 'AreaID', 'HotelNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'ToCountryID', 'SeatClassID', 'PackagePrice', 'Adult', 'Child']],
+            //[['FlightDate', 'AreaID', 'HotelNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'ToCountryID', 'SeatClassID', 'PackagePrice', 'Adult', 'Child'], 'unique', 'targetAttribute' => ['FlightDate', 'AreaID', 'HotelNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'ToCountryID', 'SeatClassID', 'PackagePrice', 'Adult', 'Child']],
         ];
     }
 

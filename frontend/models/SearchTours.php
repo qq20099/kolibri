@@ -195,17 +195,22 @@ echo "</pre>";*/
         $regionFilter = [];
 
         $q = \frontend\models\Tours::find()
+        ->select([
+            '{{%tours}}.id',
+            '{{%coraltravel_geography}}.AreaID',
+            '{{%coraltravel_geography}}.AreaName',
+            '{{%coraltravel_geography}}.CountryName'
+        ])
         //->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory', 'geography'])
         ->with(['geography'])
         //->with(['hotel', 'toCountry', 'meal', 'area.region.country', 'hotelCategory'])
         //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andWhere(['activity' => 1])
-        ->andWhere(['main' => 1])
         ->joinWith('geography')
         //->joinWith('area.region.country')
-        ->orderBy(['{{%coraltravel_geography}}.AreaName' => SORT_ASC])
-        //->groupBy('RegionID')
+        ->orderBy(['{{%coraltravel_geography}}.CountryName, {{%coraltravel_geography}}.AreaName' => SORT_ASC])
+        ->groupBy('{{%tours}}.AreaID')
         //->groupBy('{{%coraltravel_region}}.ID')
         ->asArray();
         $model = $q->all();
@@ -215,8 +220,8 @@ echo "</pre>";
 echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("fff");*/
         $data = [];
         //$t = \yii\helpers\ArrayHelper::getColumn($model, 'place.area');
-        $t = \yii\helpers\ArrayHelper::getColumn($model, 'geography');
-        foreach ($t as $value) {
+        //$t = \yii\helpers\ArrayHelper::getColumn($model, 'geography');
+        foreach ($model as $value) {
             $data[$value['CountryName']][$value['AreaID']] = $value['AreaName'];
             //$data[$value['region']['country']['Name']][$value['ID']] = $value['Name'];
         }
@@ -327,6 +332,7 @@ echo "</pre>";*/
     {
         $subQuery = $this->getQuery();///->asArray();
         $query = \frontend\models\CoraltravelGeography::find()
+        ->from(['g.AreaID', 'g.AreaName'])
         ->from('{{%coraltravel_geography}} g')
         ->innerJoin('(' .
                       $subQuery->prepare(Yii::$app->db->queryBuilder)
@@ -640,7 +646,7 @@ echo "</pre>";*/
         ->andFilterwhere(['Adult' => $this->adult])
         ->andFilterwhere(['ToCountryID' => $this->country_id])
         ->andFilterwhere(['IN', 'AreaID', $this->region_id])
-        ->groupBy(['FlightDate']);
+        ->groupBy(['FlightDateSource']);
         $model = $query->asArray()->all();
         return $model;
         //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");

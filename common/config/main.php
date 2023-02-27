@@ -19,6 +19,7 @@ return [
             'class'=>\yii\i18n\Formatter::className(),
             //'dateFormat' => 'long',
             'dateFormat' => 'yyyy-MM-dd',
+            'datetimeFormat' => 'yyyy-MM-dd HH:mm:ss',
             'currencyCode' => 'EUR',
             'decimalSeparator' => '.',
             'thousandSeparator' => ' ',

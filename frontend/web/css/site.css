@@ -12,7 +12,11 @@ body {
     margin: 0;
     padding: 0;
     font-size: 14px;
-    font-family: 'Core Sans C'!important;
+    font-family: 'Core Sans C';
+}
+body.show-loader {
+    overflow: hidden;
+    padding-right: 17px;
 }
 
 img {
@@ -276,6 +280,7 @@ section.banner {padding: 2rem 0;overflow: hidden;background-image: url('/images/
 
 .wpv-splash-screen {
   position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;

@@ -1316,6 +1316,8 @@ div[data-item="list"] .u-shading {
     color: #07b11f;
     line-height: 5px;
     width: 100%;
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .prevMonthDay .calendar-min-price,
 .nextMonthDay .calendar-min-price {

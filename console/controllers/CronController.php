@@ -68,7 +68,7 @@ class CronController extends \yii\console\Controller
 
     public function init()
     {
-        ini_set('memory_limit', '-1');
+        ini_set('memory_limit', '2048');
     }
 
     private static function getCountryId($name)
@@ -245,7 +245,7 @@ class CronController extends \yii\console\Controller
 
     public function actionGetToursByArea()
     {
-        echo "Start: ".Yii::$app->formatter->asDate(time())."\r\n";
+        echo "Start: ".Yii::$app->formatter->asDatetime(time())."\r\n";
         $date = Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'));
         //$date = Yii::$app->formatter->date();
         //die($date);
@@ -254,8 +254,8 @@ class CronController extends \yii\console\Controller
         ->execute();*/
 
         $country = self::getCountryForDate(false);
-        //print_r($country);
-        //die();
+        /*print_r($country);
+        die();*/
 
         if ($country) {
             $model = CronTours::find()->where(['status' => 0])->andWhere(['type' => 'area'])->one();
@@ -274,7 +274,7 @@ class CronController extends \yii\console\Controller
 
             $this->cron_id = $model->id;
 
-//print_r($country);die();
+
             try {
                 foreach ($country as $areaID => $value) {
                     $post = [];
@@ -286,9 +286,13 @@ class CronController extends \yii\console\Controller
                     $post['package_id'] = $value['id'];
                     //$post['cron_id'] = $model->id;
                     if ($value['coraltravelAvailableDateItems']) {
-                        foreach ($value['coraltravelAvailableDateItems'] as $val) {
-                            $post['ToCountry'] = $val['ToCountryID'];
-                            $post['ToArea'] = $val['ToAreaID'];
+                        $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
+                        if ($ToCountryID) {
+                        ///foreach ($value['coraltravelAvailableDateItems'] as $val) {
+                        foreach ($ToCountryID as $val) {
+                            $post['ToCountry'] = $val;
+                            ///$post['ToArea'] = $val['ToAreaID'];
+                            $post['ToArea'] = 0;
                             for ($j=1; $j<7; $j++) {
                                 $post['Adult'] = $j;
 
@@ -297,6 +301,7 @@ class CronController extends \yii\console\Controller
                                     $this->tour($post);
                                 }
                             }
+                        }
                         }
                         $model->status = CronToursItems::STATUS_END;
                         $model->save();
@@ -310,7 +315,7 @@ class CronController extends \yii\console\Controller
                 echo "\r\n";
             }
         }
-        echo "End: ".Yii::$app->formatter->asDate(time())."\r\n";
+        echo "End: ".Yii::$app->formatter->asDatetime(time())."\r\n";
     }
 
     public function actionGetTours()
@@ -499,7 +504,7 @@ class CronController extends \yii\console\Controller
                     $toursTest->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                     $toursTest->SaleStatus = (int)$value['SaleStatus'];
                     $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));
-                    $toursTest->save(false);
+                    $toursTest->save();
 
                     try {
                         if ($model->save()) {
