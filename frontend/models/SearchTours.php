@@ -193,7 +193,7 @@ echo "</pre>";*/
         $regionFilter = [];
 
         $q = \frontend\models\Tours::find()
-        ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory'])
+        ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory', 'geography'])
         //->with(['hotel', 'toCountry', 'meal', 'area.region.country', 'hotelCategory'])
         //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
@@ -206,11 +206,16 @@ echo "</pre>";*/
         //->groupBy('{{%coraltravel_region}}.ID')
         ->asArray();
         $model = $q->all();
-
+/*echo "<pre>";
+print_r($model);
+echo "</pre>";
+echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("fff");*/
         $data = [];
-        $t = \yii\helpers\ArrayHelper::getColumn($model, 'place.area');
+        //$t = \yii\helpers\ArrayHelper::getColumn($model, 'place.area');
+        $t = \yii\helpers\ArrayHelper::getColumn($model, 'geography');
         foreach ($t as $value) {
-            $data[$value['region']['country']['Name']][$value['ID']] = $value['Name'];
+            $data[$value['region']['country']['Name']][$value['AreaID']] = $value['AreaName'];
+            //$data[$value['region']['country']['Name']][$value['ID']] = $value['Name'];
         }
 
         asort($data);
