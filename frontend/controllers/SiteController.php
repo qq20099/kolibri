@@ -109,7 +109,7 @@ class SiteController extends AppController
         $hot_sort_country = $cookies->getValue('hot_sort_country', 0);
 
         if (!isset($params['SearchTours']['country_id']) && $hot_sort_country) {
-            $params['SearchTours']['country_id'] = $hot_sort_country;
+            //$params['SearchTours']['country_id'] = $hot_sort_country;
         }
 
         $params['SearchTours']['main'] = 1;
@@ -191,6 +191,7 @@ class SiteController extends AppController
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->getListPackageAvailableDate();
         $data = Yii::$app->api->getPackageSearch();
+        $data = Yii::$app->api->test();
         //$data = Yii::$app->api->getListFlightSupplier();
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->test();

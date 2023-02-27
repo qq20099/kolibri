@@ -42,7 +42,7 @@ class SearchTours extends Tours
             [['region_id', 'hotel_id'], 'each', 'rule' => ['integer']],
             [['country_id', 'area_id'], 'integer', 'min' => 1],
             [['ages'], 'string', 'max' => 20],
-            ['country_id', 'default', 'value' => 12],
+            //['country_id', 'default', 'value' => 12],
             ['from_area', 'default', 'value' => 3345],
             ['adult', 'default', 'value' => 2, 'on' => self::SCENARIO_FIND_BY_FORM],
             [['all_rows'], 'safe'],

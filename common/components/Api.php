@@ -713,13 +713,22 @@ echo "</pre>";*/
 
     public function test()
     {
+        $d = json_decode('{"BeginDate":"2023-03-03","EndDate":"2023-03-03","FromArea":3345,"ToCountry":"31","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":1,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false,"ToArea":"148"}');
+
+        $data = $this->getPackageSearch($d);
+        echo "<pre>";
+        print_r($data);
+        echo "\r\n------------------------\r\n";
+        print_r($d);
+        echo "</pre>";
+        die();
         /*$client = new Client();
         $re = $client->createRequest()
           //->setFormat(Client::FORMAT_JSON)
           ->setMethod('get')
           ->setUrl('https://www.tripadvisor.com/Hotel_Review-g662606-d285140')
           ->send();*/
-          $re = file_get_contents('https://www.tripadvisor.com/');
-          print_r($re);
+          //$re = file_get_contents('https://www.tripadvisor.com/');
+          //print_r($re);
     }
 }
