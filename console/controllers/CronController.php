@@ -68,7 +68,7 @@ class CronController extends \yii\console\Controller
 
     public function init()
     {
-        ini_set('memory_limit', '2048');
+        ini_set('memory_limit', '3072');
     }
 
     private static function getCountryId($name)
