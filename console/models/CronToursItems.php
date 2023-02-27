@@ -54,7 +54,7 @@ class CronToursItems extends \yii\db\ActiveRecord
     {
         return [
             [['ToCountry', 'ToArea', 'Adult', 'Page', 'BeginDate', 'cron_id'], 'required'],
-            [['ToCountry', 'ToArea', 'Adult', 'Child', 'Page', 'BeginDate', 'rows', 'insert_rows', 'update_rows', 'duplicates', 'cron_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['ToCountry', 'ToArea', 'Adult', 'Child', 'Page', 'BeginDate', 'rows', 'insert_rows', 'update_rows', 'duplicates', 'cron_id', 'status', 'package_id', 'created_at', 'updated_at'], 'integer'],
             [['errors', 'data'], 'string'],
             [['cron_id'], 'exist', 'skipOnError' => true, 'targetClass' => CronTours::class, 'targetAttribute' => ['cron_id' => 'id']],
         ];

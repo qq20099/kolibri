@@ -46,6 +46,7 @@ class CronTours extends \yii\db\ActiveRecord
             [['title'], 'required'],
             [['created_at', 'updated_at', 'status'], 'integer'],
             [['title'], 'string', 'max' => 100],
+            [['type'], 'string', 'max' => 20],
         ];
     }
 
