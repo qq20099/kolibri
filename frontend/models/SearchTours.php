@@ -214,7 +214,7 @@ echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("fff
         //$t = \yii\helpers\ArrayHelper::getColumn($model, 'place.area');
         $t = \yii\helpers\ArrayHelper::getColumn($model, 'geography');
         foreach ($t as $value) {
-            $data[$value['region']['country']['Name']][$value['AreaID']] = $value['AreaName'];
+            $data[$value['CountryName']][$value['AreaID']] = $value['AreaName'];
             //$data[$value['region']['country']['Name']][$value['ID']] = $value['Name'];
         }
 
