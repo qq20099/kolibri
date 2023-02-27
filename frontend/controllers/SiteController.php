@@ -102,6 +102,7 @@ class SiteController extends AppController
         ->all();*/
 
         $searchModel = new \frontend\models\SearchTours();
+        //$searchModel->setScenario(\frontend\models\SearchTours::SCENARIO_FIND_BY_MAIN);
 
         $params = Yii::$app->request->queryParams;
 
@@ -109,7 +110,7 @@ class SiteController extends AppController
         $hot_sort_country = $cookies->getValue('hot_sort_country', 0);
 
         if (!isset($params['SearchTours']['country_id']) && $hot_sort_country) {
-            $params['SearchTours']['country_id'] = $hot_sort_country;
+            //$params['SearchTours']['country_id'] = $hot_sort_country;
         }
 
         $params['SearchTours']['main'] = 1;

@@ -15,6 +15,7 @@ class SearchTours extends Tours
     const SCENARIO_FIND_BY_COUNTRY = 'find_by_country';
     const SCENARIO_FIND_BY_FORM = 'find_by_form';
     const SCENARIO_FIND_FOR_HOTEL = 'find_for_hotel';
+    const SCENARIO_FIND_BY_MAIN = 'find_for_main_page';
 
     public $country_id;
     public $area_id;
@@ -42,7 +43,7 @@ class SearchTours extends Tours
             [['region_id', 'hotel_id'], 'each', 'rule' => ['integer']],
             [['country_id', 'area_id'], 'integer', 'min' => 1],
             [['ages'], 'string', 'max' => 20],
-            ['country_id', 'default', 'value' => 12],
+            ['country_id', 'default', 'value' => 12, 'on' => self::SCENARIO_FIND_BY_FORM],
             ['from_area', 'default', 'value' => 3345],
             ['adult', 'default', 'value' => 2, 'on' => self::SCENARIO_FIND_BY_FORM],
             [['all_rows'], 'safe'],
