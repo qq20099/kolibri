@@ -163,7 +163,7 @@ class CronController extends \yii\console\Controller
             $sql = (new \yii\db\Query())
             ->select('package_id')
             ->from('cron_tours_items')
-            ->where(['IN', 'status' => [4, 9]])
+            ->where(['status' => [4, 9]])
             ->andWhere(['>', 'package_id', 0]);
             $q->andWhere(['NOT IN', 'id', $sql])
             ->limit(1);
