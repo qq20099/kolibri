@@ -279,9 +279,10 @@ die();*/
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $searchTours = new \frontend\models\SearchTours();
+            //$searchModel->scenario = $searchModel::SCENARIO_FIND_BY_FORM;
 
             if ($searchTours->load($this->request->post())) {
-               $data = (!$searchTours->region_id) ? $searchTours->getRegionsForCountry() : [];
+                $data = (!$searchTours->region_id) ? $searchTours->getRegionsForCountry() : [];
             } else {
             }
 
@@ -289,7 +290,7 @@ die();*/
                 'regions' => ($data) ? $data : [],
                 'show_region' => ($searchTours->region_id) ? true : false,
             ];
-        } die("GGG");
+        }
     }
 
     public function actionSpecification()

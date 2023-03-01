@@ -603,6 +603,11 @@ function addOrder(form)
 
 function getNights(form)
 {
+    $('.search-form__nights .input-field').addClass('input-field--disabled');
+    $('.search-form__date-nights').addClass('input-field--disabled');
+    $('#searchtours-nights').val(0);
+    $('#searchtours-nights').multiselect('disable');
+    $('.field-searchtours-nights .multiselect-selected-text').text('...');
     $.ajax({
         url: '/tours/nights',
         type: 'post',
@@ -631,7 +636,10 @@ function getNights(form)
                 }
                 //$('.search-form__nights .multiselect').removeClass('disabled');
                 //$('.search-form__nights .multiselect').prop('disabled', false);
-                $('.search-form__nights .input-field--disabled').removeClass('input-field--disabled');
+                $('.search-form__nights .input-field').removeClass('input-field--disabled');
+                $('.search-form__date-nights').removeClass('input-field--disabled');
+            } else {
+
             }
 
         /*let html = '<option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option>';
@@ -776,7 +784,7 @@ function getSpecification(form, fp)
 {
     fp.clear();
     //$('.search-form__regions').addClass('input-field--disabled');
-    $('.search-form__date-nights').addClass('input-field--disabled');
+    //$('.search-form__date-nights').addClass('input-field--disabled');
 
 
     $.ajax({
@@ -790,6 +798,7 @@ function getSpecification(form, fp)
             let html = 0;
             $('.calendar-min-price-css').remove();
 
+            console.log(response.date.length);
             if (response.date.length > 0) {
                 for (var key in response.price) {
                     $('.event-'+key).text(response.price[key]);
@@ -819,7 +828,7 @@ function getSpecification(form, fp)
                 //fp.set('dateFormat', 'U');
 
             } else {
-                $('.search-form__date-nights').addClass('input-field--disabled');
+                //$('.search-form__date-nights').addClass('input-field--disabled');
                 $('.search-form__datepicker').addClass('input-field--disabled');
                 console.log('.search-form__datepicker0');
                 fp.set('disabled', true);

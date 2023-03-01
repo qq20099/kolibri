@@ -254,18 +254,12 @@ echo "</pre>";*/
 
     public function getNights()
     {
-        $regionFilter = [];
-        $d = strtotime(date('Y-m-d 00:00:00')) + Yii::$app->params['h'];
-        $d = date('Y-m-d');
-        //$df = (isset($this->date_from)) ? date('Y-m-d', $this->date_from) : '';
+
         $df = (isset($this->date_from)) ? Yii::$app->formatter->asDate($this->date_from) : '';
-                                    //echo $this->date_from + Yii::$app->params['h'];
+
         $q = \frontend\models\Tours::find()
         ->select('HotelNight, HotelNight as nval')
         ->with(['hotel', 'toCountry', 'meal', 'place.area.region.country', 'hotelCategory'])
-        //->with(['hotel', 'toCountry', 'meal', 'area.region.country', 'hotelCategory'])
-        //->where(['>', 'FlightDate', $d])
-        //->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", $d])
         ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
         ->andWhere(['activity' => 1])
         //->andFilterWhere([new \yii\db\Expression('from_unixtime(FlightDate, "%Y-%m-%d")') => $df])
@@ -330,38 +324,39 @@ echo "</pre>";*/
 
     public function getRegionsForCountry()
     {
-        $subQuery = $this->getQuery();///->asArray();
-        $query = \frontend\models\CoraltravelGeography::find()
-        ->from(['g.AreaID', 'g.AreaName'])
-        ->from('{{%coraltravel_geography}} g')
-        ->innerJoin('(' .
+        $key = 'regions-for-country-'.$this->country_id;
+        //Yii::$app->cache->delete($key);
+        $data = Yii::$app->cache->get($key);
+
+        if ($data === false) {
+            $subQuery = $this->getQuery();///->asArray();
+            $query = \frontend\models\CoraltravelGeography::find()
+            ->from(['g.AreaID', 'g.AreaName'])
+            ->from('{{%coraltravel_geography}} g')
+            ->innerJoin('(' .
                       $subQuery->prepare(Yii::$app->db->queryBuilder)
                                ->createCommand()
                                ->rawSql
                   . ') t', 't.AreaID = g.AreaID')
-        //->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
-        ->filterWhere(['CountryID' => $this->country_id])
-        //->andWhere(['activity' => 1])
-        //->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
-        ->orderBy('AreaName')
-        ->groupBy('AreaID');
-//echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("");
-        /*$query->select('{{%coraltravel_geography}}.*');
-        $query->joinWith('geography');
-        $query->groupBy('{{%coraltravel_geography}}.AreaID');*/
-        $model = $query->all();
+            ->filterWhere(['CountryID' => $this->country_id])
+            //->andWhere(['activity' => 1])
+            //->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
+            ->orderBy('AreaName')
+            ->groupBy('AreaID');
+            //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;//die("");
+            $model = $query->all();
+            $data = [];
 
-//print_r($model);
-        $data = [];
+            foreach ($model as $value) {
+                $data[$value['AreaID']] = $value['AreaName'];
+            }
 
-        foreach ($model as $value) {
-            $data[$value['AreaID']] = $value['AreaName'];
+            $dependency = new \yii\caching\DbDependency([
+                'sql' => 'SELECT MAX(updated_at) FROM tours',
+            ]);
+
+            Yii::$app->cache->set($key, $data, null, $dependency);
         }
-
-        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die(" KKK");
-        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;//die("KKK");
-//print_r($countryFilter);;
-        //die();
         return $data;
     }
 
@@ -474,62 +469,34 @@ echo "</pre>";*/
 
     public function getCountry()
     {
-        $countryFilter = [];
+        $key = 'country';
+        //Yii::$app->cache->delete($key);
+        $data = Yii::$app->cache->get($key);
 
-        //$this->getAvailableDate(true);
-
-        /*$q = \frontend\models\Tours::find()
-        ->with(['hotel', 'toCountry', 'meal', 'area', 'hotelCategory'])
-        ->where(['>', 'FlightDate', strtotime(date('Y-m-d', time()).' 00:00:00')])
-        ->andWhere(['activity' => 1])
-        ->andWhere(['IN', 'FlightDate', $this->getAvailableDate(true)])
-        ->joinWith('toCountry')
-        ->orderBy(['{{%coraltravel_country}}.Name' => SORT_ASC])
-        ->groupBy('ToCountryID')
-        ->asArray();
-        $model = $q->all();*/
-
-        $subQuery = $this->getQuery();///->asArray();
-        $query = \frontend\models\CoraltravelGeography::find()
-        ->from('{{%coraltravel_geography}} g')
-        ->innerJoin('(' .
+        if ($data === false) {
+            $subQuery = $this->getQuery();
+            $query = \frontend\models\CoraltravelGeography::find()
+            ->from('{{%coraltravel_geography}} g')
+            ->innerJoin('(' .
                       $subQuery->prepare(Yii::$app->db->queryBuilder)
                                ->createCommand()
                                ->rawSql
                   . ') t', 't.AreaID = g.AreaID')
-        //->where(['IN', 'FlightDate', $this->getAvailableDate(true)])
-        //->filterWhere(['CountryID' => $this->country_id])
-        //->andWhere(['activity' => 1])
-        //->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
-        ->orderBy('CountryName')
-        ->groupBy('CountryID');
-//echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
-        /*$query->select('{{%coraltravel_geography}}.*');
-        $query->joinWith('geography');
-        $query->groupBy('{{%coraltravel_geography}}.AreaID');*/
-        $model = $query->all();
+            ->orderBy('CountryName')
+            ->groupBy('CountryID');
+            //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
+            $model = $query->all();
 
-//print_r($model);
-        $data = [];
-
-        foreach ($model as $value) {
-            $countryFilter[$value['CountryID']] = $value['CountryName'];
-        }
-
-        /*if ($model) {
-            $t = \yii\helpers\ArrayHelper::getColumn($model, 'toCountry');
-            $countryFilter = \yii\helpers\ArrayHelper::map($t, 'ID', 'Name');
-
-            if (count($countryFilter) > 1) {
-                //$countryFilter[0] = 'Izvēlies valsti';
-                asort($countryFilter);
-            } else {
-                //$countryFilter = [];
+            foreach ($model as $value) {
+                $data[$value['CountryID']] = $value['CountryName'];
             }
-        }*/
-        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("KKK");
-//print_r($countryFilter);die();
-        return $countryFilter;
+
+            $dependency = new \yii\caching\DbDependency([
+                'sql' => 'SELECT MAX(updated_at) FROM tours',
+            ]);
+            Yii::$app->cache->set($key, $data, null, $dependency);
+        }
+        return $data;
     }
 
     public function getCountry1()
@@ -638,62 +605,61 @@ echo "</pre>";*/
 
     public function getDate()
     {
-        $d = strtotime(date('Y-m-d', time()).' 00:00:00') + Yii::$app->params['h'];
-        $query = $this->getQuery()
-        ->select(['FROM_UNIXTIME(FlightDate, "%Y-%m-%d") as date', 'tours.PackagePrice'])
-        //->where(['>', 'FlightDate', $d])
-        ->where([">", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new Expression('DATE(NOW())')])
-        ->andFilterwhere(['Adult' => $this->adult])
-        ->andFilterwhere(['ToCountryID' => $this->country_id])
-        ->andFilterwhere(['IN', 'AreaID', $this->region_id])
-        ->groupBy(['FlightDateSource']);
-        $model = $query->asArray()->all();
-        return $model;
+        $key = 'date-for-search-'.$this->country_id.'-'.$this->adult;
+        if (isset($this->region_id) && $this->region_id) {
+            sort($this->region_id);
+            $key .= implode('-', $this->region_id);
+        }
+        //Yii::$app->cache->delete($key);
+        $data = Yii::$app->cache->get($key);
+
+        if ($data === false) {
+            $query = $this->getQuery()
+            ->select(['FROM_UNIXTIME(FlightDate, "%Y-%m-%d") as date', 'tours.PackagePrice'])
+            ->where([
+                ">",
+                "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))",
+                new Expression('DATE(NOW())')
+            ])
+            ->andFilterwhere(['Adult' => $this->adult])
+            ->andFilterwhere(['ToCountryID' => $this->country_id])
+            ->andFilterwhere(['IN', 'AreaID', $this->region_id])
+            ->groupBy(['FlightDateSource']);
+
+            $data = $query->asArray()->all();
+
+            $dependency = new \yii\caching\DbDependency([
+                'sql' => 'SELECT MAX(updated_at) FROM tours',
+            ]);
+
+            Yii::$app->cache->set($key, $data, null, $dependency);
+        }
+        return $data;
         //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
     }
 
     public function getPeople()
     {
-        /*$q = \frontend\models\Tours::find()
-         ->select(['MAX(Adult) AS Adult', 'MAX(Child) AS Child'])
-         ->where(['ToCountryID' => $this->country_id])
-         ->andWhere(['activity' => 1])
-         ->andFilterWhere(['IN', 'FlightDate', $this->getAvailableDate()])
-         ->andFilterWhere(['IN', 'AreaID', $this->region_id])
-         ->andFilterWhere(['FlightDate' => $this->date_from])
-         ->asArray();
+        $key = 'people-for-search-'.$this->country_id.'-'.$this->adult;
+        if (isset($this->region_id) && $this->region_id) {
+            sort($this->region_id);
+            $key .= implode('-', $this->region_id);
+        }
+        //Yii::$app->cache->delete($key);
+        $data = Yii::$app->cache->get($key);
 
-        $model = $q->one();*/
+        if ($data === false) {
+            $query = $this->getQuery()
+            ->select(['MAX(Adult) AS Adult', 'MAX(Child) AS Child']);
+            $data = $query->all();
 
-        $query = $this->getQuery()
-        ->select(['MAX(Adult) AS Adult', 'MAX(Child) AS Child'])
+            $dependency = new \yii\caching\DbDependency([
+                'sql' => 'SELECT MAX(updated_at) FROM tours',
+            ]);
 
-        ;///->asArray();
-        /*$query = \frontend\models\Tours::find()
-        ->select(['MAX(Adult) AS Adult', 'MAX(Child) AS Child'])
-        ->from('{{%tours}} to')
-        ->innerJoin('(' .
-                      $subQuery->prepare(Yii::$app->db->queryBuilder)
-                               ->createCommand()
-                               ->rawSql
-                  . ') t', 't.AreaID = to.AreaID')
-        //->where(['IN', 'FlightDate', $this->getAvailableDate(true)])
-        ->filterWhere(['CountryID' => $this->country_id])
-        ->andFilterWhere(['IN', 'AreaID', $this->region_id])
-        //->andWhere(['activity' => 1])
-        //->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
-        ->orderBy('CountryName')
-        ->groupBy('CountryID');
-echo $subQuery->prepare(Yii::$app->db->queryBuilder)
-                               ->createCommand()
-                               ->rawSql;die("---");
-echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");*/
-        $model = $query->all();
-
-        //echo "AD = ".$q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql."\n";die();
-        //print_r($model);
-
-        return $model;
+            Yii::$app->cache->set($key, $data, null, $dependency);
+        }
+        return $data;
     }
 
     public function getPeople1()

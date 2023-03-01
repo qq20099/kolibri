@@ -70,6 +70,7 @@ class Tours extends \yii\db\ActiveRecord
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
                 'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['created_at', 'updated_at'],
                     \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
                 ],
             ],
@@ -83,7 +84,7 @@ class Tours extends \yii\db\ActiveRecord
     {
         return [
             [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'PackagePrice', 'ToCountryID', 'SeatClassID'], 'required'],
-            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'Child', 'FlightAllotmentStatus', 'BackFlightAllotmentStatus', 'HotelAllotmentStatus', 'HotelStopSaleStatus', 'ToCountryID', 'SeatClassID', 'SaleStatus', 'EarlyBookingEndDate', 'BusinessFlightAllotmentStatus', 'BusinessBackFlightAllotmentStatus', 'HotelNight', 'PromotionStatus', 'main', 'created_at', 'activity'], 'integer'],
+            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'Child', 'FlightAllotmentStatus', 'BackFlightAllotmentStatus', 'HotelAllotmentStatus', 'HotelStopSaleStatus', 'ToCountryID', 'SeatClassID', 'SaleStatus', 'EarlyBookingEndDate', 'BusinessFlightAllotmentStatus', 'BusinessBackFlightAllotmentStatus', 'HotelNight', 'PromotionStatus', 'main', 'created_at', 'updated_at', 'activity'], 'integer'],
             [['PackagePrice', 'PackagePriceOld'], 'number'],
             [['FlightDateSource', 'HotelCheckInDateSource'], 'string', 'max' => 20],
             [['ChildAges', 'AirportRoute'], 'string', 'max' => 150],
