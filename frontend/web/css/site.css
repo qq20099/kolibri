@@ -280,7 +280,6 @@ section.banner {padding: 2rem 0;overflow: hidden;background-image: url('/images/
 
 .wpv-splash-screen {
   position: absolute;
-  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -294,6 +293,7 @@ section.banner {padding: 2rem 0;overflow: hidden;background-image: url('/images/
   align-items: center;
   justify-content: center;
 }
+body.show-loader .wpv-splash-screen {position: fixed;}
 .wpv-splash-screen .wpv-splash-screen-logo {
   position: absolute;
   top: 0;

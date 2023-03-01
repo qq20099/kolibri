@@ -68,7 +68,7 @@ class CronController extends \yii\console\Controller
 
     public function init()
     {
-        ini_set('memory_limit', '3072M');
+        ini_set('memory_limit', '4096M');
     }
 
     private static function getCountryId($name)
@@ -146,6 +146,16 @@ class CronController extends \yii\console\Controller
         return \yii\helpers\ArrayHelper::map($r, 'ToAreaID', 'ToCountryID');*/
     }
 
+    public function getCountryByPackageId($package_id)
+    {
+        $q = \frontend\models\CoraltravelPackageAvailableDate::find()
+        ->where(['id' => $package_id])
+        ->with('coraltravelAvailableDateItems')
+        ->asArray();
+        $model = $q->all();
+        return $model;
+    }
+
     //public function actionGetCountryForDate()
     private static function getCountryForDate($full = true)
     {
@@ -160,13 +170,13 @@ class CronController extends \yii\console\Controller
         ->asArray();
 
         if ($full === false) {
-            $sql = (new \yii\db\Query())
+            /*$sql = (new \yii\db\Query())
             ->select('package_id')
             ->from('cron_tours_items')
             ->where(['status' => [4, 9]])
             ->andWhere(['>', 'package_id', 0]);
             $q->andWhere(['NOT IN', 'id', $sql])
-            ->limit(1);
+            ->limit(1);*/
         }
         //->orderBy(['id' => SORT_DESC])
         //->limit(2)
@@ -197,19 +207,27 @@ class CronController extends \yii\console\Controller
     public function actionGetPackageAvailableDate()
     {
         $data = Yii::$app->api->getListPackageAvailableDate();
-
+        \frontend\models\CoraltravelPackageAvailableDate::deleteAll([
+            "<=",
+            "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')
+        ]);
         if ($data['status'] == 'success') {
             foreach ($data['data'] as $value) {
                 //$dat = strtotime($value['PackageDate']);
-                $dat = strtotime(date('Y-m-d', strtotime($value['PackageDate']).' 00:00:00'));
+                //$dat = strtotime(date('Y-m-d', strtotime($value['PackageDate']).' 00:00:00'));
+                $dat = date('Y-m-d', strtotime($value['PackageDate']));
 
                 $model = \frontend\models\CoraltravelPackageAvailableDate::find()
                 ->where(['FromArea' => $value['FromArea']])
-                ->andWhere(['PackageDate' => $dat])
+                //->andWhere(['PackageDate' => $dat])
+                //->andWhere(["(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))" => new \yii\db\Expression('DATE(NOW())')])
+                ->andWhere(["(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))" => $dat])
                 ->one();
 
                 if (!$model)
                   $model = new \frontend\models\CoraltravelPackageAvailableDate();
+
+                $dat = Yii::$app->formatter->asTimestamp($value['PackageDate']);
 
                 $model->attributes = $value;
                 $model->PackageDate = $dat;
@@ -243,9 +261,40 @@ class CronController extends \yii\console\Controller
         }
     }
 
+    public static function country()
+    {
+        $date = strtotime(date('Y-m-d 00:00:00'));
+        //$date = Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'));
+
+        $q = \frontend\models\CoraltravelPackageAvailableDate::find()
+        ->where(['FromArea' => 3345])
+        //->andWhere(['>', 'PackageDate', $date])
+        ->andWhere([">", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')])
+        ->with('coraltravelAvailableDateItems')
+        ->asArray();
+
+        if ($full === false) {
+            $sql = (new \yii\db\Query())
+            ->select('package_id')
+            ->from('cron_tours_items')
+            ->where(['status' => [4, 9]])
+            ->andWhere(['>', 'package_id', 0]);
+            $q->andWhere(['NOT IN', 'id', $sql])
+            ->limit(1);
+        }
+        //->orderBy(['id' => SORT_DESC])
+        //->limit(2)
+        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+
+        $data = $q->all();
+        return $data;
+    }
+
     public function actionGetToursByArea()
     {
         echo "Start: ".Yii::$app->formatter->asDatetime(time())."\r\n";
+        $hour = 4;
+        $package_id = 0;
         $date = Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'));
         //$date = Yii::$app->formatter->date();
         //die($date);
@@ -253,27 +302,59 @@ class CronController extends \yii\console\Controller
         /*$connection->createCommand()->update('tours', ['activity' => 0], 'FlightDate <= '.$date)
         ->execute();*/
 
-        $country = self::getCountryForDate(false);
-        /*print_r($country);
-        die();*/
+        $q = CronTours::find()
+        ->where(['!=', 'status', CronToursItems::STATUS_END])
+        ->andWhere(['type' => 'area'])
+        ->with('cronToursItems');
+        $model = $q->one();
+        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
+        /*echo (time() - $model->updated_at)/3600;
+        echo "\r\n";
+        echo date('d.m.Y H:i:s', $model->updated_at);
+        echo "\r\n";
+        echo $model->id;
+        echo "\r\n";*/
+        //die();
+        if ($q->count()) {
+            if ((time() - $model->updated_at)/3600 > $hour) {
+                //$item = $model->getCronToursItems()->select('package_id')->where(['!=', 'status', 9])
+                $item = $model->getCronToursItems()
+                ->select([
+                    'id AS item_id',
+                    'package_id',
+                    'ToCountry AS ToCountryID',
+                    'Adult',
+                    'Child',
+                ])
+                ->where(['!=', 'status', CronToursItems::STATUS_END])
+                ->andWhere(['>', '(unix_timestamp(NOW()) - `updated_at`)/3600', $hour])
+                ->asArray()
+                ->all();
+                //echo $item->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
+
+                $package_id = ArrayHelper::getValue($item[0], 'package_id');
+                $country = self::getCountryByPackageId($package_id);
+                if ($country) {
+                    $country[0]['coraltravelAvailableDateItems'] = $item;
+                }
+            } else {
+                $country = self::getCountryForDate(false);
+            }
+        } else {
+            $country = self::getCountryForDate(false);
+        }
 
         if ($country) {
-            $model = CronTours::find()->where(['status' => 0])->andWhere(['type' => 'area'])->one();
-
             if (empty($model)) {
                 $model = new CronTours();
                 $model->title = 'Tours';
                 $model->type = 'area';
                 $model->save();
-
-            } else {
-                die("Cron already running");
             }
 
             Tours::deleteAll(["<=", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')]);
 
             $this->cron_id = $model->id;
-
 
             try {
                 foreach ($country as $areaID => $value) {
@@ -284,29 +365,48 @@ class CronController extends \yii\console\Controller
                     $post['BeginDate'] = $post['PackageDate'];
                     $post['EndDate'] = $post['PackageDate'];
                     $post['package_id'] = $value['id'];
+
                     //$post['cron_id'] = $model->id;
                     if ($value['coraltravelAvailableDateItems']) {
-                        $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
-                        if ($ToCountryID) {
-                        ///foreach ($value['coraltravelAvailableDateItems'] as $val) {
-                        foreach ($ToCountryID as $val) {
-                            $post['ToCountry'] = $val;
-                            ///$post['ToArea'] = $val['ToAreaID'];
-                            $post['ToArea'] = 0;
-                            for ($j=1; $j<7; $j++) {
-                                $post['Adult'] = $j;
+                        if ($package_id) {
+                            foreach ($value['coraltravelAvailableDateItems'] as $val) {
+                                $post['Adult'] = $val['Adult'];
+                                $post['Child'] = $val['Child'];
+                                $post['ToCountry'] = $val['ToCountryID'];
+                                $post['item_id'] = $val['item_id'];
+                                $post['ToArea'] = 0;
+                                //print_r($post);
+                                $this->tour($post);
+                            }
+                        } else {
+                            $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
 
-                                for ($i=0; $i<5; $i++) {
-                                    $post['Child'] = $i;
-                                    $this->tour($post);
+                            if ($ToCountryID) {
+                                foreach ($ToCountryID as $val) {
+                                    $post['ToCountry'] = $val;
+                                    $post['ToArea'] = 0;
+
+                                    for ($j=1; $j<7; $j++) {
+                                        $post['Adult'] = $j;
+
+                                        for ($i=0; $i<5; $i++) {
+                                            $post['Child'] = $i;
+                                            $this->tour($post);
+                                        }
+                                    }
                                 }
                             }
                         }
-                        }
-                        $model->status = CronToursItems::STATUS_END;
-                        $model->save();
                     }
-                    //$this->tours($post);
+
+                    $cron = CronToursItems::find()
+                    ->where(['cron_id' => $this->cron_id])
+                    ->andWhere(['!=', 'status', CronToursItems::STATUS_END]);
+
+                    if (!$cron->count()) {
+                        $model->status = CronToursItems::STATUS_END;
+                    }
+                    $model->save();
                 }
             } catch (\Exception $e) {
                 $model->status = CronToursItems::STATUS_ERROR;
@@ -392,18 +492,23 @@ class CronController extends \yii\console\Controller
         $this->upd = 0;
         $this->add = 0;
 
-        $cronToursItems = CronToursItems::find()
-          //->where(['!=', 'status', 9])
-          ->where(['>', 'id', 0])
-          ->andWhere(['cron_id' => $this->cron_id])
-          ->andWhere(['BeginDate' => $arr['StartDate']])
-          ->andWhere(['ToCountry' => $arr['ToCountry']])
-          ->andWhere(['ToArea' => $arr['ToArea']])
-          ->andWhere(['Adult' => $arr['Adult']])
-          ->andWhere(['Child' => $arr['Child']])
-          ->one();
+        if ($arr['item_id']) {
+            $q = CronToursItems::find()
+            //->where(['!=', 'status', 9])
+            ->where(['>', 'id', 0])
+            ->andWhere(['cron_id' => $this->cron_id])
+            ->andWhere(['id' => $arr['item_id']])
+            //->andWhere(['BeginDate' => $arr['StartDate']])
+            ->andWhere(['ToCountry' => $arr['ToCountry']])
+            //->andWhere(['ToArea' => $arr['ToArea']])
+            ->andWhere(['Adult' => $arr['Adult']])
+            ->andWhere(['Child' => $arr['Child']]);
+            $cronToursItems = $q->one();
+        }
 
-        if (!empty($cronToursItems) && $cronToursItems->status == 9)
+        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die(" ---");
+
+        if (isset($cronToursItems) && !empty($cronToursItems) && $cronToursItems->status == 9)
           return;
 
         $count = 0;
@@ -415,7 +520,7 @@ class CronController extends \yii\console\Controller
             $cronToursItems->BeginDate = $arr['StartDate'];
             $cronToursItems->cron_id = $this->cron_id;
             $cronToursItems->package_id = $arr['package_id'];
-            $cronToursItems->status = 0;
+            $cronToursItems->status = $cronToursItems::STATUS_START;
         } else {
             //$page = $cronToursItems->Page;
             //$this->duplicates = $cronToursItems->duplicates;
@@ -546,6 +651,10 @@ class CronController extends \yii\console\Controller
                 $cronToursItems->status = $cronToursItems::STATUS_SUCCESS; //success
                 $cronToursItems->rows = (int)$cronToursItems->rows + $count;
             } catch (\Exception $e) {
+                $cronTours = CronTours::findOne($this->cron_id);
+                $cronTours->status = $cronToursItems::STATUS_ERROR;
+                $cronTours->save();
+
                 $cronToursItems->status = $cronToursItems::STATUS_ERROR;
                 $cronToursItems->Page = $post['StartIndex'];
                 self::addLog($e, 'tours-error');

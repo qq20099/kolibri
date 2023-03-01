@@ -179,7 +179,7 @@ $(document).ready(function(){
         /*$('#choice-region').val(0);
         $('#choice-region').multiselect('refresh'); searchtours-region_id*/
         getSpecification(form, fp);
-        getRegions(fotm);
+        getRegions(form);
         return false;
     });
 
@@ -760,7 +760,7 @@ function getRegions(form)
 function getSpecification(form, fp)
 {
     fp.clear();
-    $('.search-form__regions').addClass('input-field--disabled');
+    //$('.search-form__regions').addClass('input-field--disabled');
     $('.search-form__date-nights').addClass('input-field--disabled');
 
 

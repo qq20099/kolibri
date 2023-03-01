@@ -713,7 +713,7 @@ echo "</pre>";*/
 
     public function test()
     {
-        $d = json_decode('{"BeginDate":"2023-03-03","EndDate":"2023-03-03","FromArea":3345,"ToCountry":"31","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":1,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false,"ToArea":"148"}');
+        $d = json_decode('{"BeginDate":"2023-03-03","EndDate":"2023-03-03","FromArea":3345,"ToCountry":"31","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":NULL,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":1,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false,"ToArea":0}');
 
         $data = $this->getPackageSearch($d);
         echo "<pre>";

@@ -191,7 +191,7 @@ class SiteController extends AppController
         //$data = Yii::$app->api->getListSeatClass();
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->getListPackageAvailableDate();
-        $data = Yii::$app->api->getPackageSearch();
+        //$data = Yii::$app->api->getPackageSearch();
         $data = Yii::$app->api->test();
         //$data = Yii::$app->api->getListFlightSupplier();
         //$data = Yii::$app->api->getListToCountry();
