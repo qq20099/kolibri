@@ -17,7 +17,7 @@ const objDate = new Date();
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",*/
             onChange: function(i, d, l){
-                getNights($('.search-form'));
+                getNights($('#search-form'));
                 $('.search-form__datepicker.flatpickr.has-error').removeClass('has-error');
             },
             /*onValueUpdate: function(dObj, dStr){
@@ -113,9 +113,9 @@ $(document).ready(function(){
             if (!date_from) {
                 getSpecification($('#search-form'), fp);
                 getRegions($('#search-form'));
+            } else {
+                getDate($('#search-form'), fp);
             }
-            //else
-              //getDate($('#search-form'), fp);
         }
     });
 
