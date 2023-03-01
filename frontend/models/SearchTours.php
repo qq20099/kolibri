@@ -498,7 +498,7 @@ echo "</pre>";*/
                                ->rawSql
                   . ') t', 't.AreaID = g.AreaID')
         //->where(['IN', 'FlightDate', $this->getAvailableDate(true)])
-        ->filterWhere(['CountryID' => $this->country_id])
+        //->filterWhere(['CountryID' => $this->country_id])
         //->andWhere(['activity' => 1])
         //->with(['hotel', 'toCountry', 'meal', 'area', 'hotel.category'])
         ->orderBy('CountryName')
@@ -527,7 +527,7 @@ echo "</pre>";*/
                 //$countryFilter = [];
             }
         }*/
-        //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("KKK");
+        //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("KKK");
 //print_r($countryFilter);die();
         return $countryFilter;
     }
