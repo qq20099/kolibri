@@ -191,7 +191,7 @@ die();*/
 
             }
 
-            return ['nights' => array_values($data)];
+            return ['nights' => $data];
               //$data = ArrayHelper::getColumn($data, 'HotelNight');
 
             //return $this->renderAjax('spec_nights', compact('model', 'data'));

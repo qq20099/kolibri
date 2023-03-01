@@ -612,14 +612,23 @@ function getNights(form)
         success: function(response){
             let html = '';
 
-            console.log(response.nights.length);
-            if (response.nights.length) {
-                $(response.nights).each(function(i, k){
+            console.log(Object.keys(response.nights).length);
+
+            if (Object.keys(response.nights).length) {
+                for (var key in response.nights) {
+                    html += '<option value="'+key+'">'+response.nights[key]+'</option>';
+                };
+                /*$(response.nights).each(function(i, k){
                     html += '<option value="'+k+'">'+k+'</option>';
-                });
+                });*/
                 $('#searchtours-nights').html(html);
                 $('#searchtours-nights').multiselect('rebuild');
                 $('#searchtours-nights').multiselect('enable');
+
+                if (Object.keys(response.nights).length == 1) {
+                    $('#searchtours-nights').multiselect('select', key);
+                    $('#searchtours-nights').val(key);
+                }
                 //$('.search-form__nights .multiselect').removeClass('disabled');
                 //$('.search-form__nights .multiselect').prop('disabled', false);
                 $('.search-form__nights .input-field--disabled').removeClass('input-field--disabled');
@@ -738,13 +747,19 @@ function getRegions(form)
             let err = 0;
             let html = 0;
 
-            if (response.regions) {
+            console.log(Object.keys(response.regions).length);
+            if (Object.keys(response.regions).length) {
                 for (var key in response.regions) {
                     html += '<option value="'+key+'">'+response.regions[key]+'</option>';
                 };
+
                 $('#searchtours-region_id').html(html);
                 $('#searchtours-region_id').multiselect('rebuild');
                 $('#searchtours-region_id').multiselect('enable');
+                if (Object.keys(response.regions).length == 1) {
+                    $('#searchtours-region_id').multiselect('select', [key]);
+                    $('#searchtours-region_id').val(key);
+                }
                 $('.search-form__regions').removeClass('input-field--disabled');
             } else {
                 $('.search-form__regions').addClass('input-field--disabled');
