@@ -7,6 +7,10 @@ $(document).ready(function(){
         $('.opacity0').removeClass('opacity0');
     });
 
+    $(document).on('click', '#clear-cache a', function(e){
+        return false;
+    });
+
     $(document).on('change', '#add-images', function(e){
       //$(this).closest('form').submit();
         let formData = new FormData();

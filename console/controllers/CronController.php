@@ -129,7 +129,11 @@ class CronController extends \yii\console\Controller
     public function getCountry()
     {
         $date = strtotime(date('Y-m-d'));
-        $subQuery = (new \yii\db\Query())->select('ToCountryID')->from('hot_deals')->groupBy('ToCountryID');
+        $subQuery = (new \yii\db\Query())
+        ->select('ToCountryID')
+        ->from('hot_deals')
+        ->groupBy('ToCountryID');
+
         $data = \frontend\models\CoraltravelCountry::find()
         ->select('ID')
         //->where(['FromArea' => 3345])
@@ -465,10 +469,16 @@ class CronController extends \yii\console\Controller
                     $post['EndDate'] = $post['PackageDate'];
                     $post['package_id'] = $value['id'];
                     //$post['cron_id'] = $model->id;
-                    if ($value['coraltravelAvailableDateItems']) {
-                        foreach ($value['coraltravelAvailableDateItems'] as $val) {
+
+                            $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
+
+                            if ($ToCountryID) {
+                                foreach ($ToCountryID as $val) {
+
+                    //if ($value['coraltravelAvailableDateItems']) {
+                        //foreach ($value['coraltravelAvailableDateItems'] as $val) {
                             $post['ToCountry'] = $val['ToCountryID'];
-                            $post['ToArea'] = $val['ToAreaID'];
+                            //$post['ToArea'] = $val['ToAreaID'];
                             for ($j=1; $j<7; $j++) {
                                 $post['Adult'] = $j;
 

@@ -39,6 +39,7 @@
                     ['label' => 'Configuration', 'icon' => 'cogs', 'url' => ['/config']],
                     ['label' => 'Settings', 'icon' => 'wrench', 'url' => ['/site-settings']],
                     ['label' => 'Users', 'icon' => 'users', 'url' => ['/user/admin']],
+                    ['label' => 'Clear cache', 'icon' => 'clear', 'url' => ['#'], 'options' => ['id' => 'clear-cache']],
                     /*['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [

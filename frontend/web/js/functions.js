@@ -39,7 +39,7 @@ const objDate = new Date();
                 //var date = new Date($(dayElem).attr('aria-label'));
                 var date = new Date(dayElem.dateObj);
                 var d = date.toLocaleDateString().split('.');
-                console.log(date.toLocaleDateString().split('.'));
+                //console.log(date.toLocaleDateString().split('.'));
                 var cl = d[2]+'-'+d[1]+'-'+d[0];
                 //dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+date.toLocaleDateString('en-CA')+" calendar-min-price-"+cl+"'></span>";
                 dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+cl+"'></span>";
@@ -697,7 +697,11 @@ function getDate(form, fp)
                 fp.set('enable', response.date);
                 if (date_from) {
                     var date = new Date(date_from * 1000);
-                    fp.setDate(date.toLocaleDateString('en-CA'));
+                    var d = date.toLocaleDateString().split('.');
+                    console.log(d);
+                    console.log(date.toLocaleDateString());
+                    //fp.setDate(date.toLocaleDateString('en-CA'));
+                    fp.setDate(d[2]+'-'+d[1]+'-'+d[0]);
                     fp.set('dateFormat', 'U');
 
                     if (!nights)
@@ -706,6 +710,11 @@ function getDate(form, fp)
                     fp.jumpToDate();
                 }
                 fp.set('dateFormat', 'U');
+
+                if (date_from) {
+                    //fp.setDate(date_from, false, 'U');
+                    console.log(date_from);
+                }
             } else {
                 $('.search-form__date-nights').addClass('input-field--disabled');
                 $('.search-form__datepicker').addClass('input-field--disabled');
