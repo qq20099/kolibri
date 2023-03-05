@@ -141,7 +141,6 @@ class CronController extends \yii\console\Controller
         ->asArray()
         ->all();
         return \yii\helpers\ArrayHelper::getColumn($data, 'ID');
-        print_r(\yii\helpers\ArrayHelper::getColumn($data, 'ID'));
         /*$r = \yii\helpers\ArrayHelper::getColumn($data, 'coraltravelAvailableDateItems');
         return \yii\helpers\ArrayHelper::map($r, 'ToAreaID', 'ToCountryID');*/
     }
@@ -243,8 +242,7 @@ class CronController extends \yii\console\Controller
                             try {
                                 if (!$item->save()) {
                                     print_r($item->getErrors());
-                                    print_r($item);
-                                    echo "\r\n";
+                                    echo "\r\nitem\r\n";
                                 }
                             } catch (\Exception $e) {
                                 //print_r($e);
@@ -253,8 +251,7 @@ class CronController extends \yii\console\Controller
                     }
                 } else {
                     print_r($model->getErrors());
-                    print_r($model);
-                    die();
+                    echo "\r\nactionGetPackageAvailableDate\r\n";
                 }
 
             }
@@ -332,15 +329,25 @@ class CronController extends \yii\console\Controller
                 ->all();
                 //echo $item->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
 
-                $package_id = ArrayHelper::getValue($item[0], 'package_id');
-                $country = self::getCountryByPackageId($package_id);
-                if ($country) {
-                    $country[0]['coraltravelAvailableDateItems'] = $item;
+                if (!empty($item)) {
+                    $package_id = ArrayHelper::getValue($item[0], 'package_id');
+                    $country = self::getCountryByPackageId($package_id);
+
+                    if ($country) {
+                        $country[0]['coraltravelAvailableDateItems'] = $item;
+                    }
+                } else {
+                    $model->status = CronToursItems::STATUS_END;
+                    $model->save();
+                    unset($model);
+                    $country = self::getCountryForDate(false);
                 }
             } else {
+                unset($model);
                 $country = self::getCountryForDate(false);
             }
         } else {
+            unset($model);
             $country = self::getCountryForDate(false);
         }
 
@@ -491,6 +498,7 @@ class CronController extends \yii\console\Controller
         $this->duplicates = 0;
         $this->upd = 0;
         $this->add = 0;
+        $count = 0;
 
         if ($arr['item_id']) {
             $q = CronToursItems::find()
@@ -504,6 +512,10 @@ class CronController extends \yii\console\Controller
             ->andWhere(['Adult' => $arr['Adult']])
             ->andWhere(['Child' => $arr['Child']]);
             $cronToursItems = $q->one();
+            $count = (int)$cronToursItems->rows;
+            $this->duplicates = (int)$cronToursItems->duplicates;
+            $this->upd = (int)$cronToursItems->update_rows;
+            $this->add = (int)$cronToursItems->insert_rows;
         }
 
         //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die(" ---");
@@ -511,8 +523,8 @@ class CronController extends \yii\console\Controller
         if (isset($cronToursItems) && !empty($cronToursItems) && $cronToursItems->status == 9)
           return;
 
-        $count = 0;
-        $page = 1;
+
+        $page = (isset($cronToursItems) && $cronToursItems->Page) ? $cronToursItems->Page : 1;
 
         if (!$cronToursItems) {
             $cronToursItems = new CronToursItems();
@@ -529,7 +541,7 @@ class CronController extends \yii\console\Controller
         }
 
         $post = [
-            'ToArea' => $arr['ToArea'],
+            //'ToArea' => $arr['ToArea'],
             'ToCountry' => $arr['ToCountry'],
             'BeginDate' => $arr['BeginDate'],
             'EndDate' => $arr['EndDate'],
@@ -538,7 +550,7 @@ class CronController extends \yii\console\Controller
             'StartIndex' => $page,
         ];
 
-        while ((isset($data) && !empty($data['data']) && $data['status'] == 'success') || $post['StartIndex'] < 2) {
+        while ((isset($data) && !empty($data['data']) && $data['status'] == 'success') || $post['StartIndex'] < 2 || (isset($arr['item_id']) && $arr['item_id'])) {
             if (!$page)
               ;//Yii::$app->db->createCommand()->truncateTable('hot_deals')->execute();
 
@@ -549,11 +561,14 @@ class CronController extends \yii\console\Controller
             echo " COUNT = ".$count;
             echo "\r\n\r\n";*/
 
-            //$post['StartIndex'] = $page;
+            unset($arr['item_id']);
 
             try {
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
-                $count = ((isset($data['data']) && $data['data']) ? count($data['data']) : 0);
+
+                if ($count == 0) {
+                    $count = ((isset($data['data']) && $data['data']) ? count($data['data']) : 0);
+                }
 
                 if (!empty($data['data'])) {
                     if ($post['StartIndex'] == 1)
@@ -597,7 +612,7 @@ class CronController extends \yii\console\Controller
                     $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                     $model->SaleStatus = (int)$value['SaleStatus'];
 
-                    $toursTest = new \console\models\ToursTest();
+                    /*$toursTest = new \console\models\ToursTest();
 
                     $toursTest->attributes = $value;
                     $toursTest->FlightDate = $FlightDate;
@@ -609,12 +624,12 @@ class CronController extends \yii\console\Controller
                     $toursTest->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                     $toursTest->SaleStatus = (int)$value['SaleStatus'];
                     $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));
-                    $toursTest->save();
+                    $toursTest->save();*/
 
                     try {
                         if ($model->save()) {
-                            $toursTest->parent_id = $model->id;
-                            $toursTest->save(false);
+                            /*$toursTest->parent_id = $model->id;
+                            $toursTest->save(false);*/
 
                             if ($update) {
                                 $this->upd++;
@@ -691,7 +706,7 @@ class CronController extends \yii\console\Controller
             $log::add($data);
             } catch (\Exception $e) {
                 echo "Log: ".$e->getMessage()."\r\n";
-                print_r($e);
+                //print_r($e);
             }
     }
 
@@ -747,8 +762,7 @@ class CronController extends \yii\console\Controller
                         try {
                             if (!$model->save()) {
                                 print_r($model->getErrors());
-                                print_r($model);
-                                echo "\r\n";
+                                echo "\r\nTours\r\n";
                             }
                         } catch (\Exception $e) {
                             //print_r($e);

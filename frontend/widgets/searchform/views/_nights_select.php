@@ -33,7 +33,7 @@ $nights = $model->getNights();
         'disableIfEmpty' => true,
         //'enableFiltering' => true,
         //'enableCaseInsensitiveFiltering' => true,
-        'onSelect' =>  new \yii\web\JsExpression('function() { console.log("fffff"); }'), 
+        'onSelect' =>  new \yii\web\JsExpression('function() { console.log("fffff"); }'),
     ],
     'id' => 'choice-nights',
     'options' => [

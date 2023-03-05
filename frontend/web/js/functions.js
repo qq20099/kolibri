@@ -38,7 +38,11 @@ const objDate = new Date();
             onDayCreate: function(dObj, dStr, fp, dayElem){
                 //var date = new Date($(dayElem).attr('aria-label'));
                 var date = new Date(dayElem.dateObj);
-                dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+date.toLocaleDateString('en-CA')+"'></span>";
+                var d = date.toLocaleDateString().split('.');
+                console.log(date.toLocaleDateString().split('.'));
+                var cl = d[2]+'-'+d[1]+'-'+d[0];
+                //dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+date.toLocaleDateString('en-CA')+" calendar-min-price-"+cl+"'></span>";
+                dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+cl+"'></span>";
 
                 //console.log(date.toLocaleDateString('en-CA'));
                 //dayElem.innerHTML += "<span class='calendar-min-price calendar-min-price-"+moment($(dayElem).attr('aria-label')).format('YYYY-MM-DD')+"'></span>";
@@ -678,7 +682,12 @@ function getDate(form, fp)
 
             if (response.date.length > 0) {
                 for (var key in response.price) {
+                    d = key.split('-');
+                    console.log(d);
+                    d = key.split('/');
+                    console.log(d);
                     $('.event-'+key).text(response.price[key]);
+        document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
         document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
                 }
 
