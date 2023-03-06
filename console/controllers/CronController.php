@@ -169,6 +169,7 @@ class CronController extends \yii\console\Controller
         ->where(['FromArea' => 3345])
         //->andWhere(['>', 'PackageDate', $date])
         ->andWhere([">", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')])
+        ->andWhere(["<", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(DATE_ADD(NOW(), INTERVAL 6 MONTH))')])
         ->with('coraltravelAvailableDateItems')
         ->asArray();
 
@@ -180,6 +181,9 @@ class CronController extends \yii\console\Controller
             ->andWhere(['>', 'package_id', 0]);
             $q->andWhere(['NOT IN', 'id', $sql])
             ->limit(1);*/
+        } else {
+            $q->joinWith('coraltravelAvailableDateItems')
+            ->orderBy(['{{%coraltravel_available_date_items}}.ToCountryId' => SORT_DESC, 'PackageDate' => SORT_ASC]);
         }
         //->orderBy(['id' => SORT_DESC])
         //->limit(2)
@@ -334,6 +338,8 @@ class CronController extends \yii\console\Controller
                 //echo $item->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die("---");
 
                 if (!empty($item)) {
+                    $model->status = CronToursItems::STATUS_SUCCESS;
+                    ///$model->save();
                     $package_id = ArrayHelper::getValue($item[0], 'package_id');
                     $country = self::getCountryByPackageId($package_id);
 
@@ -342,7 +348,7 @@ class CronController extends \yii\console\Controller
                     }
                 } else {
                     $model->status = CronToursItems::STATUS_END;
-                    $model->save();
+                    ///$model->save();
                     unset($model);
                     $country = self::getCountryForDate(false);
                 }
@@ -360,7 +366,7 @@ class CronController extends \yii\console\Controller
                 $model = new CronTours();
                 $model->title = 'Tours';
                 $model->type = 'area';
-                $model->save();
+                ///$model->save();
             }
 
             Tours::deleteAll(["<=", "(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')]);
@@ -387,7 +393,7 @@ class CronController extends \yii\console\Controller
                                 $post['item_id'] = $val['item_id'];
                                 $post['ToArea'] = 0;
                                 //print_r($post);
-                                $this->tour($post);
+                                ///$this->tour($post);
                             }
                         } else {
                             $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
@@ -397,12 +403,12 @@ class CronController extends \yii\console\Controller
                                     $post['ToCountry'] = $val;
                                     $post['ToArea'] = 0;
 
-                                    for ($j=1; $j<7; $j++) {
+                                    for ($j = 1; $j <= Yii::$app->params['Adult']; $j++) {
                                         $post['Adult'] = $j;
 
-                                        for ($i=0; $i<5; $i++) {
+                                        for ($i = 0; $i < Yii::$app->params['Child']; $i++) {
                                             $post['Child'] = $i;
-                                            $this->tour($post);
+                                            ///$this->tour($post);
                                         }
                                     }
                                 }
@@ -417,11 +423,11 @@ class CronController extends \yii\console\Controller
                     if (!$cron->count()) {
                         $model->status = CronToursItems::STATUS_END;
                     }
-                    $model->save();
+                    ///$model->save();
                 }
             } catch (\Exception $e) {
                 $model->status = CronToursItems::STATUS_ERROR;
-                $model->save();
+                ///$model->save();
                 echo $e->getMessage();
                 echo "\r\n";
             }
@@ -434,14 +440,17 @@ class CronController extends \yii\console\Controller
         $date = Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'));
         //$date = Yii::$app->formatter->date();
         //die($date);
-        $connection = Yii::$app->db;
+        //$connection = Yii::$app->db;
         /*$connection->createCommand()->update('tours', ['activity' => 0], 'FlightDate <= '.$date)
         ->execute();*/
 
         $country = self::getCountryForDate();
         
         if ($country) {
-            $model = CronTours::find()->where(['status' => 0])->andWhere(['type' => 'full'])->one();
+            $q = CronTours::find()
+            ->where(['status' => 0])
+            ->andWhere(['type' => 'full']);
+            $model = $q->one();
 
             if (empty($model)) {
                 $model = new CronTours();
@@ -450,7 +459,9 @@ class CronController extends \yii\console\Controller
                 $model->save();
 
             } else {
-                die("Cron already running");
+                //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+                //echo $model->id."\r\n";
+                return "Cron already running";
             }
 
             //Tours::deleteAll(['<=', 'FlightDate', $date]);
@@ -473,29 +484,31 @@ class CronController extends \yii\console\Controller
                             $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
 
                             if ($ToCountryID) {
+                                $ToCountryID = array_unique($ToCountryID);
                                 foreach ($ToCountryID as $val) {
 
                     //if ($value['coraltravelAvailableDateItems']) {
                         //foreach ($value['coraltravelAvailableDateItems'] as $val) {
-                            $post['ToCountry'] = $val['ToCountryID'];
+                            $post['ToCountry'] = $val; //$val['ToCountryID'];
                             //$post['ToArea'] = $val['ToAreaID'];
-                            for ($j=1; $j<7; $j++) {
+                            for ($j = 1; $j <= Yii::$app->params['Adult']; $j++) {
                                 $post['Adult'] = $j;
 
-                                for ($i=0; $i<5; $i++) {
+                                for ($i=0; $i <= Yii::$app->params['Child']; $i++) {
                                     $post['Child'] = $i;
+                                    //print_r($post);
                                     $this->tour($post);
                                 }
                             }
                         }
                         $model->status = CronToursItems::STATUS_END;
-                        $model->save();
+                        ///$model->save();
                     }
                     //$this->tours($post);
                 }
             } catch (\Exception $e) {
                 $model->status = CronToursItems::STATUS_ERROR;
-                $model->save();
+                ///$model->save();
                 echo $e->getMessage();
                 echo "\r\n";
             }
@@ -504,6 +517,9 @@ class CronController extends \yii\console\Controller
 
     private function tour($arr)
     {
+        $pid = 0;
+        $start = 0;
+        $da = [];
         $data = [];
         $this->duplicates = 0;
         $this->upd = 0;
@@ -526,6 +542,22 @@ class CronController extends \yii\console\Controller
             $this->duplicates = (int)$cronToursItems->duplicates;
             $this->upd = (int)$cronToursItems->update_rows;
             $this->add = (int)$cronToursItems->insert_rows;
+        } else {
+            $q = CronToursItems::find()
+            //->where(['!=', 'status', 9])
+            ->where(['>', 'id', 0])
+            //->andWhere(['cron_id' => $this->cron_id])
+            ->andWhere(['ToCountry' => $arr['ToCountry']])
+            ->andWhere(['Adult' => $arr['Adult']])
+            ->andWhere(['Child' => $arr['Child']])
+            ->orderBy(['updated_at' => SORT_DESC])
+            ->limit(1);
+            //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+            $cronToursItems = $q->one();
+            if (!empty($cronToursItems) && $cronToursItems->isSkip()) {
+                //print_r($cronToursItems);
+                return;
+            }
         }
 
         //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die(" ---");
@@ -560,9 +592,9 @@ class CronController extends \yii\console\Controller
             'StartIndex' => $page,
         ];
 
-        while ((isset($data) && !empty($data['data']) && $data['status'] == 'success') || $post['StartIndex'] < 2 || (isset($arr['item_id']) && $arr['item_id'])) {
-            if (!$page)
-              ;//Yii::$app->db->createCommand()->truncateTable('hot_deals')->execute();
+        while ($start == 0 || (isset($data) && !empty($data['data']) && isset($data['status']) && $data['status'] == 'success')) {
+            $start = 1;
+            $data = [];
 
             //echo "Status = ".$data['status']." Country = ".$post['ToCountry'];
             /*echo " AreaID = ".$post['ToArea'];
@@ -570,8 +602,6 @@ class CronController extends \yii\console\Controller
             echo " Page = ".$post['StartIndex'];
             echo " COUNT = ".$count;
             echo "\r\n\r\n";*/
-
-            unset($arr['item_id']);
 
             try {
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
@@ -584,93 +614,131 @@ class CronController extends \yii\console\Controller
                     if ($post['StartIndex'] == 1)
                       $cronToursItems->data = \yii\helpers\Json::encode(self::tourParams($post));
 
-                foreach ($data['data'] as $value) {
-                    $update = true;
+                    foreach ($data['data'] as $value) {
+                        $update = true;
 
-                    $FlightDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['FlightDate'])));
-                    $HotelCheckInDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['HotelCheckInDate'])));
-                    $EarlyBookingEndDate = ($value['EarlyBookingEndDate']) ? strtotime(date('Y-m-d 00:00:00', strtotime($value['EarlyBookingEndDate']))) : 0;
+                        $FlightDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['FlightDate'])));
+                        $HotelCheckInDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['HotelCheckInDate'])));
+                        $EarlyBookingEndDate = ($value['EarlyBookingEndDate']) ? strtotime(date('Y-m-d 00:00:00', strtotime($value['EarlyBookingEndDate']))) : 0;
 
-                    $model = Tours::find()
-                    ->andWhere(['FlightDate' => $FlightDate])
-                    ->andWhere(['AreaID' => $value['AreaID']])
-                    ->andWhere(['HotelNight' => $value['HotelNight']])
-                    ->andWhere(['HotelID' => $value['HotelID']])
-                    ->andWhere(['MealID' => $value['MealID']])
-                    ->andWhere(['RoomID' => $value['RoomID']])
-                    ->andWhere(['AccID' => $value['AccID']])
-                    ->andWhere(['ToCountryID' => $value['ToCountryID']])
-                    ->andWhere(['SeatClassID' => $value['SeatClassID']])
-                    ->andWhere(['Adult' => $value['Adult']])
-                    ->andWhere(['Child' => $value['Child']])
-                    ->andWhere(['ChildAges' => $value['ChildAges']])
-                    //->andWhere(['PackagePrice' => $value['PackagePrice']])
-                    ->one();
+                        $model = Tours::find()
+                        ->andWhere(['FlightDate' => $FlightDate])
+                        ->andWhere(['AreaID' => $value['AreaID']])
+                        ->andWhere(['HotelNight' => $value['HotelNight']])
+                        ->andWhere(['HotelID' => $value['HotelID']])
+                        ->andWhere(['MealID' => $value['MealID']])
+                        ->andWhere(['RoomID' => $value['RoomID']])
+                        ->andWhere(['AccID' => $value['AccID']])
+                        ->andWhere(['ToCountryID' => $value['ToCountryID']])
+                        ->andWhere(['SeatClassID' => $value['SeatClassID']])
+                        ->andWhere(['Adult' => $value['Adult']])
+                        ->andWhere(['Child' => $value['Child']])
+                        ->andWhere(['ChildAges' => $value['ChildAges']])
+                        //->andWhere(['PackagePrice' => $value['PackagePrice']])
+                        ->one();
 
-                    if (!$model) {
-                        $update = false;
-                        $model = new Tours();
-                    }
+                        if (!$model) {
+                            $update = false;
+                            $model = new Tours();
+                            $model->attributes = $value;
+                            $model->FlightDate = $FlightDate;
+                            $model->HotelCheckInDate = $HotelCheckInDate;
+                            $model->FlightDateSource = $value['FlightDate'];
+                            $model->HotelCheckInDateSource = $value['HotelCheckInDate'];
+                            $model->EarlyBookingEndDate = $EarlyBookingEndDate;
+                            $model->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
+                            $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
+                            $model->SaleStatus = (int)$value['SaleStatus'];
+                        } else {
+                            $pid = $model->id;
+                            $fp = fopen(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv', 'a');
+                            if (!is_file(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv')) {
+                                foreach ($model as $key => $val) {
+                                    $da[$key] = iconv('UTF-8', 'CP1251//IGNORE', $val);
+                                }
+                                if (fputcsv($fp, array_keys($da), ';')) { }
+                            }
+                            //if ($pid && $pid == $model->id) {
+                                $ak = array_keys($value);
+                                $ak[] = 'para';
+                                $vvv = $value;
+                                $vvv['para'] = \yii\helpers\Json::encode(self::tourParams($post));
 
-                    $model->attributes = $value;
-                    $model->FlightDate = $FlightDate;
-                    $model->HotelCheckInDate = $HotelCheckInDate;
-                    $model->FlightDateSource = $value['FlightDate'];
-                    $model->HotelCheckInDateSource = $value['HotelCheckInDate'];
-                    $model->EarlyBookingEndDate = $EarlyBookingEndDate;
-                    $model->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
-                    $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
-                    $model->SaleStatus = (int)$value['SaleStatus'];
+                                if (fputcsv($fp, $ak, ';')) { }
+                                if (fputcsv($fp, $vvv, ';')) { }
 
-                    /*$toursTest = new \console\models\ToursTest();
+            echo "ID = ".$model->id;
+            echo " date0 = ".date('d.m.Y H:i:s', $model->created_at);
+            echo " date1 = ".date('d.m.Y H:i:s');
+            echo " Status = ".$data['status']." Country = ".$post['ToCountry'];
+            echo " Adult = ".$post['Adult']." Child = ".$post['Child'];
+            echo " Page = ".$post['StartIndex'];
+            echo " COUNT = ".$count;
+            echo " \r\n\r\n";
+            print_r($value);
+            echo " \r\n\r\n";
+            print_r(self::tourParams($post));
+            echo "\r\n\r\n";
+            //}
+            fclose($fp);
+                            if ($model->PackagePrice == $value['PackagePrice'] && $model->PackagePriceOld == $value['PackagePriceOld'])
+                              continue;
+                        }
 
-                    $toursTest->attributes = $value;
-                    $toursTest->FlightDate = $FlightDate;
-                    $toursTest->HotelCheckInDate = $HotelCheckInDate;
-                    $toursTest->FlightDateSource = $value['FlightDate'];
-                    $toursTest->HotelCheckInDateSource = $value['HotelCheckInDate'];
-                    $toursTest->EarlyBookingEndDate = $EarlyBookingEndDate;
-                    $toursTest->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
-                    $toursTest->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
-                    $toursTest->SaleStatus = (int)$value['SaleStatus'];
-                    $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));
-                    $toursTest->save();*/
+                        $toursTest = new \console\models\ToursTest();
 
-                    try {
-                        if ($model->save()) {
-                            /*$toursTest->parent_id = $model->id;
-                            $toursTest->save(false);*/
+                        $toursTest->attributes = $value;
+                        $toursTest->FlightDate = $FlightDate;
+                        $toursTest->HotelCheckInDate = $HotelCheckInDate;
+                        $toursTest->FlightDateSource = $value['FlightDate'];
+                        $toursTest->HotelCheckInDateSource = $value['HotelCheckInDate'];
+                        $toursTest->EarlyBookingEndDate = $EarlyBookingEndDate;
+                        $toursTest->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
+                        $toursTest->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
+                        $toursTest->SaleStatus = (int)$value['SaleStatus'];
+                        $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));
 
-                            if ($update) {
-                                $this->upd++;
-                            } else {
-                                $this->add++;
-                                if ($model->ChildAges) {
-                                    $age = new \frontend\models\TourChildAges();
-                                    $ages = explode(',', $model->ChildAges);
-                                    foreach ($ages as $a) {
-                                        if (trim($a)) {
-                                            $age->tour_id = $model->id;
-                                            $age->age = $a;
-                                            $age->save();
+                        if (!$toursTest->save()) {
+                            //print_r($toursTest->getErrors());
+                            //die();
+                        }
+
+                        try {
+                            if ($model->save()) {
+                                $toursTest->parent_id = $model->id;
+                                $toursTest->save(false);
+
+                                if ($update) {
+                                    $this->upd++;
+                                } else {
+                                    $this->add++;
+
+                                    if ($model->ChildAges) {
+                                        $age = new \frontend\models\TourChildAges();
+                                        $ages = explode(',', $model->ChildAges);
+
+                                        foreach ($ages as $a) {
+                                            if (trim($a)) {
+                                                $age->tour_id = $model->id;
+                                                $age->age = $a;
+                                                $age->save();
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                $this->duplicates++;
+                                $errors = ($cronToursItems->errors) ? \yii\helpers\Json::decode($cronToursItems->errors) : [];
+                                $cronToursItems->errors = \yii\helpers\Json::encode(
+                                  \yii\helpers\ArrayHelper::merge($errors, $model->getErrors()));
+
+                                self::addLog($model, 'tours');
+                                file_put_contents(Yii::getAlias('@uploadsTmpDir').'/tours.txt', print_r($value, true)."\r\n\r\n", FILE_APPEND);
                             }
-
-                        } else {
-                            $this->duplicates++;
-                            $errors = ($cronToursItems->errors) ? \yii\helpers\Json::decode($cronToursItems->errors) : [];
-                            $cronToursItems->errors = \yii\helpers\Json::encode(
-                              \yii\helpers\ArrayHelper::merge($errors, $model->getErrors()));
-
-                            self::addLog($model, 'tours');
-                            file_put_contents(Yii::getAlias('@uploadsTmpDir').'/tours.txt', print_r($value, true)."\r\n\r\n", FILE_APPEND);
+                        } catch (\Exception $e) {
+                            self::addLog($e, 'tours-error');
                         }
-                    } catch (\Exception $e) {
-                        self::addLog($e, 'tours-error');
                     }
-                }
                 }
                 $cronToursItems->Page = $post['StartIndex'];
                 $cronToursItems->status = $cronToursItems::STATUS_SUCCESS; //success

@@ -167,6 +167,30 @@ class SiteController extends AppController
           compact('dataProvider', 'searchModel', 'hot_sort_country', 'page'));
     }
 
+    public function actionTest()
+    {
+        //180383
+        $d = [];
+        $model = \console\models\ToursTest::find()->where(['parent_id' => 180383])->asArray()->all();
+        foreach ($model as $key => $value) {
+            if (!$d) {
+                $d = $value;
+                continue;
+            }
+            foreach ($value as $k => $val) {
+                if ($k == 'id')
+                  echo "ID = ".$val.": ";
+
+                if ($k != 'params' && $k != 'id' && $k != 'created_at') {
+                    if ($d[$k] != $val)
+                      echo $k." == ".$val." ";
+                }
+            }
+            echo "<br>";
+        }
+
+    }
+
     public function actionApi()
     {
         //$data = Yii::$app->api->getLanguageList();
@@ -192,15 +216,72 @@ class SiteController extends AppController
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->getListPackageAvailableDate();
         //$data = Yii::$app->api->getPackageSearch();
-        $data = Yii::$app->api->test();
+        $d0= '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":2,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
+        $data0 = Yii::$app->api->test($d0);
+
+        $d1 = '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":3,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
+        $data1 = Yii::$app->api->test($d1);
         //$data = Yii::$app->api->getListFlightSupplier();
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->test();
 
+                    echo "<table>";
+                    echo "<tbody>";
+                    echo "<tr>";
+                    echo "<td style='max-width:510px'>";
+                    echo "<pre>";
+                    print_r(json_decode($d0, true));
+                    echo "</pre>";
+                    echo "</td>";
+                    echo "<td style='max-width:510px'>";
+                    echo "<pre>";
+                    print_r(json_decode($d1, true));
+                    echo "</pre>";
+                    echo "</td>";
+                    echo "</tr>";
+        foreach ($data0['data'] as $key => $value) {
+            foreach ($data1['data'] as $k => $val) {
+
+                try {
+
+                //print_r(array_diff_assoc($value, $val));
+                if (!array_diff_assoc($value, $val)) {
+                //echo "K = ".$key." == ".$k."<br>";
+                    //echo "<br><pre>";
+                    echo "<tr>";
+                    echo "<td style='max-width:510px'>";
+                    echo "<div>";
+                    echo "Index = ".$key;
+                    echo "</div>";
+                    echo "<pre>";
+                    print_r($value);
+                    echo "</pre>";
+                    echo "</td>";
+                    echo "<td style='max-width:510px'>";
+                    echo "<div>";
+                    echo "Index = ".$k;
+                    echo "</div>";
+                    echo "<pre>";
+                    print_r($val);
+                    echo "</pre>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+                } catch (\Exception $e) {
+                    echo $e->getMessage();
+                    echo "<br><pre>";
+                    print_r($val);
+                    echo "</pre>";
+                }
+            }
+        }
+                    echo "</tbody>";
+                    echo "</table>";
+                    die();
         echo (($data['data']) ? count($data['data']) : 0);
 
         echo "<pre>";
-        print_r($data);
+        //print_r($data);
         echo "</pre>";
 
     }

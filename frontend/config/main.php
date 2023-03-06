@@ -75,6 +75,7 @@ return [
             'rules' => [
                 '' => 'site/index',
                 'api' => 'site/api',
+                'test' => 'site/test',
                 //'parser' => 'site/parser',
                 'add-order' => 'site/add-order',
                 //'page' => 'site/page',

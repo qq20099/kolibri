@@ -70,8 +70,8 @@ class Tours extends \yii\db\ActiveRecord
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
                 'attributes' => [
-                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['created_at', 'updated_at'],
-                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
             ],
         ];

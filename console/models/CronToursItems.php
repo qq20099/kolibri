@@ -23,7 +23,7 @@ use Yii;
 class CronToursItems extends \yii\db\ActiveRecord
 {
     const STATUS_START = 0;
-    const STATUS_SUCCESS = 1;    
+    const STATUS_SUCCESS = 1;
     const STATUS_ERROR = 4;
     const STATUS_END = 9;
     /**
@@ -87,5 +87,10 @@ class CronToursItems extends \yii\db\ActiveRecord
     public function getCron()
     {
         return $this->hasOne(CronTours::class, ['id' => 'cron_id']);
+    }
+
+    public function isSkip()
+    {
+        return ((time() - $this->updated_at)/3600) > \Yii::$app->params['skiphour'];
     }
 }

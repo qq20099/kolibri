@@ -711,11 +711,17 @@ echo "</pre>";*/
         return $p;
     }
 
-    public function test()
+    public function test($p)
     {
         $d = json_decode('{"BeginDate":"2023-03-03","EndDate":"2023-03-03","FromArea":3345,"ToCountry":"31","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":NULL,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":1,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false,"ToArea":0}');
+        //$d = json_decode('{"BeginDate":"2023-06-11","EndDate":"2023-06-11","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":5,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}');
+        $d = json_decode('{"BeginDate":"2023-06-11","EndDate":"2023-06-11","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":17,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}', true);
+
+        if ($p)
+          $d = json_decode($p, true);
 
         $data = $this->getPackageSearch($d);
+        return $data;
         echo "<pre>";
         print_r($data);
         echo "\r\n------------------------\r\n";

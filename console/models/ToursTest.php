@@ -74,7 +74,7 @@ class ToursTest extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PlaceID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'PackagePrice', 'ToCountryID', 'SeatClassID', 'FlightDateSource', 'HotelCheckInDateSource'], 'required'],
+            [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'PackagePrice', 'ToCountryID', 'SeatClassID', 'FlightDateSource', 'HotelCheckInDateSource'], 'required'],
             [['FlightDate', 'HotelCheckInDate', 'AreaID', 'PlaceID', 'PackageNight', 'HotelID', 'MealID', 'RoomID', 'AccID', 'Adult', 'Child', 'FlightAllotmentStatus', 'BackFlightAllotmentStatus', 'HotelAllotmentStatus', 'HotelStopSaleStatus', 'ToCountryID', 'SeatClassID', 'SaleStatus', 'EarlyBookingEndDate', 'BusinessFlightAllotmentStatus', 'BusinessBackFlightAllotmentStatus', 'HotelNight', 'PromotionStatus', 'main', 'activity', 'created_at', 'parent_id'], 'integer'],
             [['PackagePrice', 'PackagePriceOld'], 'number'],
             [['ChildAges', 'AirportRoute'], 'string', 'max' => 150],
