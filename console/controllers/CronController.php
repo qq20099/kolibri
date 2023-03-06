@@ -615,6 +615,15 @@ class CronController extends \yii\console\Controller
                       $cronToursItems->data = \yii\helpers\Json::encode(self::tourParams($post));
 
                     foreach ($data['data'] as $value) {
+                        if (is_file(\Yii::getAlias('@uploadsTmpDir').'/stop')) {
+                            $cronToursItems->status = $cronToursItems::STATUS_END;
+                            $cronToursItems->save();
+
+                            $cron = CronTours::findOne($this->cron_id);
+                            $cron->status = $cronToursItems::STATUS_END;
+                            $cron->save();
+                            die();
+                        }
                         $update = true;
 
                         $FlightDate = strtotime(date('Y-m-d 00:00:00', strtotime($value['FlightDate'])));
@@ -905,7 +914,7 @@ class CronController extends \yii\console\Controller
             }
         }
         $dd = $json = json_encode($p, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
-file_put_contents('D:\OSPanel54\domains\turisty.loc\frontend\web\hd.txt', $dd, FILE_APPEND);
+
         return $p;
     }
 
