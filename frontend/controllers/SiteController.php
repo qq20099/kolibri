@@ -216,10 +216,10 @@ class SiteController extends AppController
         //$data = Yii::$app->api->getListToCountry();
         //$data = Yii::$app->api->getListPackageAvailableDate();
         //$data = Yii::$app->api->getPackageSearch();
-        $d0= '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":2,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
+        $d0= '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":101,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
         $data0 = Yii::$app->api->test($d0);
 
-        $d1 = '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":3,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
+        $d1 = '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":201,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
         $data1 = Yii::$app->api->test($d1);
         //$data = Yii::$app->api->getListFlightSupplier();
         //$data = Yii::$app->api->getListToCountry();
@@ -231,11 +231,15 @@ class SiteController extends AppController
                     echo "<td style='max-width:510px'>";
                     echo "<pre>";
                     print_r(json_decode($d0, true));
+                    echo "<br>";
+                    //print_r($data0);
                     echo "</pre>";
                     echo "</td>";
                     echo "<td style='max-width:510px'>";
                     echo "<pre>";
                     print_r(json_decode($d1, true));
+                    echo "<br>";
+                    //print_r($data1);
                     echo "</pre>";
                     echo "</td>";
                     echo "</tr>";
@@ -277,12 +281,15 @@ class SiteController extends AppController
         }
                     echo "</tbody>";
                     echo "</table>";
-                    die();
-        echo (($data['data']) ? count($data['data']) : 0);
+                   // die();
+        echo (($data0['data']) ? count($data0['data']) : 0);
+        echo "<br><br>";
+        echo (($data1['data']) ? count($data1['data']) : 0);
 
         echo "<pre>";
         //print_r($data);
         echo "</pre>";
+        die();
 
     }
 

@@ -67,7 +67,7 @@ use yii\helpers\Html;
                 <?=$this->render('_sidebar_info', compact('model', 'related'))?>
                 <div class="fff first-fff mt-4 mb-2">
                     <div class="ff1">
-                        <div class="price-item" data-toggle='tooltip' title="<?=Yii::$app->formatter->asDate($related[0]->FlightDate, 'php:d M Y');?><br><?=$related[0]->HotelNight?> NAKTIS<br><?=$related[0]->acc->Name?><br><?=$related[0]->meal->Name?><br><?=$related[0]->room->Name?><br><?=$related[0]->meal->Name?>"><?=$related[0]->PackagePrice?>&nbsp;€</div>
+                        <div class="price-item" data-toggle='tooltip' title="<?=Yii::$app->formatter->asDate($related[0]->FlightDate, 'php:d M Y');?><br><?=$related[0]->HotelNight?> NAKTIS<br><?=$related[0]->acc->Name?><br><?=$related[0]->meal->Name?><br><?=$related[0]->room->Name?>"><?=$related[0]->PackagePrice?>&nbsp;€</div>
                         <div class="room-type text-uppercase" title="<?=$related[0]->room->Name?>"><?=$related[0]->room->Name?></div>
                     </div>
                     <div class="ff1 order-button-item">

@@ -169,7 +169,7 @@ class CronController extends \yii\console\Controller
         ->where(['FromArea' => 3345])
         //->andWhere(['>', 'PackageDate', $date])
         ->andWhere([">", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(NOW())')])
-        ->andWhere(["<", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(DATE_ADD(NOW(), INTERVAL 6 MONTH))')])
+        //->andWhere(["<", "(date_format(FROM_UNIXTIME(PackageDate), '%Y-%m-%d'))", new \yii\db\Expression('DATE(DATE_ADD(NOW(), INTERVAL 6 MONTH))')])
         ->with('coraltravelAvailableDateItems')
         ->asArray();
 
@@ -182,8 +182,8 @@ class CronController extends \yii\console\Controller
             $q->andWhere(['NOT IN', 'id', $sql])
             ->limit(1);*/
         } else {
-            $q->joinWith('coraltravelAvailableDateItems')
-            ->orderBy(['{{%coraltravel_available_date_items}}.ToCountryId' => SORT_DESC, 'PackageDate' => SORT_ASC]);
+            //$q->joinWith('coraltravelAvailableDateItems')
+            //->orderBy(['{{%coraltravel_available_date_items}}.ToCountryId' => SORT_DESC, 'PackageDate' => SORT_ASC]);
         }
         //->orderBy(['id' => SORT_DESC])
         //->limit(2)
@@ -494,7 +494,7 @@ class CronController extends \yii\console\Controller
                             for ($j = 1; $j <= Yii::$app->params['Adult']; $j++) {
                                 $post['Adult'] = $j;
 
-                                for ($i=0; $i <= Yii::$app->params['Child']; $i++) {
+                                for ($i = 0; $i <= Yii::$app->params['Child']; $i++) {
                                     $post['Child'] = $i;
                                     //print_r($post);
                                     $this->tour($post);
@@ -556,7 +556,7 @@ class CronController extends \yii\console\Controller
             $cronToursItems = $q->one();
             if (!empty($cronToursItems) && $cronToursItems->isSkip()) {
                 //print_r($cronToursItems);
-                return;
+                //return;
             }
         }
 
@@ -650,7 +650,7 @@ class CronController extends \yii\console\Controller
                             $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                             $model->SaleStatus = (int)$value['SaleStatus'];
                         } else {
-                            $pid = $model->id;
+                            /*$pid = $model->id;
                             $fp = fopen(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv', 'a');
                             if (!is_file(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv')) {
                                 foreach ($model as $key => $val) {
@@ -665,7 +665,7 @@ class CronController extends \yii\console\Controller
                                 $vvv['para'] = \yii\helpers\Json::encode(self::tourParams($post));
 
                                 if (fputcsv($fp, $ak, ';')) { }
-                                if (fputcsv($fp, $vvv, ';')) { }
+                                if (fputcsv($fp, $vvv, ';')) { }*/
 
             /*echo "ID = ".$model->id;
             echo " date0 = ".date('d.m.Y H:i:s', $model->created_at);
@@ -680,12 +680,12 @@ class CronController extends \yii\console\Controller
             print_r(self::tourParams($post));
             echo "\r\n\r\n";*/
             //}
-            fclose($fp);
+            //fclose($fp);
                             if ($model->PackagePrice == $value['PackagePrice'] && $model->PackagePriceOld == $value['PackagePriceOld'])
                               continue;
                         }
 
-                        $toursTest = new \console\models\ToursTest();
+                        /*$toursTest = new \console\models\ToursTest();
 
                         $toursTest->attributes = $value;
                         $toursTest->FlightDate = $FlightDate;
@@ -696,17 +696,17 @@ class CronController extends \yii\console\Controller
                         $toursTest->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
                         $toursTest->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                         $toursTest->SaleStatus = (int)$value['SaleStatus'];
-                        $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));
+                        $toursTest->params = \yii\helpers\Json::encode(self::tourParams($post));*/
 
-                        if (!$toursTest->save()) {
+                        /*if (!$toursTest->save()) {
                             //print_r($toursTest->getErrors());
                             //die();
-                        }
+                        }*/
 
                         try {
                             if ($model->save()) {
-                                $toursTest->parent_id = $model->id;
-                                $toursTest->save(false);
+                                ///$toursTest->parent_id = $model->id;
+                                ///$toursTest->save(false);
 
                                 if ($update) {
                                     $this->upd++;
@@ -733,7 +733,6 @@ class CronController extends \yii\console\Controller
                                   \yii\helpers\ArrayHelper::merge($errors, $model->getErrors()));
 
                                 self::addLog($model, 'tours');
-                                file_put_contents(Yii::getAlias('@uploadsTmpDir').'/tours.txt', print_r($value, true)."\r\n\r\n", FILE_APPEND);
                             }
                         } catch (\Exception $e) {
                             self::addLog($e, 'tours-error');
@@ -761,7 +760,7 @@ class CronController extends \yii\console\Controller
                     self::addLog($cronToursItems, 'cron-tours-items');
                 }
             }
-            $post['StartIndex']++;
+            $post['StartIndex'] = $post['StartIndex'] + 100;
         }
 
         if ((!isset($data['data']) || empty($data['data'])) && !empty($data['status']) && $data['status'] == 'success') {
