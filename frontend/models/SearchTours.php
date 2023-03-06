@@ -160,6 +160,7 @@ print_r($this);
 echo "</pre>";*/
 //die();
         //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
+        file_put_contents(Yii::getAlias('@uploadsTmpDir').'/sql.txt', $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql."\r\n", FILE_APPEND);
         return $dataProvider;
     }
 

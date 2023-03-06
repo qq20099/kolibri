@@ -25,7 +25,7 @@ $raitin = $model->hotel->tripAdvisorPoint;
                 <a href="<?=$url?>" class="tour-card__link"><?=$model->toCountry->Name?>, <?=$model->area->Name?></a>
             </p>
             <h4 class="tour-card__hotel">
-                <a href="<?=$url?>" class="tour-card__link"><?=$model->hotel->Name?> <?=$model->hotel->category->ShortName?>8888</a>
+                <a href="<?=$url?>" class="tour-card__link"><?=$model->hotel->Name?> <?=$model->hotel->category->ShortName?></a>
             </h4>
         </div>
         <?php

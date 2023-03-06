@@ -643,7 +643,8 @@ function getNights(form)
                 $('.search-form__nights .input-field').removeClass('input-field--disabled');
                 $('.search-form__date-nights').removeClass('input-field--disabled');
             } else {
-
+                //$('.search-form__nights .input-field').addClass('input-field--disabled');
+                //$('.search-form__date-nights').addClass('input-field--disabled');
             }
 
         /*let html = '<option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option><option value="70">Hurghada</option>';

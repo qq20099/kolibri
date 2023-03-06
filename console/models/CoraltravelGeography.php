@@ -41,7 +41,7 @@ class CoraltravelGeography extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['CountryID', 'CountryName', 'CountryLName', 'RegionID', 'RegionName', 'RegionLName', 'AreaID', 'AreaName', 'AreaLName', 'PlaceID', 'PlaceName', 'PlaceLName'], 'required'],
+            [['CountryID', 'CountryName', 'CountryLName', 'RegionID', 'RegionName', 'RegionLName', 'AreaID', 'PlaceID'], 'required'],
             [['CountryID', 'RegionID', 'AreaID', 'PlaceID'], 'integer'],
             [['CountryName', 'CountryLName', 'RegionName', 'RegionLName', 'AreaName', 'AreaLName', 'PlaceName', 'PlaceLName'], 'string', 'max' => 150],
             /*[['CountryID'], 'exist', 'skipOnError' => true, 'targetClass' => CoraltravelCountry::class, 'targetAttribute' => ['CountryID' => 'ID']],

@@ -33,7 +33,7 @@ class CoraltravelPlace extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ID', 'Name', 'LName', 'AreaID'], 'required'],
+            [['ID', 'AreaID'], 'required'],
             [['ID', 'AreaID'], 'integer'],
             [['Latitude', 'Longitude'], 'number'],
             [['Name', 'LName'], 'string', 'max' => 150],

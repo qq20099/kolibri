@@ -461,7 +461,7 @@ class CronController extends \yii\console\Controller
             } else {
                 //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
                 //echo $model->id."\r\n";
-                return "Cron already running";
+                die("Cron already running");
             }
 
             //Tours::deleteAll(['<=', 'FlightDate', $date]);
@@ -481,11 +481,11 @@ class CronController extends \yii\console\Controller
                     $post['package_id'] = $value['id'];
                     //$post['cron_id'] = $model->id;
 
-                            $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
+                    $ToCountryID = ArrayHelper::getColumn($value['coraltravelAvailableDateItems'], 'ToCountryID');
 
-                            if ($ToCountryID) {
-                                $ToCountryID = array_unique($ToCountryID);
-                                foreach ($ToCountryID as $val) {
+                    if ($ToCountryID) {
+                        $ToCountryID = array_unique($ToCountryID);
+                        foreach ($ToCountryID as $val) {
 
                     //if ($value['coraltravelAvailableDateItems']) {
                         //foreach ($value['coraltravelAvailableDateItems'] as $val) {
@@ -527,7 +527,7 @@ class CronController extends \yii\console\Controller
         $count = 0;
 
         if ($arr['item_id']) {
-            $q = CronToursItems::find()
+            /*$q = CronToursItems::find()
             //->where(['!=', 'status', 9])
             ->where(['>', 'id', 0])
             ->andWhere(['cron_id' => $this->cron_id])
@@ -541,7 +541,7 @@ class CronController extends \yii\console\Controller
             $count = (int)$cronToursItems->rows;
             $this->duplicates = (int)$cronToursItems->duplicates;
             $this->upd = (int)$cronToursItems->update_rows;
-            $this->add = (int)$cronToursItems->insert_rows;
+            $this->add = (int)$cronToursItems->insert_rows;*/
         } else {
             $q = CronToursItems::find()
             //->where(['!=', 'status', 9])
@@ -553,22 +553,22 @@ class CronController extends \yii\console\Controller
             ->orderBy(['updated_at' => SORT_DESC])
             ->limit(1);
             //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
-            $cronToursItems = $q->one();
+            //$cronToursItems = $q->one();
             if (!empty($cronToursItems) && $cronToursItems->isSkip()) {
                 //print_r($cronToursItems);
                 //return;
             }
         }
-
+//print_r($cronToursItems);
         //echo $q->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die(" ---");
 
-        if (isset($cronToursItems) && !empty($cronToursItems) && $cronToursItems->status == 9)
-          return;
+        //if (isset($cronToursItems) && !empty($cronToursItems) && $cronToursItems->status == 9)
+        //  return;
 
 
         $page = (isset($cronToursItems) && $cronToursItems->Page) ? $cronToursItems->Page : 1;
-
-        if (!$cronToursItems) {
+//echo "P = ".$page."\r\n";
+        if (empty($cronToursItems)) {
             $cronToursItems = new CronToursItems();
             $cronToursItems->attributes = $arr;
             $cronToursItems->BeginDate = $arr['StartDate'];
@@ -596,8 +596,8 @@ class CronController extends \yii\console\Controller
             $start = 1;
             $data = [];
 
-            //echo "Status = ".$data['status']." Country = ".$post['ToCountry'];
-            /*echo " AreaID = ".$post['ToArea'];
+            /*echo "Status = ".$data['status']." Country = ".$post['ToCountry'];
+            echo " AreaID = ".$post['ToArea'];
             echo " Adult = ".$post['Adult']." Child = ".$post['Child'];
             echo " Page = ".$post['StartIndex'];
             echo " COUNT = ".$count;
@@ -606,9 +606,9 @@ class CronController extends \yii\console\Controller
             try {
                 $data = Yii::$app->api->getPackageSearch(self::tourParams($post));
 
-                if ($count == 0) {
-                    $count = ((isset($data['data']) && $data['data']) ? count($data['data']) : 0);
-                }
+
+                $count = ((isset($data['data']) && $data['data']) ? count($data['data']) : 0);
+
 
                 if (!empty($data['data'])) {
                     if ($post['StartIndex'] == 1)
@@ -649,6 +649,12 @@ class CronController extends \yii\console\Controller
                         if (!$model) {
                             $update = false;
                             $model = new Tours();
+
+                        } else {
+                            if ($model->PackagePrice == $value['PackagePrice'] && $model->PackagePriceOld == $value['PackagePriceOld'])
+                              ;//continue;
+                        }
+
                             $model->attributes = $value;
                             $model->FlightDate = $FlightDate;
                             $model->HotelCheckInDate = $HotelCheckInDate;
@@ -658,41 +664,6 @@ class CronController extends \yii\console\Controller
                             $model->HotelAllotmentStatus = (int)$value['HotelAllotmentStatus'];
                             $model->HotelStopSaleStatus = (int)$value['HotelStopSaleStatus'];
                             $model->SaleStatus = (int)$value['SaleStatus'];
-                        } else {
-                            /*$pid = $model->id;
-                            $fp = fopen(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv', 'a');
-                            if (!is_file(Yii::getAlias('@uploadsTmpDir').'/cro-'.$pid.'.csv')) {
-                                foreach ($model as $key => $val) {
-                                    $da[$key] = iconv('UTF-8', 'CP1251//IGNORE', $val);
-                                }
-                                if (fputcsv($fp, array_keys($da), ';')) { }
-                            }
-                            //if ($pid && $pid == $model->id) {
-                                $ak = array_keys($value);
-                                $ak[] = 'para';
-                                $vvv = $value;
-                                $vvv['para'] = \yii\helpers\Json::encode(self::tourParams($post));
-
-                                if (fputcsv($fp, $ak, ';')) { }
-                                if (fputcsv($fp, $vvv, ';')) { }*/
-
-            /*echo "ID = ".$model->id;
-            echo " date0 = ".date('d.m.Y H:i:s', $model->created_at);
-            echo " date1 = ".date('d.m.Y H:i:s');
-            echo " Status = ".$data['status']." Country = ".$post['ToCountry'];
-            echo " Adult = ".$post['Adult']." Child = ".$post['Child'];
-            echo " Page = ".$post['StartIndex'];
-            echo " COUNT = ".$count;
-            echo " \r\n\r\n";
-            print_r($value);
-            echo " \r\n\r\n";
-            print_r(self::tourParams($post));
-            echo "\r\n\r\n";*/
-            //}
-            //fclose($fp);
-                            if ($model->PackagePrice == $value['PackagePrice'] && $model->PackagePriceOld == $value['PackagePriceOld'])
-                              continue;
-                        }
 
                         /*$toursTest = new \console\models\ToursTest();
 
