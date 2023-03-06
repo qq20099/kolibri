@@ -667,7 +667,7 @@ class CronController extends \yii\console\Controller
                                 if (fputcsv($fp, $ak, ';')) { }
                                 if (fputcsv($fp, $vvv, ';')) { }
 
-            echo "ID = ".$model->id;
+            /*echo "ID = ".$model->id;
             echo " date0 = ".date('d.m.Y H:i:s', $model->created_at);
             echo " date1 = ".date('d.m.Y H:i:s');
             echo " Status = ".$data['status']." Country = ".$post['ToCountry'];
@@ -678,7 +678,7 @@ class CronController extends \yii\console\Controller
             print_r($value);
             echo " \r\n\r\n";
             print_r(self::tourParams($post));
-            echo "\r\n\r\n";
+            echo "\r\n\r\n";*/
             //}
             fclose($fp);
                             if ($model->PackagePrice == $value['PackagePrice'] && $model->PackagePriceOld == $value['PackagePriceOld'])
