@@ -1301,8 +1301,8 @@ div[data-item="list"] .u-shading {
 }
 
 .flatpickr-day {
-    max-width: 42px;
-    height: 42px;
+    min-width: 43px;
+    height: 43px;
     line-height: 25px;
     display: flex;
     align-content: center;

@@ -1019,3 +1019,9 @@ function hideLoader(el)
       $('.wpv-splash-screen').remove();
     $('body').removeClass('show-loader');
 }
+
+function closeNights()
+{
+    $('.search-form__nights .open').removeClass('open');
+    $('.search-form__nights .show').removeClass('show');
+}
