@@ -138,7 +138,8 @@ class SearchTours extends Tours
             'Adult' => $this->adult,
             'Child' => $this->child
         ]);
-        $d = ($this->date_from) ? date('Y-m-d', $this->date_from) : '';
+        //$d = ($this->date_from) ? date('Y-m-d', $this->date_from) : '';
+        $d = ($this->date_from) ? Yii::$app->formatter->asDate($this->date_from) : '';
         $query->andFilterWhere(["(date_format(FROM_UNIXTIME(FlightDate), '%Y-%m-%d'))" => $d]);
         $query->andFilterWhere(['IN', 'AreaID', $this->region_id]);
         $query->andFilterWhere(['IN', 'HotelID', $this->hotel_id]);
@@ -161,7 +162,7 @@ print_r($this);
 echo "</pre>";*/
 //die();
         //echo $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql;die();
-        file_put_contents(Yii::getAlias('@uploadsTmpDir').'/sql.txt', $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql."\r\n", FILE_APPEND);
+        file_put_contents(Yii::getAlias('@uploadsTmpDir').'/sql.txt', $query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql."\r\n\r\n", FILE_APPEND);
         return $dataProvider;
     }
 
