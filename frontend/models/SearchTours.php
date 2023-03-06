@@ -109,6 +109,7 @@ class SearchTours extends Tours
         die();*/
 
         if (!$this->validate()) {
+        file_put_contents(Yii::getAlias('@uploadsTmpDir').'/sql0.txt', print_r($this->errors, true)."\r\n", FILE_APPEND);
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             //print_r($this->errors);die();
