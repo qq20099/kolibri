@@ -322,7 +322,9 @@ echo "</pre>";*/
 
     public function getRegionsForCountry()
     {
-        $key = 'regions-for-country-'.$this->country_id;
+        $adult = (int)$this->adult;
+        $child = (int)$this->child;
+        $key = 'regions-for-country-'.$this->country_id.'-'.$adult.'-'.$child;
         //Yii::$app->cache->delete($key);
         $data = Yii::$app->cache->get($key);
 

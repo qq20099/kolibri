@@ -232,12 +232,11 @@ class Api extends Component
     {
         $a = [];
         $parameters = [];
-        $d =
-                       [
-                       [
-                           "FromArea" => 2671
-                       ]
-                       ];
+        $d = [
+            [
+                "FromArea" => 2671
+            ]
+        ];
 
 
         if ($d) {
@@ -253,8 +252,10 @@ class Api extends Component
               'Token' => $this->getToken(),
               'Parameters' => Json::encode([
                   [
-                      'Name' => 'FromArea',
-                      'Value' => 3345,
+                      //'Name' => 'FromArea',
+                      //'Value' => 3345,
+                      'Name' => 'ToCountry',
+                      'Value' => 1,
                   ]
               ]),
           ])

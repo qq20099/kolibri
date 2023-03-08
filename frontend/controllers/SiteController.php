@@ -214,8 +214,13 @@ class SiteController extends AppController
         //$data = Yii::$app->api->getListAcc();
         //$data = Yii::$app->api->getListSeatClass();
         //$data = Yii::$app->api->getListToCountry();
-        //$data = Yii::$app->api->getListPackageAvailableDate();
+        $data = Yii::$app->api->getListPackageAvailableDate();
         //$data = Yii::$app->api->getPackageSearch();
+
+echo "<pre>";
+print_r($data);
+echo "</pre>";
+        die();
         $d0= '{"BeginDate":"2023-06-11T00:00:00","EndDate":"2023-06-11T00:00:00","FromArea":3345,"ToCountry":"1","ToPlace":"","HotelCategoryGroup":"","RoomCategoryGroup":"","MealCategory":"","Hotel":"","MinPrice":0,"MaxPrice":0,"BeginNight":0,"EndNight":30,"Adult":1,"Child":0,"OnlyAvailableFlight":false,"NotShowStopSale":false,"ShowOnlyConfirm":false,"StartIndex":101,"PageSize":100,"Currency":3,"RoomFilterGroup":0,"Recommended":false}';
         $data0 = Yii::$app->api->test($d0);
 

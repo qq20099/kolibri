@@ -17,7 +17,11 @@ const objDate = new Date();
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",*/
             onChange: function(i, d, l){
-                getNights($('#search-form'));
+                console.log(i);
+                console.log(d);
+                console.log(l);
+                if (i.length)
+                  getNights($('#search-form'));
                 $('.search-form__datepicker.flatpickr.has-error').removeClass('has-error');
             },
             /*onValueUpdate: function(dObj, dStr){
@@ -116,7 +120,7 @@ $(document).ready(function(){
 
             if (!date_from) {
                 getSpecification($('#search-form'), fp);
-                getRegions($('#search-form'));
+                //getRegions($('#search-form'));
             } else {
                 getDate($('#search-form'), fp);
             }
@@ -177,8 +181,8 @@ $(document).ready(function(){
 
     $(document).on('change', '#searchtours-country_id', function(e){
         let form = $(this).closest('form');
-        $('.input-field.search-form__regions .open').removeClass('open');
-        $('.input-field.search-form__regions .show').removeClass('show');
+
+        regionClose();
         $('#searchtours-region_id').val(0);
         /*$('#choice-region').val(0);
         $('#choice-region').multiselect('refresh'); searchtours-region_id*/
@@ -607,11 +611,8 @@ function addOrder(form)
 
 function getNights(form)
 {
-    $('.search-form__nights .input-field').addClass('input-field--disabled');
-    $('.search-form__date-nights').addClass('input-field--disabled');
-    $('#searchtours-nights').val(0);
-    $('#searchtours-nights').multiselect('disable');
-    $('.field-searchtours-nights .multiselect-selected-text').text('...');
+    nightBloced();
+
     $.ajax({
         url: '/tours/nights',
         type: 'post',
@@ -627,12 +628,8 @@ function getNights(form)
                 for (var key in response.nights) {
                     html += '<option value="'+key+'">'+response.nights[key]+'</option>';
                 };
-                /*$(response.nights).each(function(i, k){
-                    html += '<option value="'+k+'">'+k+'</option>';
-                });*/
+
                 $('#searchtours-nights').html(html);
-                $('#searchtours-nights').multiselect('rebuild');
-                $('#searchtours-nights').multiselect('enable');
 
                 if (Object.keys(response.nights).length == 1) {
                     $('#searchtours-nights').multiselect('select', key);
@@ -640,8 +637,7 @@ function getNights(form)
                 }
                 //$('.search-form__nights .multiselect').removeClass('disabled');
                 //$('.search-form__nights .multiselect').prop('disabled', false);
-                $('.search-form__nights .input-field').removeClass('input-field--disabled');
-                $('.search-form__date-nights').removeClass('input-field--disabled');
+                nightUnBloced('rebuild');
             } else {
                 //$('.search-form__nights .input-field').addClass('input-field--disabled');
                 //$('.search-form__date-nights').addClass('input-field--disabled');
@@ -692,8 +688,8 @@ function getDate(form, fp)
         document.head.insertAdjacentHTML('beforeend', '<style class="calendar-min-price-css">.flatpickr-day:not(.flatpickr-disabled) .calendar-min-price.calendar-min-price-'+key+':after{content: "'+response.price[key]+' €";} </style>');
                 }
 
-                $('.search-form__datepicker').removeClass('input-field--disabled');
-                $('.search-form__date-nights').removeClass('input-field--disabled');
+                datepickerNightUnBloced();
+
                 fp.set('dateFormat', "Y-m-d");
                 fp.set('enable', response.date);
                 if (date_from) {
@@ -717,8 +713,7 @@ function getDate(form, fp)
                     console.log(date_from);
                 }
             } else {
-                $('.search-form__date-nights').addClass('input-field--disabled');
-                $('.search-form__datepicker').addClass('input-field--disabled');
+                datepickerNightBloced();
                 console.log('.search-form__datepicker');
                 /*$('#searchform-date_from').attr('disabled', true);
                 $('#searchform-date_from').attr('data-input', false);
@@ -763,16 +758,21 @@ function getDate(form, fp)
 
 function getRegions(form)
 {
-    $('.search-form__regions').addClass('input-field--disabled');
+    regionBloced();
+    datepickerNightBloced();
     $.ajax({
         url: form.data('url').replace('specification', 'get-regions'),
         type: 'post',
         dataType: 'json',
         data: form.serialize(),
+        complete: function(){
+            datepickerNightUnBloced();
+        },
         error: function(response){console.log(response);},
         success: function(response){
             let err = 0;
             let html = 0;
+            let rb = 0;
 
             console.log(Object.keys(response.regions).length);
             if (Object.keys(response.regions).length) {
@@ -787,21 +787,26 @@ function getRegions(form)
                     $('#searchtours-region_id').multiselect('select', [key]);
                     $('#searchtours-region_id').val(key);
                 }
-                $('.search-form__regions').removeClass('input-field--disabled');
+                rb = 0;
             } else {
-                $('.search-form__regions').addClass('input-field--disabled');
+                rb = 1;
             }
 
             if (response.show_region) {
-                $('.search-form__regions').removeClass('input-field--disabled');
+                rb = 0;
             }
+
+            if (rb == 1)
+              regionBloced();
+            else
+              regionUnBloced();
         },
     });
 }
 
 function getSpecification(form, fp)
 {
-    fp.clear();
+    //fp.clear();
     //$('.search-form__regions').addClass('input-field--disabled');
     //$('.search-form__date-nights').addClass('input-field--disabled');
 
@@ -816,7 +821,7 @@ function getSpecification(form, fp)
             let err = 0;
             let html = 0;
             $('.calendar-min-price-css').remove();
-
+            fp.clear();
             console.log(response.date.length);
             if (response.date.length > 0) {
                 for (var key in response.price) {
@@ -847,7 +852,8 @@ function getSpecification(form, fp)
                 //fp.set('dateFormat', 'U');
 
             } else {
-                //$('.search-form__date-nights').addClass('input-field--disabled');
+                $('.search-form__date-nights').addClass('input-field--disabled');
+                //$('.search-form__datepicker').addClass('input-field--disabled');
                 $('.search-form__datepicker').addClass('input-field--disabled');
                 console.log('.search-form__datepicker0');
                 fp.set('disabled', true);
@@ -1025,4 +1031,52 @@ function closeNights()
 {
     $('.search-form__nights .open').removeClass('open');
     $('.search-form__nights .show').removeClass('show');
+}
+
+function nightBloced()
+{
+    $('.search-form__nights .input-field').addClass('input-field--disabled');
+    $('#searchtours-nights').val(0);
+    $('#searchtours-nights').multiselect('disable');
+    $('.field-searchtours-nights .multiselect-selected-text').text('...');
+}
+
+function nightUnBloced(a)
+{
+    $('.search-form__nights .input-field').removeClass('input-field--disabled');
+    $('.search-form__nights .has-error').removeClass('has-error');
+
+    if (a == 'rebuild')
+      $('#searchtours-nights').multiselect('rebuild');
+    $('#searchtours-nights').multiselect('enable');
+}
+
+function datepickerNightBloced()
+{
+    $('.search-form__date-nights').addClass('input-field--disabled');
+    $('.search-form__datepicker').addClass('input-field--disabled');
+}
+
+function datepickerNightUnBloced()
+{
+    $('.search-form__date-nights').removeClass('input-field--disabled');
+    $('.search-form__datepicker').removeClass('input-field--disabled');
+    $('.search-form__nights .has-error').removeClass('has-error');
+}
+
+function regionBloced()
+{
+    $('.search-form__regions').addClass('input-field--disabled');
+    $('.search-form__regions button.multiselect').prop('disabled', true);
+}
+
+function regionUnBloced()
+{
+    $('.search-form__regions').removeClass('input-field--disabled');
+    $('.search-form__regions button.multiselect').prop('disabled', false);
+}
+function regionClose()
+{
+    $('.input-field.search-form__regions .open').removeClass('open');
+    $('.input-field.search-form__regions .show').removeClass('show');
 }
