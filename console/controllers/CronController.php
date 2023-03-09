@@ -699,6 +699,8 @@ class CronController extends \yii\console\Controller
     public function actionGetTours()
     {
         $z = date('z');
+        echo $z."\r\n";
+        
         if ($z % 3 != 0)
           return;
 

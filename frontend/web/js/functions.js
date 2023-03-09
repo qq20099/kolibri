@@ -1066,6 +1066,8 @@ function datepickerNightUnBloced()
 
 function regionBloced()
 {
+    $('#searchtours-region_id').val(0);
+    $('#searchtours-region_id').multiselect('select', [0]);    
     $('.search-form__regions').addClass('input-field--disabled');
     $('.search-form__regions button.multiselect').prop('disabled', true);
 }
